@@ -314,10 +314,14 @@ button:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
   </div>
   <div class="card card-dim" style="font-size:.74rem;color:var(--text3);line-height:2">
     <div style="font-weight:600;font-size:.78rem;color:var(--text2);letter-spacing:.12em;margin-bottom:6px">🎯 CARA MAIN</div>
-    <div>• HP awal <span style="color:var(--text)">5</span> | Chamber mulai <span style="color:var(--text)">3 slot</span> → maks <span style="color:var(--gold)">6 slot</span> (rasio maks 4:6)</div>
+    <div>• HP awal <span style="color:var(--text)">5</span> | Chamber bertambah tiap ronde sesuai mode (2P/3P/4P)</div>
     <div>• Pemain terakhir yang hidup = <span style="color:var(--gold)">MENANG</span></div>
     <div>• Tembak diri blank → <span style="color:var(--green)">giliran bertahan</span></div>
-    <div>• Mode: <span style="color:var(--text)">2P</span> Duel · <span style="color:var(--text)">3P</span> Trio · <span style="color:var(--text)">4P</span> Squad</div>
+    <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">
+      <span style="color:var(--text)">2P</span> Chamber 3→6 slot (rasio maks 4:6) &nbsp;|&nbsp;
+      <span style="color:var(--text)">3P</span> Chamber 5→8 slot (rasio maks 6:8) &nbsp;|&nbsp;
+      <span style="color:var(--text)">4P</span> Chamber 8→12 slot (rasio maks 8:12)
+    </div>
   </div>
 </div>
 
@@ -351,12 +355,7 @@ button:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
     </div>
     <div class="rfoot" id="rfoot"><span class="pulse-dot"></span>Menunggu semua pemain ready...</div>
   </div>
-  <div class="card card-dim" style="font-size:.68rem;color:var(--text3);font-family:var(--fm);line-height:2.1">
-    <div>🔫 Ronde 1 → <span style="color:var(--text)">3 slot</span>, <span style="color:var(--red2)">1 peluru</span> (1:3)</div>
-    <div>🔫 Ronde 2 → <span style="color:var(--text)">4 slot</span>, <span style="color:var(--red2)">2 peluru</span> (2:4)</div>
-    <div>🔫 Ronde 3 → <span style="color:var(--text)">5 slot</span>, <span style="color:var(--red2)">3 peluru</span> (3:5)</div>
-    <div>🔫 Ronde 4+ → <span style="color:var(--text)">6 slot</span>, <span style="color:var(--red2)">4 peluru</span> (4:6 maks)</div>
-  </div>
+  <div class="card card-dim" id="ready-cfg-card" style="font-size:.68rem;color:var(--text3);font-family:var(--fm);line-height:2.1"></div>
 </div>
 
 <!-- ══ GAME ══ -->
@@ -429,7 +428,7 @@ button:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
    2. Add Web App → copy firebaseConfig
    3. Build → Realtime Database → Create (Test Mode)
 ============================================================ */
- const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyAOqzh4tOPig70DwX2pWSPLU7kIL1yJ0cQ",
     authDomain: "rusianrouletegame.firebaseapp.com",
     databaseURL: "https://rusianrouletegame-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -439,7 +438,6 @@ button:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
     appId: "1:435877009050:web:181f2c492bde4e386bf123",
     measurementId: "G-3RBHLY54ZP"
   };
-
 /* ============================================================ */
 
 try { firebase.initializeApp(firebaseConfig); } catch(e) { console.error(e); }
@@ -462,13 +460,21 @@ const AVATARS    = { player1:'🤠', player2:'😈', player3:'🦊', player4:'�
 const P_COLORS   = { player1:'var(--gold)', player2:'var(--red2)', player3:'var(--green2)', player4:'var(--purple)' };
 
 // ── CHAMBER CONFIG ─────────────────────────────────
-function getCfg(round) {
-  const c = [{slots:3,bullets:1},{slots:4,bullets:2},{slots:5,bullets:3},{slots:6,bullets:4}];
+function getCfg(round, pcount) {
+  // 2P: 3→6 slots, 1→4 bullets  (max ratio 4:6)
+  // 3P: 5→8 slots, 2→6 bullets  (max ratio 6:8)
+  // 4P: 8→12 slots, 4→8 bullets (max ratio 8:12)
+  const cfgMap = {
+    2: [{slots:3,bullets:1},{slots:4,bullets:2},{slots:5,bullets:3},{slots:6,bullets:4}],
+    3: [{slots:5,bullets:2},{slots:6,bullets:3},{slots:7,bullets:4},{slots:8,bullets:6}],
+    4: [{slots:8,bullets:4},{slots:9,bullets:5},{slots:10,bullets:6},{slots:11,bullets:7},{slots:12,bullets:8}],
+  };
+  const c = cfgMap[pcount] || cfgMap[2];
   return c[Math.min(round-1, c.length-1)];
 }
 
-function genChamber(round) {
-  const {slots,bullets} = getCfg(round);
+function genChamber(round, pcount) {
+  const {slots,bullets} = getCfg(round, pcount);
   const a = Array(slots).fill(0);
   for (let i=0; i<bullets; i++) a[i]=1;
   return shuffle(a);
@@ -666,8 +672,8 @@ async function startGame(data) {
   const pids=ALL_PIDS.slice(0,pcount);
   if (!pids.every(pid=>data.players[pid]?.ready)) return;
 
-  const chamber=genChamber(1);
-  const cfg=getCfg(1);
+  const chamber=genChamber(1, pcount);
+  const cfg=getCfg(1, pcount);
   const upd={status:'playing',round:1,currentTurn:'player1',currentIndex:0,
     chamber,doubleDamage:false,blockedPlayer:null,winner:null};
   pids.forEach(pid=>{
@@ -728,7 +734,8 @@ function startRoomListener() {
 // ── TRANSITIONS ─────────────────────────────────────
 function handleTransitions(data) {
   if (_firstRender && data.status==='playing') {
-    const cfg=getCfg(1);
+    const pcount=data.playerCount||2;
+    const cfg=getCfg(1, pcount);
     const pids=activePids(data.players);
     showNotif({
       icon:'🎮', title:'GAME DIMULAI!',
@@ -739,9 +746,10 @@ function handleTransitions(data) {
     return;
   }
   if (!_firstRender && data.round !== _prevRound && _prevRound !== null) {
+    const pcount=data.playerCount||2;
     const r=data.round;
-    const cfg=getCfg(r);
-    const pc=getCfg(r-1);
+    const cfg=getCfg(r, pcount);
+    const pc=getCfg(r-1, pcount);
     const added=cfg.slots-pc.slots;
     const amt=r>=3?2:1;
     const myInv=toArr(data.players[myPid]?.inventory);
@@ -780,6 +788,21 @@ function renderWaiting(data) {
 function renderReady(data) {
   const pcount=data.playerCount||2;
   const pids=ALL_PIDS.slice(0,pcount);
+
+  // Build dynamic config info card
+  const cfgMap = {
+    2: [{slots:3,bullets:1},{slots:4,bullets:2},{slots:5,bullets:3},{slots:6,bullets:4}],
+    3: [{slots:5,bullets:2},{slots:6,bullets:3},{slots:7,bullets:4},{slots:8,bullets:6}],
+    4: [{slots:8,bullets:4},{slots:9,bullets:5},{slots:10,bullets:6},{slots:11,bullets:7},{slots:12,bullets:8}],
+  };
+  const cfgs = cfgMap[pcount] || cfgMap[2];
+  const cfgCard = document.getElementById('ready-cfg-card');
+  if (cfgCard) {
+    cfgCard.innerHTML = cfgs.map((c,i) => {
+      const isLast = i === cfgs.length-1;
+      return '<div>🔫 Ronde '+(i+1)+(isLast?'+':'')+' → <span style="color:var(--text)">'+c.slots+' slot</span>, <span style="color:var(--red2)">'+c.bullets+' peluru</span> ('+c.bullets+':'+c.slots+(isLast?' maks':'')+')</div>';
+    }).join('');
+  }
   const grid=document.getElementById('ready-grid');
   grid.style.gridTemplateColumns=pcount<=2?'1fr 1fr':'repeat(auto-fit,minmax(130px,1fr))';
   grid.innerHTML=pids.map(pid=>{
@@ -828,7 +851,7 @@ function renderGame(data) {
   pg.className='pgrid pg'+Math.min(pcount,4);
   pg.innerHTML=active.map(pid=>buildPlayerCard(pid,data,canAct)).join('');
 
-  renderChamber(toArr(data.chamber),data.currentIndex||0,data.round||1);
+  renderChamber(toArr(data.chamber),data.currentIndex||0,data.round||1,pcount);
   renderTargets(data,canAct);
   renderLog(toArr(data.log));
 }
@@ -884,13 +907,13 @@ function renderTargets(data,canAct) {
 }
 
 // ── CHAMBER ─────────────────────────────────────────
-function renderChamber(chamber,idx,round) {
+function renderChamber(chamber,idx,round,pcount) {
   const el=document.getElementById('ch-slots');
   const total=chamber.length;
   document.getElementById('ch-idx').textContent=Math.min(idx+1,total);
   document.getElementById('ch-tot').textContent=total;
   document.getElementById('ch-ri').textContent='RONDE '+round;
-  const cfg=getCfg(round);
+  const cfg=getCfg(round, pcount);
   document.getElementById('ch-cfg').textContent=cfg.slots+' SLOT — '+cfg.bullets+' PELURU';
 
   el.innerHTML=chamber.map((_,i)=>{
@@ -1112,8 +1135,9 @@ async function pullTrigger(targetId) {
 }
 
 async function doNewRound(data,upd,logs,alivePids_arr) {
+  const pcount=data.playerCount||2;
   const nr=(data.round||1)+1;
-  const nc=genChamber(nr); const cfg=getCfg(nr);
+  const nc=genChamber(nr, pcount); const cfg=getCfg(nr, pcount);
   const amt=nr>=3?2:1;
   alivePids_arr.forEach(pid=>{
     upd['players/'+pid+'/inventory']=giveItems(toArr(data.players[pid].inventory),amt);
