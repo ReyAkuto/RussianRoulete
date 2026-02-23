@@ -8,538 +8,389 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-/* ── RESET ─────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg:      #080808;
-  --bg2:     #0f0f0f;
-  --bg3:     #161616;
-  --bg4:     #1e1e1e;
-  --border:  #2a2a2a;
-  --border2: #383838;
-  --red:     #c0392b;
-  --red2:    #e74c3c;
-  --gold:    #d4a843;
-  --gold2:   #f0c060;
-  --text:    #d0d0d0;
-  --text2:   #888;
-  --text3:   #555;
-  --green:   #27ae60;
-  --green2:  #2ecc71;
-  --blue:    #2980b9;
-  --orange:  #e67e22;
-  --font-t:  'Bebas Neue', cursive;
-  --font-ui: 'Oswald', sans-serif;
-  --font-m:  'Share Tech Mono', monospace;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;--bg2:#0f0f0f;--bg3:#161616;--bg4:#1e1e1e;
+  --border:#2a2a2a;--border2:#383838;
+  --red:#c0392b;--red2:#e74c3c;
+  --gold:#d4a843;--gold2:#f0c060;
+  --text:#d0d0d0;--text2:#888;--text3:#555;
+  --green:#27ae60;--green2:#2ecc71;
+  --blue:#2980b9;--orange:#e67e22;--purple:#8e44ad;
+  --ft:'Bebas Neue',cursive;--fu:'Oswald',sans-serif;--fm:'Share Tech Mono',monospace;
 }
+html{font-size:16px}
+body{font-family:var(--fu);background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 20% 20%,rgba(139,0,0,.05) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 80%,rgba(100,60,0,.04) 0%,transparent 60%)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")}
+.screen{position:relative;z-index:1;width:100%;max-width:860px;padding:16px}
+.hidden{display:none!important}
 
-html { font-size: 16px; }
-body {
-  font-family: var(--font-ui);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center;
-  overflow-x: hidden;
-  background-image:
-    radial-gradient(ellipse at 20% 20%, rgba(139,0,0,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(100,60,0,0.04) 0%, transparent 60%);
+h1{font-family:var(--ft);font-size:3.5rem;color:var(--red2);text-shadow:0 0 40px rgba(192,57,43,.5),0 2px 0 #000;letter-spacing:.08em;line-height:1}
+h2{font-family:var(--ft);font-size:1.6rem;letter-spacing:.06em}
+.site-header{text-align:center;padding:28px 16px 12px;position:relative;z-index:1}
+.site-header p{font-family:var(--fm);font-size:.72rem;color:var(--text3);letter-spacing:.2em;margin-top:4px}
+
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;margin:8px 0;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(192,57,43,.3),transparent)}
+.card-dim{background:var(--bg2)}
+
+input[type=text]{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:11px 14px;font-family:var(--fu);font-size:1rem;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:.05em;margin:6px 0}
+input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,.15)}
+input::placeholder{color:var(--text3)}
+.code-input{font-family:var(--fm)!important;font-size:1.5rem!important;text-align:center;text-transform:uppercase;letter-spacing:.4em!important}
+
+button{border:none;border-radius:6px;font-family:var(--fu);font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.08em;text-transform:uppercase}
+.btn-red{background:var(--red);color:#fff;padding:12px 24px;font-size:.9rem;box-shadow:0 4px 12px rgba(192,57,43,.3)}
+.btn-red:hover:not(:disabled){background:var(--red2);transform:translateY(-1px);box-shadow:0 6px 18px rgba(192,57,43,.45)}
+.btn-green{background:var(--green);color:#fff;padding:12px 24px;font-size:.9rem;box-shadow:0 4px 12px rgba(39,174,96,.3)}
+.btn-green:hover:not(:disabled){background:var(--green2);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);padding:12px 24px;font-size:.9rem}
+.btn-ghost:hover:not(:disabled){background:var(--bg4);color:var(--text);border-color:var(--text3)}
+button:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.btn-full{width:100%}.btn-row{display:flex;gap:10px;margin-top:10px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.tc{text-align:center}
+
+/* ── PLAYER COUNT SELECTOR ── */
+.pc-label{font-size:.7rem;color:var(--text3);letter-spacing:.14em;margin-bottom:8px;margin-top:14px}
+.pc-btns{display:flex;gap:8px}
+.pc-btn{flex:1;padding:14px 8px;font-family:var(--ft);font-size:1.6rem;letter-spacing:.06em;
+  background:var(--bg2);border:2px solid var(--border2);border-radius:8px;
+  color:var(--text3);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.pc-btn .pc-sub{font-family:var(--fm);font-size:.56rem;letter-spacing:.1em;font-weight:400;text-transform:uppercase}
+.pc-btn:hover{background:var(--bg4);border-color:var(--text3);color:var(--text)}
+.pc-btn.sel{background:rgba(192,57,43,.12);border-color:var(--red);color:var(--red2);box-shadow:0 0 16px rgba(192,57,43,.2)}
+
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text3);font-size:.72rem;letter-spacing:.2em}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.error-text{color:var(--red2);font-family:var(--fm);font-size:.78rem;margin-top:5px}
+
+/* ── WAITING ── */
+.code-box{background:var(--bg);border:2px solid var(--gold);border-radius:10px;padding:18px 24px;margin:14px 0;text-align:center;box-shadow:0 0 30px rgba(212,168,67,.15)}
+.code-box-label{font-size:.68rem;color:var(--text3);letter-spacing:.2em;margin-bottom:8px}
+.code-box-val{font-family:var(--fm);font-size:3rem;color:var(--gold2);letter-spacing:.5em;text-shadow:0 0 20px rgba(212,168,67,.4)}
+.pulse-dot{width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;margin-right:8px;animation:pulseDot 1.5s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.join-slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.jslot{background:var(--bg2);border:1.5px dashed var(--border2);border-radius:8px;padding:10px 14px;font-family:var(--fm);font-size:.7rem;color:var(--text3);letter-spacing:.08em;min-width:120px;text-align:center;transition:all .3s}
+.jslot.filled{border-style:solid;border-color:var(--green);color:var(--green2);background:rgba(39,174,96,.08)}
+.jslot .jsav{font-size:1.1rem;margin-bottom:3px}
+.jslot .jsname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
+
+/* ── READY ── */
+.ready-grid{display:grid;gap:10px;margin:14px 0}
+.rcard{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:14px;text-align:center;transition:border-color .4s,box-shadow .4s}
+.rcard.rdone{border-color:var(--green);box-shadow:0 0 18px rgba(39,174,96,.2)}
+.rcard.is-you-card{border-left:3px solid var(--blue)}
+.rcard.empty{opacity:.4;border-style:dashed}
+.rav{font-size:1.8rem;margin-bottom:6px}
+.rname{font-weight:600;font-size:.9rem;margin-bottom:2px}
+.you-badge{font-size:.52rem;background:rgba(41,128,185,.2);border:1px solid rgba(41,128,185,.4);color:#5ba4d0;border-radius:3px;padding:1px 5px;letter-spacing:.07em;margin-left:4px}
+.rbadge{font-family:var(--fm);font-size:.68rem;padding:4px 9px;border-radius:4px;display:inline-block;margin-top:6px;letter-spacing:.07em}
+.rb-no{background:rgba(90,90,90,.15);color:var(--text3);border:1px solid var(--border2)}
+.rb-yes{background:rgba(39,174,96,.15);color:var(--green2);border:1px solid rgba(39,174,96,.4);animation:bG 1.5s ease-in-out infinite}
+.rb-w{color:var(--text3);border:1px dashed var(--border);font-style:italic}
+@keyframes bG{0%,100%{opacity:1}50%{opacity:.55}}
+.rfoot{font-family:var(--fm);font-size:.7rem;color:var(--text3);text-align:center;padding:10px 0 2px;letter-spacing:.07em}
+
+/* ── GAME HEADER ── */
+.game-header{display:flex;justify-content:space-between;align-items:center;padding:8px 0 12px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.gi{font-family:var(--fm);font-size:.7rem;color:var(--text3);letter-spacing:.08em}
+.gi span{color:var(--gold);font-size:.82rem}
+.round-badge{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-family:var(--ft);font-size:1.1rem;color:var(--gold);letter-spacing:.1em}
+
+/* ── PLAYER GRID ── */
+.pgrid{display:grid;gap:8px;margin-bottom:10px}
+.pg2{grid-template-columns:1fr 1fr}
+.pg3{grid-template-columns:1fr 1fr 1fr}
+.pg4{grid-template-columns:1fr 1fr 1fr 1fr}
+
+.pcard{background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:11px;transition:border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
+.pcard.is-you{border-left:3px solid var(--blue)}
+.pcard.my-turn{border-color:var(--red);box-shadow:0 0 18px rgba(192,57,43,.2),inset 0 0 28px rgba(192,57,43,.03)}
+.pcard.my-turn::after{content:'GILIRAN';position:absolute;top:8px;right:8px;font-family:var(--fm);font-size:.54rem;color:var(--red2);letter-spacing:.14em;animation:bR 1.2s ease-in-out infinite}
+.pcard.dead-card{opacity:.35;filter:grayscale(.5)}
+.pcard.dead-card::before{content:'💀';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2rem;z-index:2;opacity:.8}
+@keyframes bR{0%,100%{opacity:1}50%{opacity:.2}}
+.ph{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.pav{width:26px;height:26px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+.pname{font-weight:600;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.you-tag{font-size:.5rem;background:rgba(41,128,185,.2);border:1px solid rgba(41,128,185,.5);color:#5ba4d0;border-radius:3px;padding:1px 4px;flex-shrink:0}
+.hp-row{display:flex;align-items:center;gap:4px;margin-bottom:7px}
+.hearts{display:flex;gap:2px}
+.heart{width:14px;height:14px;display:inline-block;position:relative;transition:all .3s}
+.heart.alive::before,.heart.alive::after{content:'';position:absolute;background:var(--red2);border-radius:50% 50% 0 0}
+.heart.alive::before{width:9px;height:9px;left:0;top:2px}
+.heart.alive::after{width:9px;height:9px;right:0;top:2px}
+.heart.alive{background:var(--red2);transform:rotate(45deg) scale(.75);box-shadow:0 0 4px rgba(231,76,60,.5)}
+.heart.dead{background:var(--bg4);transform:rotate(45deg) scale(.6);opacity:.2}
+.heart.dead::before,.heart.dead::after{content:'';position:absolute;background:var(--border2);border-radius:50% 50% 0 0}
+.heart.dead::before{width:9px;height:9px;left:0;top:2px}
+.heart.dead::after{width:9px;height:9px;right:0;top:2px}
+.hp-num{font-family:var(--fm);font-size:.68rem;color:var(--text3);margin-left:3px}
+.inv-label{font-size:.56rem;color:var(--text3);letter-spacing:.12em;margin-bottom:4px}
+.inv-row{display:flex;flex-wrap:wrap;gap:3px;min-height:26px}
+.ibtn{background:var(--bg4);border:1px solid var(--border2);border-radius:5px;padding:3px 5px;font-size:.84rem;cursor:pointer;transition:all .15s;min-width:29px;display:flex;flex-direction:column;align-items:center;gap:1px}
+.ibtn .itag{font-family:var(--fm);font-size:.42rem;color:var(--text3)}
+.ibtn:hover:not(:disabled){background:var(--bg3);border-color:var(--gold);transform:translateY(-2px);box-shadow:0 3px 8px rgba(212,168,67,.2)}
+.ibtn.enemy{cursor:default;opacity:.4}
+.ibtn:disabled:not(.enemy){opacity:.3;cursor:not-allowed}
+.no-items{font-family:var(--fm);font-size:.6rem;color:var(--text3);align-self:center}
+.fx-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;min-height:16px}
+.fx-tag{font-family:var(--fm);font-size:.54rem;padding:2px 5px;border-radius:3px;letter-spacing:.06em}
+.fx-double{background:rgba(230,126,34,.15);border:1px solid rgba(230,126,34,.4);color:#f39c12}
+.fx-blocked{background:rgba(90,90,90,.15);border:1px solid rgba(90,90,90,.4);color:var(--text3)}
+
+/* ── SHOOT TARGETS ── */
+.shoot-sec-label{font-family:var(--fm);font-size:.62rem;color:var(--text3);letter-spacing:.16em;margin-bottom:6px}
+.targets-panel{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.btn-tgt{flex:1;min-width:90px;max-width:180px;padding:11px 10px;font-size:.8rem;font-weight:600;border-radius:8px;letter-spacing:.05em;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;overflow:hidden;transition:all .2s}
+.btn-tgt::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.05) 0%,transparent 100%);pointer-events:none}
+.bt-self{background:linear-gradient(135deg,#5a3a00,#3a2600);border:1px solid #6b4500;color:#d4a843}
+.bt-self:hover:not(:disabled){background:linear-gradient(135deg,#7a5000,#5a3600);border-color:var(--gold);transform:translateY(-2px);box-shadow:0 5px 16px rgba(212,168,67,.2)}
+.bt-enemy{background:linear-gradient(135deg,#4a0a08,#2a0505);border:1px solid #6a1010;color:#e74c3c}
+.bt-enemy:hover:not(:disabled){background:linear-gradient(135deg,#6a1010,#4a0808);border-color:var(--red2);transform:translateY(-2px);box-shadow:0 5px 16px rgba(192,57,43,.3)}
+.bt-icon{font-size:1.1rem}
+.bt-name{font-size:.62rem;letter-spacing:.05em;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── CHAMBER ── */
+.chamber-panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px}
+.ch-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:12px}
+.ch-left{flex:1}
+.ch-lbl{font-size:.62rem;color:var(--text3);letter-spacing:.2em;margin-bottom:6px}
+.ratio-block{display:flex;align-items:baseline;gap:5px;margin-bottom:2px}
+.ratio-b{font-family:var(--ft);font-size:2.2rem;line-height:1;color:var(--red2);text-shadow:0 0 16px rgba(231,76,60,.4)}
+.ratio-sep{font-family:var(--fm);font-size:1rem;color:var(--text3)}
+.ratio-s{font-family:var(--ft);font-size:2.2rem;line-height:1;color:var(--text3)}
+.ratio-sub{font-family:var(--fm);font-size:.58rem;color:var(--text3);letter-spacing:.1em;margin-top:2px}
+.bar-track{height:4px;background:var(--bg4);border-radius:3px;overflow:hidden;border:1px solid var(--border);margin-top:7px}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.ch-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.ch-ctr{font-family:var(--fm);font-size:.7rem;color:var(--text3);white-space:nowrap}
+.ch-ctr span{color:var(--gold)}
+.ch-ri{font-family:var(--fm);font-size:.58rem;color:var(--text3);text-align:right}
+.ch-slots{display:flex;gap:5px;justify-content:center;align-items:center;flex-wrap:wrap}
+.slot{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .4s cubic-bezier(.34,1.56,.64,1);font-family:var(--fm)}
+.scon{width:5px;height:2px;background:var(--border);flex-shrink:0}
+.sf{background:var(--bg);border:1.5px solid var(--border);color:var(--text3);font-size:.68rem}
+.sc{background:radial-gradient(circle,#2a0a08,#1a0505);border:2px solid var(--red);color:var(--red2);font-size:1rem;box-shadow:0 0 18px rgba(192,57,43,.4),inset 0 0 12px rgba(192,57,43,.1);animation:chP 1.8s ease-in-out infinite}
+.su{background:var(--bg3);border:1.5px dashed var(--border2);color:var(--text3);font-size:.78rem}
+@keyframes chP{0%,100%{box-shadow:0 0 10px rgba(192,57,43,.3)}50%{box-shadow:0 0 24px rgba(192,57,43,.6)}}
+
+/* ── BOTTOM PANELS ── */
+.bottom-panels{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.panel-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;height:200px;overflow:hidden}
+.panel-hd{padding:7px 12px;border-bottom:1px solid var(--border);font-size:.6rem;color:var(--text3);letter-spacing:.2em;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.log-body{flex:1;min-height:0;overflow-y:auto;padding:6px 10px}
+.log-entry{font-family:var(--fm);font-size:.68rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.025);line-height:1.5;color:var(--text2);opacity:0;animation:fadeIn .4s forwards}
+.log-entry:last-child{border-bottom:none}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
+.chat-body{flex:1;min-height:0;overflow-y:auto;padding:6px 10px}
+.chat-msg{display:flex;align-items:flex-start;gap:5px;margin-bottom:5px;animation:fadeIn .3s forwards;opacity:0}
+.cm-av{width:18px;height:18px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;margin-top:1px}
+.cm-bd{flex:1;min-width:0}
+.cm-name{font-family:var(--fm);font-size:.58rem;color:var(--text3);margin-bottom:2px}
+.cm-text{font-family:var(--fm);font-size:.7rem;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:4px 7px;word-break:break-word;line-height:1.4;display:inline-block;max-width:100%}
+.chat-msg.mine .cm-text{background:rgba(41,128,185,.12);border-color:rgba(41,128,185,.25);color:#b8d8ef}
+.chat-sys{font-family:var(--fm);font-size:.6rem;color:var(--text3);text-align:center;padding:3px 0;font-style:italic}
+.chat-ir{display:flex;gap:5px;padding:6px 10px;border-top:1px solid var(--border);flex-shrink:0}
+.ci{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--text);padding:5px 9px;font-family:var(--fm);font-size:.74rem;outline:none;transition:border-color .2s;margin:0;min-width:0}
+.ci:focus{border-color:var(--blue)}
+.ci::placeholder{color:var(--text3)}
+.btn-send{background:rgba(41,128,185,.18);border:1px solid rgba(41,128,185,.32);color:#5ba4d0;padding:5px 9px;font-size:.76rem;border-radius:5px;cursor:pointer;flex-shrink:0;transition:all .15s;font-family:var(--fm);letter-spacing:0}
+.btn-send:hover:not(:disabled){background:rgba(41,128,185,.3);border-color:var(--blue)}
+.log-body::-webkit-scrollbar,.chat-body::-webkit-scrollbar{width:3px}
+.log-body::-webkit-scrollbar-track,.chat-body::-webkit-scrollbar-track{background:transparent}
+.log-body::-webkit-scrollbar-thumb,.chat-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── TOAST ── */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-120px);background:var(--bg3);border:1.5px solid var(--red);border-radius:10px;padding:11px 20px;font-family:var(--fm);font-size:.9rem;z-index:9999;transition:transform .45s cubic-bezier(.34,1.56,.64,1),opacity .45s;text-align:center;pointer-events:none;min-width:140px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.tg{border-color:var(--gold)}
+#toast.tb{border-color:var(--text3)}
+#toast.tv{border-color:var(--green)}
+
+/* ── NOTIF OVERLAY ── */
+#nb{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:7999;pointer-events:none;opacity:0;transition:opacity .3s;backdrop-filter:blur(3px)}
+#nb.show{opacity:1}
+#no{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:8000;pointer-events:none;opacity:0;transition:opacity .3s}
+#no.show{opacity:1}
+#nbox{background:var(--bg2);border-radius:16px;padding:26px 36px;text-align:center;max-width:440px;width:90%;position:relative;transform:scale(.7) translateY(20px);transition:transform .45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(0,0,0,.7)}
+#no.show #nbox{transform:scale(1) translateY(0)}
+.ni{font-size:3.2rem;margin-bottom:10px;line-height:1}
+.nt{font-family:var(--ft);font-size:2rem;letter-spacing:.06em;margin-bottom:5px;line-height:1.1}
+.ns{font-family:var(--fm);font-size:.8rem;color:var(--text2);line-height:1.7;margin-top:4px}
+.nitems{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:11px}
+.nic{background:var(--bg4);border:1px solid var(--border2);border-radius:7px;padding:7px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:48px}
+.nic .nie{font-size:1.3rem}
+.nic .nin{font-family:var(--fm);font-size:.55rem;color:var(--text3)}
+.nprog{width:100%;height:3px;background:var(--bg4);border-radius:2px;margin-top:14px;overflow:hidden}
+.npb{height:100%;border-radius:2px;background:currentColor;transition:width linear}
+.ns-start{border:2px solid var(--green);box-shadow:0 0 36px rgba(39,174,96,.3),0 20px 60px rgba(0,0,0,.7)}
+.ns-round{border:2px solid var(--gold);box-shadow:0 0 36px rgba(212,168,67,.3),0 20px 60px rgba(0,0,0,.7)}
+.ns-items{border:2px solid var(--blue);box-shadow:0 0 36px rgba(41,128,185,.3),0 20px 60px rgba(0,0,0,.7)}
+.ns-dead{border:2px solid var(--red);box-shadow:0 0 36px rgba(192,57,43,.4),0 20px 60px rgba(0,0,0,.7)}
+.ns-elim{border:2px solid var(--orange);box-shadow:0 0 36px rgba(230,126,34,.3),0 20px 60px rgba(0,0,0,.7)}
+
+@keyframes shake{0%{transform:translate(0,0)}10%{transform:translate(-4px,-3px) rotate(-.5deg)}25%{transform:translate(4px,2px) rotate(.5deg)}40%{transform:translate(-3px,1px)}60%{transform:translate(3px,-2px) rotate(.3deg)}80%{transform:translate(-1px,0)}100%{transform:translate(0,0)}}
+.do-shake{animation:shake .4s ease}
+#flash{position:fixed;inset:0;background:rgba(200,30,10,.14);pointer-events:none;z-index:998;opacity:0;transition:opacity .1s}
+#flash.on{opacity:1}
+
+/* ── FINISHED ── */
+.fin-card{text-align:center;padding:30px 20px}
+.fin-trophy{font-size:4.5rem;margin-bottom:12px}
+.fin-title{font-family:var(--ft);font-size:2.4rem;margin-bottom:5px}
+.fin-sub{color:var(--text3);font-family:var(--fm);font-size:.78rem;margin-bottom:14px}
+.fin-stats{display:flex;justify-content:center;margin:12px 0;flex-wrap:wrap;border-radius:8px;border:1px solid var(--border);overflow:hidden}
+.stat-item{text-align:center;padding:11px 14px;background:var(--bg2);border-right:1px solid var(--border);flex:1;min-width:65px}
+.stat-item:last-child{border-right:none}
+.stat-lbl{font-size:.56rem;color:var(--text3);letter-spacing:.12em;margin-bottom:2px}
+.stat-val{font-family:var(--fm);font-size:.95rem;color:var(--gold)}
+
+/* ── TOOLTIP ── */
+#tip{position:fixed;display:none;z-index:9998;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:7px 11px;font-family:var(--fm);font-size:.7rem;color:var(--text2);pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.4);max-width:180px;line-height:1.5}
+
+@media(max-width:620px){
+  .pg3,.pg4{grid-template-columns:1fr 1fr}
+  .bottom-panels{grid-template-columns:1fr}
+  .panel-box{height:185px}
 }
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 0; opacity: 0.5;
-}
-
-.screen { position: relative; z-index: 1; width: 100%; max-width: 780px; padding: 16px; }
-.hidden { display: none !important; }
-
-/* ── TYPOGRAPHY ─────────────────────────────────── */
-h1 { font-family: var(--font-t); font-size: 3.5rem; color: var(--red2); text-shadow: 0 0 40px rgba(192,57,43,0.5), 0 2px 0 #000; letter-spacing: 0.08em; line-height: 1; }
-h2 { font-family: var(--font-t); font-size: 1.6rem; letter-spacing: 0.06em; }
-.site-header { text-align: center; padding: 28px 16px 12px; position: relative; z-index: 1; }
-.site-header p { font-family: var(--font-m); font-size: 0.72rem; color: var(--text3); letter-spacing: 0.2em; margin-top: 4px; }
-
-/* ── CARDS ──────────────────────────────────────── */
-.card { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 8px 0; position: relative; overflow: hidden; }
-.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(192,57,43,0.3), transparent); }
-.card-dim { background: var(--bg2); }
-
-/* ── INPUTS ─────────────────────────────────────── */
-input[type="text"] { width: 100%; background: var(--bg2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); padding: 11px 14px; font-family: var(--font-ui); font-size: 1rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; letter-spacing: 0.05em; margin: 6px 0; }
-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.15); }
-input::placeholder { color: var(--text3); }
-.code-input { font-family: var(--font-m) !important; font-size: 1.5rem !important; text-align: center; text-transform: uppercase; letter-spacing: 0.4em !important; }
-
-/* ── BUTTONS ────────────────────────────────────── */
-button { border: none; border-radius: 6px; font-family: var(--font-ui); font-weight: 600; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em; text-transform: uppercase; }
-.btn-red   { background: var(--red); color: #fff; padding: 12px 24px; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(192,57,43,0.3); }
-.btn-red:hover:not(:disabled)   { background: var(--red2); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(192,57,43,0.45); }
-.btn-green { background: var(--green); color: #fff; padding: 12px 24px; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(39,174,96,0.3); }
-.btn-green:hover:not(:disabled) { background: var(--green2); transform: translateY(-1px); }
-.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); padding: 12px 24px; font-size: 0.9rem; }
-.btn-ghost:hover:not(:disabled) { background: var(--bg4); color: var(--text); border-color: var(--text3); }
-button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
-.btn-full { width: 100%; }
-.btn-row  { display: flex; gap: 10px; margin-top: 10px; }
-.mt8 { margin-top: 8px; }
-.mt12 { margin-top: 12px; }
-.tc { text-align: center; }
-
-/* ── LOBBY ──────────────────────────────────────── */
-.divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--text3); font-size: 0.72rem; letter-spacing: 0.2em; }
-.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.error-text { color: var(--red2); font-family: var(--font-m); font-size: 0.78rem; margin-top: 5px; }
-
-/* ── WAITING ────────────────────────────────────── */
-.code-box { background: var(--bg); border: 2px solid var(--gold); border-radius: 10px; padding: 18px 24px; margin: 14px 0; text-align: center; box-shadow: 0 0 30px rgba(212,168,67,0.15); }
-.code-box-label { font-size: 0.68rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 8px; }
-.code-box-val   { font-family: var(--font-m); font-size: 3rem; color: var(--gold2); letter-spacing: 0.5em; text-shadow: 0 0 20px rgba(212,168,67,0.4); }
-
-.pulse-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulseDot 1.5s ease-in-out infinite; }
-@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
-
-/* ── READY ROOM ─────────────────────────────────── */
-.ready-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
-.ready-card { background: var(--bg2); border: 1.5px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; transition: border-color 0.4s, box-shadow 0.4s; }
-.ready-card.rdone { border-color: var(--green); box-shadow: 0 0 20px rgba(39,174,96,0.2); }
-.ready-card.is-you-card { border-left: 3px solid var(--blue); }
-.ready-avatar { font-size: 2.2rem; margin-bottom: 8px; }
-.ready-pname  { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
-.you-badge { font-size: 0.55rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.4); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.08em; margin-left: 5px; }
-.ready-badge { font-family: var(--font-m); font-size: 0.72rem; padding: 5px 10px; border-radius: 4px; display: inline-block; margin-top: 7px; letter-spacing: 0.08em; }
-.rb-not     { background: rgba(90,90,90,0.15); color: var(--text3); border: 1px solid var(--border2); }
-.rb-ready   { background: rgba(39,174,96,0.15); color: var(--green2); border: 1px solid rgba(39,174,96,0.4); animation: blinkGreen 1.5s ease-in-out infinite; }
-.rb-waiting { color: var(--text3); border: 1px dashed var(--border); font-style: italic; }
-@keyframes blinkGreen { 0%,100%{opacity:1} 50%{opacity:0.55} }
-.ready-foot { font-family: var(--font-m); font-size: 0.72rem; color: var(--text3); text-align: center; padding: 10px 0 2px; letter-spacing: 0.08em; }
-
-/* ── GAME HEADER ────────────────────────────────── */
-.game-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
-.gi { font-family: var(--font-m); font-size: 0.7rem; color: var(--text3); letter-spacing: 0.08em; }
-.gi span { color: var(--gold); font-size: 0.82rem; }
-.round-badge { background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 5px 14px; font-family: var(--font-t); font-size: 1.1rem; color: var(--gold); letter-spacing: 0.1em; }
-
-/* ── PLAYER CARDS ───────────────────────────────── */
-.pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.pcard { background: var(--bg3); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; transition: border-color 0.3s, box-shadow 0.3s; position: relative; }
-.pcard.is-you  { border-left: 3px solid var(--blue); }
-.pcard.my-turn { border-color: var(--red); box-shadow: 0 0 20px rgba(192,57,43,0.2), inset 0 0 30px rgba(192,57,43,0.03); }
-.pcard.my-turn::after { content: 'GILIRAN'; position: absolute; top: 9px; right: 9px; font-family: var(--font-m); font-size: 0.56rem; color: var(--red2); letter-spacing: 0.14em; animation: blinkRed 1.2s ease-in-out infinite; }
-@keyframes blinkRed { 0%,100%{opacity:1} 50%{opacity:0.2} }
-
-.ph { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
-.pav { width: 28px; height: 28px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; flex-shrink: 0; }
-.pname { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.you-tag { font-size: 0.52rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.5); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.08em; flex-shrink: 0; }
-
-/* Hearts */
-.hp-row { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
-.hearts { display: flex; gap: 3px; }
-.heart { width: 16px; height: 16px; display: inline-block; position: relative; transition: all 0.3s; }
-.heart.alive::before, .heart.alive::after { content: ''; position: absolute; background: var(--red2); border-radius: 50% 50% 0 0; }
-.heart.alive::before { width: 10px; height: 10px; left: 0; top: 2px; }
-.heart.alive::after  { width: 10px; height: 10px; right: 0; top: 2px; }
-.heart.alive { background: var(--red2); transform: rotate(45deg) scale(0.78); box-shadow: 0 0 5px rgba(231,76,60,0.5); }
-.heart.dead  { background: var(--bg4); transform: rotate(45deg) scale(0.65); opacity: 0.2; }
-.heart.dead::before, .heart.dead::after { content: ''; position: absolute; background: var(--border2); border-radius: 50% 50% 0 0; }
-.heart.dead::before { width: 10px; height: 10px; left: 0; top: 2px; }
-.heart.dead::after  { width: 10px; height: 10px; right: 0; top: 2px; }
-.hp-num { font-family: var(--font-m); font-size: 0.72rem; color: var(--text3); margin-left: 4px; }
-
-/* Inventory */
-.inv-label { font-size: 0.58rem; color: var(--text3); letter-spacing: 0.14em; margin-bottom: 5px; }
-.inv-row   { display: flex; flex-wrap: wrap; gap: 4px; min-height: 30px; }
-.ibtn { background: var(--bg4); border: 1px solid var(--border2); border-radius: 6px; padding: 4px 6px; font-size: 0.92rem; cursor: pointer; transition: all 0.15s; min-width: 34px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.ibtn .itag { font-family: var(--font-m); font-size: 0.46rem; color: var(--text3); }
-.ibtn:hover:not(:disabled) { background: var(--bg3); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(212,168,67,0.2); }
-.ibtn.enemy { cursor: default; opacity: 0.45; }
-.ibtn:disabled:not(.enemy) { opacity: 0.3; cursor: not-allowed; }
-.no-items { font-family: var(--font-m); font-size: 0.66rem; color: var(--text3); align-self: center; }
-
-/* Effects */
-.fx-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; min-height: 18px; }
-.fx-tag { font-family: var(--font-m); font-size: 0.56rem; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.07em; }
-.fx-double  { background: rgba(230,126,34,0.15); border: 1px solid rgba(230,126,34,0.4); color: #f39c12; }
-.fx-blocked { background: rgba(90,90,90,0.15); border: 1px solid rgba(90,90,90,0.4); color: var(--text3); }
-
-/* ── CHAMBER ────────────────────────────────────── */
-.chamber-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
-.ch-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 12px; }
-.ch-left { flex: 1; }
-.ch-label-sm { font-size: 0.62rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 6px; }
-
-/* Ratio display */
-.ratio-block { display: flex; align-items: baseline; gap: 5px; margin-bottom: 2px; }
-.ratio-bullets { font-family: var(--font-t); font-size: 2.4rem; line-height: 1; color: var(--red2); text-shadow: 0 0 18px rgba(231,76,60,0.4); }
-.ratio-sep    { font-family: var(--font-m); font-size: 1.1rem; color: var(--text3); }
-.ratio-slots  { font-family: var(--font-t); font-size: 2.4rem; line-height: 1; color: var(--text3); }
-.ratio-sub    { font-family: var(--font-m); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; margin-top: 2px; }
-
-/* Ratio bar (simple color strip, no %) */
-.ratio-bar-wrap  { margin-top: 8px; }
-.ratio-bar-track { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
-.ratio-bar-fill  { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
-
-.ch-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.ch-counter { font-family: var(--font-m); font-size: 0.7rem; color: var(--text3); white-space: nowrap; }
-.ch-counter span { color: var(--gold); }
-.ch-round-info { font-family: var(--font-m); font-size: 0.6rem; color: var(--text3); text-align: right; }
-
-/* Slots */
-.ch-slots { display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; }
-.slot { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); font-family: var(--font-m); }
-.slot-con { width: 6px; height: 2px; background: var(--border); flex-shrink: 0; }
-.s-fired   { background: var(--bg); border: 1.5px solid var(--border); color: var(--text3); font-size: 0.72rem; }
-.s-current { background: radial-gradient(circle, #2a0a08, #1a0505); border: 2px solid var(--red); color: var(--red2); font-size: 1.1rem; box-shadow: 0 0 20px rgba(192,57,43,0.4), inset 0 0 15px rgba(192,57,43,0.1); animation: chPulse 1.8s ease-in-out infinite; }
-.s-unknown { background: var(--bg3); border: 1.5px dashed var(--border2); color: var(--text3); font-size: 0.82rem; }
-@keyframes chPulse { 0%,100%{box-shadow:0 0 12px rgba(192,57,43,0.3)} 50%{box-shadow:0 0 28px rgba(192,57,43,0.6)} }
-
-/* ── SHOOT BUTTONS ──────────────────────────────── */
-.shoot-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.btn-shoot { padding: 14px 12px; font-size: 0.95rem; font-weight: 600; border-radius: 8px; letter-spacing: 0.06em; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; overflow: hidden; }
-.btn-shoot::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none; }
-.bss { background: linear-gradient(135deg, #5a3a00, #3a2600); border: 1px solid #6b4500; color: #d4a843; }
-.bss:hover:not(:disabled) { background: linear-gradient(135deg, #7a5000, #5a3600); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,168,67,0.2); }
-.bse { background: linear-gradient(135deg, #4a0a08, #2a0505); border: 1px solid #6a1010; color: #e74c3c; }
-.bse:hover:not(:disabled) { background: linear-gradient(135deg, #6a1010, #4a0808); border-color: var(--red2); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.3); }
-.shoot-icon  { font-size: 1.4rem; }
-.shoot-label { font-size: 0.7rem; letter-spacing: 0.1em; }
-
-/* ── BOTTOM PANELS (LOG + CHAT) ─────────────────── */
-.bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.panel-box {
-  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-  display: flex; flex-direction: column;
-  height: 210px; /* fixed total height — scroll stays inside */
-  overflow: hidden;
-}
-.panel-hd  { padding: 7px 12px; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.2em; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.log-body  { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 10px; }
-.log-entry { font-family: var(--font-m); font-size: 0.7rem; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.025); line-height: 1.5; color: var(--text2); opacity: 0; animation: fadeIn 0.4s forwards; }
-.log-entry:last-child { border-bottom: none; }
-@keyframes fadeIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:none} }
-
-/* chat-input-row height is fixed; chat-body gets remaining space and scrolls internally */
-.chat-body { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 10px; }
-.chat-msg  { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px; animation: fadeIn 0.3s forwards; opacity: 0; }
-.cm-av { width: 20px; height: 20px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; margin-top: 1px; }
-.cm-bd { flex: 1; min-width: 0; }
-.cm-name { font-family: var(--font-m); font-size: 0.6rem; color: var(--text3); margin-bottom: 2px; }
-.cm-name.mine   { color: var(--blue); }
-.cm-name.theirs { color: var(--gold); }
-.cm-text { font-family: var(--font-m); font-size: 0.73rem; color: var(--text); background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; word-break: break-word; line-height: 1.4; display: inline-block; max-width: 100%; }
-.chat-msg.mine .cm-text { background: rgba(41,128,185,0.12); border-color: rgba(41,128,185,0.25); color: #b8d8ef; }
-.chat-sys { font-family: var(--font-m); font-size: 0.63rem; color: var(--text3); text-align: center; padding: 3px 0; font-style: italic; }
-
-.chat-input-row { display: flex; gap: 6px; padding: 6px 10px; border-top: 1px solid var(--border); flex-shrink: 0; }
-.ci { flex: 1; background: var(--bg3); border: 1px solid var(--border2); border-radius: 5px; color: var(--text); padding: 6px 10px; font-family: var(--font-m); font-size: 0.76rem; outline: none; transition: border-color 0.2s; margin: 0; min-width: 0; }
-.ci:focus { border-color: var(--blue); }
-.ci::placeholder { color: var(--text3); }
-.btn-send { background: rgba(41,128,185,0.18); border: 1px solid rgba(41,128,185,0.32); color: #5ba4d0; padding: 6px 10px; font-size: 0.78rem; border-radius: 5px; cursor: pointer; flex-shrink: 0; transition: all 0.15s; font-family: var(--font-m); letter-spacing: 0; }
-.btn-send:hover:not(:disabled) { background: rgba(41,128,185,0.3); border-color: var(--blue); }
-.btn-send:disabled { opacity: 0.3; cursor: not-allowed; }
-
-.log-body::-webkit-scrollbar, .chat-body::-webkit-scrollbar { width: 3px; }
-.log-body::-webkit-scrollbar-track, .chat-body::-webkit-scrollbar-track { background: transparent; }
-.log-body::-webkit-scrollbar-thumb, .chat-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-/* ── TOAST (small) ──────────────────────────────── */
-#toast {
-  position: fixed; top: 20px; left: 50%;
-  transform: translateX(-50%) translateY(-120px);
-  background: var(--bg3); border: 1.5px solid var(--red);
-  border-radius: 10px; padding: 12px 22px;
-  font-family: var(--font-m); font-size: 0.92rem;
-  z-index: 9999; transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.45s;
-  text-align: center; pointer-events: none; min-width: 160px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0;
-}
-#toast.show   { transform: translateX(-50%) translateY(0); opacity: 1; }
-#toast.t-gold { border-color: var(--gold); }
-#toast.t-blank{ border-color: var(--text3); }
-#toast.t-green{ border-color: var(--green); }
-
-/* ── BIG NOTIFICATION OVERLAY ───────────────────── */
-#notif-overlay {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 8000;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-#notif-overlay.show { opacity: 1; }
-
-#notif-box {
-  background: var(--bg2);
-  border-radius: 16px;
-  padding: 28px 40px;
-  text-align: center;
-  max-width: 420px; width: 90%;
-  position: relative;
-  transform: scale(0.7) translateY(20px);
-  transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
-}
-#notif-overlay.show #notif-box { transform: scale(1) translateY(0); }
-
-/* notif backdrop blur */
-#notif-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.65);
-  z-index: 7999;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-  backdrop-filter: blur(3px);
-}
-#notif-backdrop.show { opacity: 1; }
-
-.notif-icon  { font-size: 3.5rem; margin-bottom: 10px; line-height: 1; }
-.notif-title { font-family: var(--font-t); font-size: 2.2rem; letter-spacing: 0.06em; margin-bottom: 6px; line-height: 1.1; }
-.notif-sub   { font-family: var(--font-m); font-size: 0.82rem; color: var(--text2); line-height: 1.7; margin-top: 4px; }
-.notif-items { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-.notif-item-chip {
-  background: var(--bg4); border: 1px solid var(--border2);
-  border-radius: 8px; padding: 8px 12px;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  min-width: 52px;
-}
-.notif-item-chip .ni-emoji { font-size: 1.4rem; }
-.notif-item-chip .ni-name  { font-family: var(--font-m); font-size: 0.58rem; color: var(--text3); }
-
-/* notif color themes */
-.notif-start  { border: 2px solid var(--green);  box-shadow: 0 0 40px rgba(39,174,96,0.3),  0 20px 60px rgba(0,0,0,0.7); }
-.notif-round  { border: 2px solid var(--gold);   box-shadow: 0 0 40px rgba(212,168,67,0.3), 0 20px 60px rgba(0,0,0,0.7); }
-.notif-items-notif { border: 2px solid var(--blue);  box-shadow: 0 0 40px rgba(41,128,185,0.3),  0 20px 60px rgba(0,0,0,0.7); }
-.notif-dead   { border: 2px solid var(--red);    box-shadow: 0 0 40px rgba(192,57,43,0.4),  0 20px 60px rgba(0,0,0,0.7); }
-
-.notif-progress {
-  width: 100%; height: 3px; background: var(--bg4); border-radius: 2px;
-  margin-top: 16px; overflow: hidden;
-}
-.notif-progress-bar {
-  height: 100%; border-radius: 2px; background: currentColor;
-  transition: width linear;
-}
-
-/* ── ANIMATIONS ─────────────────────────────────── */
-@keyframes shake {
-  0%{transform:translate(0,0) rotate(0deg)} 10%{transform:translate(-4px,-3px) rotate(-0.5deg)}
-  25%{transform:translate(4px,2px) rotate(0.5deg)} 40%{transform:translate(-3px,1px) rotate(0deg)}
-  60%{transform:translate(3px,-2px) rotate(0.3deg)} 80%{transform:translate(-1px,0)}
-  100%{transform:translate(0,0)}
-}
-.do-shake { animation: shake 0.4s ease; }
-
-#flash { position: fixed; inset: 0; background: rgba(200,30,10,0.14); pointer-events: none; z-index: 998; opacity: 0; transition: opacity 0.1s; }
-#flash.on { opacity: 1; }
-
-/* ── FINISHED ───────────────────────────────────── */
-.fin-card { text-align: center; padding: 36px 20px; }
-.fin-trophy { font-size: 5rem; margin-bottom: 14px; }
-.fin-title  { font-family: var(--font-t); font-size: 2.5rem; margin-bottom: 6px; }
-.fin-sub    { color: var(--text3); font-family: var(--font-m); font-size: 0.8rem; }
-.stats-row  { display: flex; justify-content: center; gap: 28px; margin: 18px 0; padding: 14px; background: var(--bg2); border-radius: 8px; border: 1px solid var(--border); }
-.stat-item  { text-align: center; }
-.stat-lbl   { font-size: 0.6rem; color: var(--text3); letter-spacing: 0.14em; margin-bottom: 3px; }
-.stat-val   { font-family: var(--font-m); font-size: 1.1rem; color: var(--gold); }
-
-/* ── TOOLTIP ────────────────────────────────────── */
-#tip { position: fixed; display: none; z-index: 9998; background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 7px 11px; font-family: var(--font-m); font-size: 0.72rem; color: var(--text2); pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.4); max-width: 180px; line-height: 1.5; }
-
-/* ── RESPONSIVE ─────────────────────────────────── */
-@media(max-width:580px){
-  .bottom-panels { grid-template-columns: 1fr; }
-  .panel-box { height: 190px; }
-}
-@media(max-width:520px){
-  h1 { font-size: 2.2rem; }
-  .pgrid { grid-template-columns: 1fr; }
-  .ready-grid { grid-template-columns: 1fr; }
-  .shoot-panel { grid-template-columns: 1fr; }
-  .slot { width: 42px; height: 42px; }
-  .slot-con { width: 4px; }
-  .screen { padding: 10px; }
-  .btn-shoot { flex-direction: row; padding: 11px 14px; }
-  .shoot-icon { font-size: 1.1rem; }
-  #notif-box { padding: 22px 24px; }
-  .notif-title { font-size: 1.7rem; }
+@media(max-width:440px){
+  h1{font-size:2rem}
+  .pg2,.pg3,.pg4{grid-template-columns:1fr 1fr}
+  .slot{width:38px;height:38px}
+  .scon{width:3px}
+  .screen{padding:10px}
+  .btn-tgt{min-width:78px;padding:9px 7px}
+  #nbox{padding:20px 20px}
+  .nt{font-size:1.6rem}
 }
 </style>
 </head>
 <body>
-
 <div id="flash"></div>
-<div id="notif-backdrop"></div>
-<div id="notif-overlay">
-  <div id="notif-box">
-    <div class="notif-icon" id="ni-icon"></div>
-    <div class="notif-title" id="ni-title"></div>
-    <div class="notif-sub" id="ni-sub"></div>
-    <div class="notif-items" id="ni-items"></div>
-    <div class="notif-progress"><div class="notif-progress-bar" id="ni-prog"></div></div>
+<div id="nb"></div>
+<div id="no">
+  <div id="nbox">
+    <div class="ni" id="ni"></div>
+    <div class="nt" id="nt"></div>
+    <div class="ns" id="ns"></div>
+    <div class="nitems" id="nitems"></div>
+    <div class="nprog"><div class="npb" id="npb"></div></div>
   </div>
 </div>
 <div id="toast"></div>
 <div id="tip"></div>
 
-<!-- ========== SITE HEADER ========== -->
 <div class="site-header">
   <h1>RUSSIAN ROULETTE</h1>
-  <p>MULTIPLAYER • REALTIME • TURN-BASED</p>
+  <p>MULTIPLAYER • REALTIME • 2 / 3 / 4 PEMAIN</p>
 </div>
 
-<!-- ========== LOBBY ========== -->
+<!-- ══ LOBBY ══ -->
 <div id="screen-lobby" class="screen">
   <div class="card">
-    <h2 style="margin-bottom:16px;color:var(--red2)">— Masuk ke Arena —</h2>
-    <label style="font-size:0.7rem;color:var(--text3);letter-spacing:0.14em">NAMA PEMAIN</label>
+    <h2 style="margin-bottom:14px;color:var(--red2)">— Masuk ke Arena —</h2>
+    <label style="font-size:.7rem;color:var(--text3);letter-spacing:.14em">NAMA PEMAIN</label>
     <input type="text" id="inp-name" placeholder="Masukkan namamu..." maxlength="16" autocomplete="off">
     <div id="lb-err" class="error-text hidden"></div>
+    <div class="pc-label">JUMLAH PEMAIN</div>
+    <div class="pc-btns">
+      <button class="pc-btn sel" data-n="2" onclick="selCount(2)">2P<span class="pc-sub">Duel</span></button>
+      <button class="pc-btn" data-n="3" onclick="selCount(3)">3P<span class="pc-sub">Trio</span></button>
+      <button class="pc-btn" data-n="4" onclick="selCount(4)">4P<span class="pc-sub">Squad</span></button>
+    </div>
     <div class="btn-row mt12">
       <button class="btn-red btn-full" onclick="createRoom()">➕ BUAT ROOM BARU</button>
     </div>
     <div class="divider">ATAU BERGABUNG</div>
-    <label style="font-size:0.7rem;color:var(--text3);letter-spacing:0.14em">KODE ROOM</label>
+    <label style="font-size:.7rem;color:var(--text3);letter-spacing:.14em">KODE ROOM</label>
     <input type="text" id="inp-code" class="code-input" placeholder="XXXX" maxlength="4" autocomplete="off">
     <button class="btn-ghost btn-full mt8" onclick="joinRoom()">🚪 JOIN ROOM</button>
   </div>
-  <div class="card card-dim" style="font-size:0.76rem;color:var(--text3);line-height:2">
-    <div style="font-weight:600;font-size:0.8rem;color:var(--text2);letter-spacing:0.12em;margin-bottom:6px">🎯 CARA MAIN</div>
-    <div>• HP awal: <span style="color:var(--text)">5</span> &nbsp;|&nbsp; Chamber mulai dari <span style="color:var(--text)">3 slot</span></div>
-    <div>• Setiap ronde slot bertambah, maks <span style="color:var(--gold)">6 slot</span> rasio maks <span style="color:var(--red2)">4:6</span></div>
-    <div>• Tembak diri dengan <span style="color:var(--green)">blank</span> → giliran bertahan</div>
-    <div>• Gunakan item sebelum menembak</div>
+  <div class="card card-dim" style="font-size:.74rem;color:var(--text3);line-height:2">
+    <div style="font-weight:600;font-size:.78rem;color:var(--text2);letter-spacing:.12em;margin-bottom:6px">🎯 CARA MAIN</div>
+    <div>• HP awal <span style="color:var(--text)">5</span> | Chamber mulai <span style="color:var(--text)">3 slot</span> → maks <span style="color:var(--gold)">6 slot</span> (rasio maks 4:6)</div>
+    <div>• Pemain terakhir yang hidup = <span style="color:var(--gold)">MENANG</span></div>
+    <div>• Tembak diri blank → <span style="color:var(--green)">giliran bertahan</span></div>
+    <div>• Mode: <span style="color:var(--text)">2P</span> Duel · <span style="color:var(--text)">3P</span> Trio · <span style="color:var(--text)">4P</span> Squad</div>
   </div>
 </div>
 
-<!-- ========== WAITING (P1 nunggu P2) ========== -->
+<!-- ══ WAITING ══ -->
 <div id="screen-waiting" class="screen hidden">
   <div class="card tc">
-    <h2 style="color:var(--text2);margin-bottom:6px">⏳ Menunggu Pemain 2</h2>
-    <p style="color:var(--text3);font-family:var(--font-m);font-size:0.76rem;margin-bottom:12px">Bagikan kode ini ke temanmu</p>
+    <h2 style="color:var(--text2);margin-bottom:4px" id="wt">⏳ Menunggu Pemain Lain</h2>
+    <p style="color:var(--text3);font-family:var(--fm);font-size:.74rem;margin-bottom:12px">Bagikan kode ini ke temanmu</p>
     <div class="code-box">
       <div class="code-box-label">KODE ROOM</div>
       <div class="code-box-val" id="disp-code"></div>
     </div>
-    <div style="margin-top:12px;font-family:var(--font-m);font-size:0.76rem;color:var(--text3)">
+    <div class="join-slots" id="join-slots"></div>
+    <div style="margin-top:8px;font-family:var(--fm);font-size:.74rem;color:var(--text3)" id="wmsg">
       <span class="pulse-dot"></span>Menunggu koneksi...
     </div>
   </div>
 </div>
 
-<!-- ========== READY CHECK ========== -->
+<!-- ══ READY ══ -->
 <div id="screen-ready" class="screen hidden">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
       <h2 style="color:var(--gold)">⚔️ Lobi Pertempuran</h2>
-      <div style="font-family:var(--font-m);font-size:0.68rem;color:var(--text3)">ROOM: <span style="color:var(--gold)" id="ready-code"></span></div>
+      <div style="font-family:var(--fm);font-size:.66rem;color:var(--text3)">ROOM: <span style="color:var(--gold)" id="ready-code"></span></div>
     </div>
-    <p style="font-family:var(--font-m);font-size:0.72rem;color:var(--text3);margin-bottom:2px">Kedua pemain harus READY untuk memulai</p>
-    <div class="ready-grid">
-      <div id="rcard-p1" class="ready-card">
-        <div class="ready-avatar">🤠</div>
-        <div class="ready-pname" id="rname-p1">—</div>
-        <div><span class="ready-badge rb-not" id="rst-p1">⬜ Belum Ready</span></div>
-      </div>
-      <div id="rcard-p2" class="ready-card">
-        <div class="ready-avatar">😈</div>
-        <div class="ready-pname" id="rname-p2">—</div>
-        <div><span class="ready-badge rb-waiting" id="rst-p2">🔌 Menunggu...</span></div>
-      </div>
-    </div>
+    <p style="font-family:var(--fm);font-size:.7rem;color:var(--text3);margin-bottom:2px">Semua pemain harus READY untuk memulai</p>
+    <div class="ready-grid" id="ready-grid"></div>
     <div class="tc">
-      <button class="btn-green" id="btn-ready" onclick="setReady()" style="padding:13px 48px;font-size:0.95rem">✅ READY!</button>
+      <button class="btn-green" id="btn-ready" onclick="setReady()" style="padding:12px 44px;font-size:.92rem">✅ READY!</button>
     </div>
-    <div class="ready-foot" id="ready-foot">
-      <span class="pulse-dot"></span>Menunggu kedua pemain ready...
-    </div>
+    <div class="rfoot" id="rfoot"><span class="pulse-dot"></span>Menunggu semua pemain ready...</div>
   </div>
-  <div class="card card-dim" style="font-size:0.7rem;color:var(--text3);font-family:var(--font-m);line-height:2.2">
-    <div>🔫 Ronde 1 → <span style="color:var(--text)">3 slot</span> chamber, <span style="color:var(--red2)">1 peluru</span> (rasio 1:3)</div>
-    <div>🔫 Ronde 2 → <span style="color:var(--text)">4 slot</span> chamber, <span style="color:var(--red2)">2 peluru</span> (rasio 2:4)</div>
-    <div>🔫 Ronde 3 → <span style="color:var(--text)">5 slot</span> chamber, <span style="color:var(--red2)">3 peluru</span> (rasio 3:5)</div>
-    <div>🔫 Ronde 4+ → <span style="color:var(--text)">6 slot</span> chamber, <span style="color:var(--red2)">4 peluru</span> (rasio maks 4:6)</div>
+  <div class="card card-dim" style="font-size:.68rem;color:var(--text3);font-family:var(--fm);line-height:2.1">
+    <div>🔫 Ronde 1 → <span style="color:var(--text)">3 slot</span>, <span style="color:var(--red2)">1 peluru</span> (1:3)</div>
+    <div>🔫 Ronde 2 → <span style="color:var(--text)">4 slot</span>, <span style="color:var(--red2)">2 peluru</span> (2:4)</div>
+    <div>🔫 Ronde 3 → <span style="color:var(--text)">5 slot</span>, <span style="color:var(--red2)">3 peluru</span> (3:5)</div>
+    <div>🔫 Ronde 4+ → <span style="color:var(--text)">6 slot</span>, <span style="color:var(--red2)">4 peluru</span> (4:6 maks)</div>
   </div>
 </div>
 
-<!-- ========== GAME ========== -->
+<!-- ══ GAME ══ -->
 <div id="screen-game" class="screen hidden">
   <div class="game-header">
     <div class="gi">ROOM: <span id="g-code">—</span></div>
     <div class="round-badge">RONDE <span id="g-round">1</span></div>
     <div class="gi" id="g-turn">—</div>
   </div>
-
-  <div class="pgrid">
-    <!-- Opponent -->
-    <div id="pcard-opp" class="pcard">
-      <div class="ph">
-        <div class="pav" id="opp-av">👤</div>
-        <div class="pname" id="opp-name">—</div>
-      </div>
-      <div class="hp-row"><div class="hearts" id="opp-hearts"></div><div class="hp-num" id="opp-hpn"></div></div>
-      <div class="inv-label">INVENTORY MUSUH</div>
-      <div class="inv-row" id="opp-inv"></div>
-      <div class="fx-row" id="opp-fx"></div>
-    </div>
-    <!-- Self -->
-    <div id="pcard-self" class="pcard is-you">
-      <div class="ph">
-        <div class="pav" id="self-av">👤</div>
-        <div class="pname" id="self-name">—</div>
-        <span class="you-tag">KAMU</span>
-      </div>
-      <div class="hp-row"><div class="hearts" id="self-hearts"></div><div class="hp-num" id="self-hpn"></div></div>
-      <div class="inv-label">INVENTORY <span style="font-size:0.52rem;color:var(--text3)">(KLIK PAKAI)</span></div>
-      <div class="inv-row" id="self-inv"></div>
-      <div class="fx-row" id="self-fx"></div>
-    </div>
-  </div>
-
-  <!-- Chamber -->
+  <div id="pgrid" class="pgrid pg2"></div>
   <div class="chamber-panel">
     <div class="ch-top">
       <div class="ch-left">
-        <div class="ch-label-sm">🔲 CHAMBER — RASIO PELURU</div>
+        <div class="ch-lbl">🔲 CHAMBER — RASIO PELURU</div>
         <div class="ratio-block">
-          <span class="ratio-bullets" id="ratio-b">?</span>
+          <span class="ratio-b" id="ratio-b">?</span>
           <span class="ratio-sep">:</span>
-          <span class="ratio-slots"  id="ratio-s">?</span>
+          <span class="ratio-s" id="ratio-s">?</span>
         </div>
-        <div class="ratio-sub" id="ratio-lbl">PELURU : SLOT TERSISA</div>
-        <div class="ratio-bar-wrap">
-          <div class="ratio-bar-track">
-            <div class="ratio-bar-fill" id="ratio-bar" style="width:0%"></div>
-          </div>
-        </div>
+        <div class="ratio-sub">PELURU : SLOT TERSISA</div>
+        <div class="bar-track"><div class="bar-fill" id="ratio-bar" style="width:0%"></div></div>
       </div>
       <div class="ch-right">
-        <div class="ch-counter">SLOT <span id="ch-idx">1</span>/<span id="ch-total">3</span></div>
-        <div class="ch-round-info" id="ch-rinfo">RONDE 1</div>
-        <div class="ch-round-info" id="ch-config">3 SLOT — 1 PELURU</div>
+        <div class="ch-ctr">SLOT <span id="ch-idx">1</span>/<span id="ch-tot">3</span></div>
+        <div class="ch-ri" id="ch-ri">RONDE 1</div>
+        <div class="ch-ri" id="ch-cfg">3 SLOT — 1 PELURU</div>
       </div>
     </div>
     <div class="ch-slots" id="ch-slots"></div>
   </div>
-
-  <!-- Shoot -->
-  <div class="shoot-panel">
-    <button class="btn-shoot bss" id="btn-ss" onclick="handleShoot('self')" disabled>
-      <span class="shoot-icon">🔫</span>
-      <span class="shoot-label">TEMBAK DIRI</span>
-    </button>
-    <button class="btn-shoot bse" id="btn-se" onclick="handleShoot('enemy')" disabled>
-      <span class="shoot-icon">💀</span>
-      <span class="shoot-label">TEMBAK MUSUH</span>
-    </button>
+  <div id="shoot-sec">
+    <div class="shoot-sec-label">🎯 PILIH TARGET TEMBAKAN</div>
+    <div class="targets-panel" id="tpanel"></div>
   </div>
-
-  <!-- Log + Chat -->
   <div class="bottom-panels">
     <div class="panel-box">
       <div class="panel-hd">📋 LOG AKSI</div>
@@ -548,7 +399,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important
     <div class="panel-box">
       <div class="panel-hd">💬 CHAT</div>
       <div class="chat-body" id="chat-body"></div>
-      <div class="chat-input-row">
+      <div class="chat-ir">
         <input type="text" id="ci" class="ci" placeholder="Kirim pesan..." maxlength="80" autocomplete="off">
         <button class="btn-send" onclick="sendChat()">➤</button>
       </div>
@@ -556,23 +407,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important
   </div>
 </div>
 
-<!-- ========== FINISHED ========== -->
+<!-- ══ FINISHED ══ -->
 <div id="screen-finished" class="screen hidden">
   <div class="card fin-card">
     <div class="fin-trophy" id="fin-trophy">🏆</div>
-    <div class="fin-title"  id="fin-title"></div>
-    <div class="fin-sub"    id="fin-sub"></div>
-    <div class="stats-row"  id="fin-stats"></div>
-
-    <!-- Rematch section -->
-    <div id="rematch-section" style="margin-top:18px">
-      <button class="btn-green" id="btn-rematch" onclick="requestRematch()"
-        style="padding:13px 40px;font-size:0.95rem;margin-bottom:12px">
-        🔄 MAIN LAGI (Room Sama)
-      </button>
-      <!-- rematch ready status for both players -->
-      <div id="rematch-status" style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:10px"></div>
-      <div id="rematch-msg" style="font-family:var(--font-m);font-size:0.72rem;color:var(--text3);letter-spacing:0.08em"></div>
+    <div class="fin-title" id="fin-title"></div>
+    <div class="fin-sub" id="fin-sub"></div>
+    <div class="fin-stats" id="fin-stats"></div>
+    <div id="rematch-sec" style="margin-top:16px">
+      <button class="btn-green" id="btn-rm" onclick="requestRematch()" style="padding:12px 36px;font-size:.9rem;margin-bottom:10px">🔄 MAIN LAGI (Room Sama)</button>
+      <div id="rm-status" style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:8px"></div>
+      <div id="rm-msg" style="font-family:var(--fm);font-size:.7rem;color:var(--text3);letter-spacing:.07em"></div>
     </div>
   </div>
 </div>
@@ -580,953 +425,802 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important
 <script>
 /* ============================================================
    ⚠️  GANTI DENGAN FIREBASE CONFIG KAMU
-   1. console.firebase.google.com
-   2. Buat project → Add Web App → copy config
-   3. Build → Realtime Database → Create (test mode)
+   1. console.firebase.google.com → Buat/pilih project
+   2. Add Web App → copy firebaseConfig
+   3. Build → Realtime Database → Create (Test Mode)
 ============================================================ */
 const firebaseConfig = {
-    apiKey: "AIzaSyAOqzh4tOPig70DwX2pWSPLU7kIL1yJ0cQ",
-    authDomain: "rusianrouletegame.firebaseapp.com",
-    databaseURL: "https://rusianrouletegame-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "rusianrouletegame",
-    storageBucket: "rusianrouletegame.firebasestorage.app",
-    messagingSenderId: "435877009050",
-    appId: "1:435877009050:web:181f2c492bde4e386bf123",
-    measurementId: "G-3RBHLY54ZP"
-  };
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
 /* ============================================================ */
 
 try { firebase.initializeApp(firebaseConfig); } catch(e) { console.error(e); }
 const db = firebase.database();
 
-// ============================================================
-// STATE
-// ============================================================
-let myPid   = null;   // 'player1' | 'player2'
-let roomId  = null;
-let myName  = '';
-let roomRef = null;
-let lastData = null;
-let busy    = false;
-
-// Transition tracking (for notifications)
-let _prevStatus = null;
-let _prevRound  = null;
-let _prevTurn   = null;
+// ── STATE ──────────────────────────────────────────
+let myPid        = null;   // 'player1'..'player4'
+let roomId       = null;
+let myName       = '';
+let roomRef      = null;
+let chatRef      = null;
+let lastData     = null;
+let busy         = false;
+let selectedN    = 2;     // selected player count
 let _firstRender = true;
-let chatListener = null;
+let _prevRound   = null;
 
-// ============================================================
-// CHAMBER CONFIG
-// ============================================================
-function getChamberConfig(round) {
-  // round → { slots, bullets }
-  const cfg = [
-    { slots: 3, bullets: 1 },  // ronde 1
-    { slots: 4, bullets: 2 },  // ronde 2
-    { slots: 5, bullets: 3 },  // ronde 3
-    { slots: 6, bullets: 4 },  // ronde 4+ (maks, 4:6)
-  ];
-  return cfg[Math.min(round - 1, cfg.length - 1)];
+const ALL_PIDS   = ['player1','player2','player3','player4'];
+const AVATARS    = { player1:'🤠', player2:'😈', player3:'🦊', player4:'🐺' };
+const P_COLORS   = { player1:'var(--gold)', player2:'var(--red2)', player3:'var(--green2)', player4:'var(--purple)' };
+
+// ── CHAMBER CONFIG ─────────────────────────────────
+function getCfg(round) {
+  const c = [{slots:3,bullets:1},{slots:4,bullets:2},{slots:5,bullets:3},{slots:6,bullets:4}];
+  return c[Math.min(round-1, c.length-1)];
 }
 
-function generateChamber(round) {
-  const { slots, bullets } = getChamberConfig(round);
-  const arr = Array(slots).fill(0);
-  for (let i = 0; i < bullets; i++) arr[i] = 1;
-  return shuffleArr(arr);
+function genChamber(round) {
+  const {slots,bullets} = getCfg(round);
+  const a = Array(slots).fill(0);
+  for (let i=0; i<bullets; i++) a[i]=1;
+  return shuffle(a);
 }
 
-// ============================================================
-// HELPERS
-// ============================================================
+// ── TURN HELPERS ────────────────────────────────────
+function alivePids(players) {
+  return ALL_PIDS.filter(pid => players[pid]?.name && players[pid]?.hp > 0);
+}
+
+function activePids(players) {
+  return ALL_PIDS.filter(pid => players[pid]?.name);
+}
+
+// Returns next turn pid (respecting blocked player)
+function calcNext(data, shooterId, targetId, wasBullet) {
+  const alive = alivePids(data.players);
+  if (!wasBullet && targetId === shooterId) return {pid: shooterId, unblocked: false};
+  const si = alive.indexOf(shooterId);
+  let ni   = (si + 1) % alive.length;
+  let unb  = false;
+  if (alive[ni] === data.blockedPlayer) { ni = (ni+1) % alive.length; unb = true; }
+  return {pid: alive[ni], unblocked: unb};
+}
+
+// ── HELPERS ─────────────────────────────────────────
 function toArr(v) {
   if (!v) return [];
   if (Array.isArray(v)) return [...v];
   return Object.keys(v).map(Number).filter(k=>!isNaN(k)).sort((a,b)=>a-b).map(k=>v[k]);
 }
 
-function shuffleArr(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
+function shuffle(arr) {
+  const a=[...arr];
+  for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
   return a;
 }
 
 function giveItems(inv, n) {
-  const pool = ['magnifier','rokok','silet','beer','handcuff'];
-  const a = [...inv];
-  for (let i = 0; i < n; i++) a.push(pool[Math.floor(Math.random() * pool.length)]);
+  const pool=['magnifier','rokok','silet','beer','handcuff'];
+  const a=[...inv];
+  for (let i=0;i<n;i++) a.push(pool[Math.floor(Math.random()*pool.length)]);
   return a;
 }
 
 const ITEMS = {
-  magnifier: { e:'🔍', n:'Kaca Pembesar', d:'Lihat isi slot aktif (rahasia, hanya kamu)' },
-  rokok:     { e:'🚬', n:'Rokok',         d:'+1 HP (maks 5)' },
-  silet:     { e:'🔪', n:'Silet',         d:'Tembakan berikutnya ×2 damage' },
-  beer:      { e:'🍺', n:'Bir',           d:'Kocok ulang chamber + reset index ke 0' },
-  handcuff:  { e:'⛓️', n:'Borgol',        d:'Musuh skip giliran berikutnya' },
+  magnifier:{e:'🔍',n:'Kaca Pembesar',d:'Lihat isi slot aktif (hanya kamu)'},
+  rokok:    {e:'🚬',n:'Rokok',        d:'+1 HP (maks 5)'},
+  silet:    {e:'🔪',n:'Silet',        d:'Tembakan berikutnya ×2 damage'},
+  beer:     {e:'🍺',n:'Bir',          d:'Kocok ulang chamber + reset index'},
+  handcuff: {e:'⛓️',n:'Borgol',       d:'Pemain berikutnya skip giliran'},
 };
 
-const ie = i => ITEMS[i]?.e || '❓';
+const ie   = i => ITEMS[i]?.e || '❓';
 const iname = i => ITEMS[i]?.n || i;
 const idesc = i => ITEMS[i]?.d || '';
 
 function genCode() {
-  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   return Array.from({length:4},()=>c[Math.floor(Math.random()*c.length)]).join('');
 }
 
 function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function showErr(msg) {
-  const el = document.getElementById('lb-err');
-  el.textContent = msg; el.classList.remove('hidden');
-  setTimeout(() => el.classList.add('hidden'), 3500);
+  const el=document.getElementById('lb-err');
+  el.textContent=msg; el.classList.remove('hidden');
+  setTimeout(()=>el.classList.add('hidden'),3500);
 }
 
-let _toastT = null;
-function toast(html, cls='', dur=2600) {
-  const t = document.getElementById('toast');
-  t.innerHTML = html; t.className = `show ${cls}`;
-  clearTimeout(_toastT);
-  _toastT = setTimeout(() => { t.className = ''; }, dur);
+let _tt=null;
+function toast(html,cls='',dur=2400) {
+  const t=document.getElementById('toast');
+  t.innerHTML=html; t.className='show '+cls;
+  clearTimeout(_tt); _tt=setTimeout(()=>t.className='',dur);
 }
 
 function showScreen(id) {
-  ['lobby','waiting','ready','game','finished'].forEach(s => {
-    document.getElementById(`screen-${s}`).classList.toggle('hidden', s !== id);
+  ['lobby','waiting','ready','game','finished'].forEach(s=>{
+    document.getElementById('screen-'+s).classList.toggle('hidden',s!==id);
   });
 }
 
-function flash() {
-  const el = document.getElementById('flash');
-  el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 160);
-}
+function flash() { const e=document.getElementById('flash');e.classList.add('on');setTimeout(()=>e.classList.remove('on'),160); }
+function shake() { const e=document.getElementById('screen-game');e.classList.add('do-shake');setTimeout(()=>e.classList.remove('do-shake'),440); }
 
-function shake() {
-  const el = document.getElementById('screen-game');
-  el.classList.add('do-shake'); setTimeout(() => el.classList.remove('do-shake'), 440);
-}
-
-// ============================================================
-// BIG NOTIFICATION
-// ============================================================
-let _notifTimer = null;
-
+// ── NOTIF ──────────────────────────────────────────
+let _nt=null;
 function showNotif(cfg) {
-  /*  cfg: {
-        icon: '🎮', title: 'GAME DIMULAI!', sub: '...', 
-        items: [{e,n}], theme: 'notif-start',
-        duration: 3000
-      }  */
-  const dur  = cfg.duration || 3000;
-  const ov   = document.getElementById('notif-overlay');
-  const bd   = document.getElementById('notif-backdrop');
-  const box  = document.getElementById('notif-box');
-  const prog = document.getElementById('ni-prog');
-
-  document.getElementById('ni-icon').textContent  = cfg.icon  || '';
-  document.getElementById('ni-title').textContent = cfg.title || '';
-  document.getElementById('ni-sub').innerHTML     = cfg.sub   || '';
-
-  const itemsEl = document.getElementById('ni-items');
-  if (cfg.items && cfg.items.length) {
-    itemsEl.innerHTML = cfg.items.map(it => `
-      <div class="notif-item-chip">
-        <div class="ni-emoji">${it.e}</div>
-        <div class="ni-name">${esc(it.n.slice(0,6))}</div>
-      </div>`).join('');
-    itemsEl.style.display = 'flex';
-  } else {
-    itemsEl.innerHTML = ''; itemsEl.style.display = 'none';
-  }
-
-  // Set theme
-  box.className = `${cfg.theme || 'notif-round'}`;
-
-  // Progress bar color
-  const barColors = {
-    'notif-start':       'var(--green)',
-    'notif-round':       'var(--gold)',
-    'notif-items-notif': 'var(--blue)',
-    'notif-dead':        'var(--red)',
-  };
-  prog.style.color  = barColors[cfg.theme || 'notif-round'] || 'var(--gold)';
-  prog.style.width  = '100%';
-  prog.style.transition = 'none';
-
-  clearTimeout(_notifTimer);
-  ov.classList.add('show'); bd.classList.add('show');
-
-  // Animate bar shrink
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      prog.style.transition = `width ${dur}ms linear`;
-      prog.style.width = '0%';
-    });
-  });
-
-  _notifTimer = setTimeout(() => {
-    ov.classList.remove('show'); bd.classList.remove('show');
-  }, dur);
+  const dur=cfg.duration||3000;
+  const o=document.getElementById('no');
+  const b=document.getElementById('nb');
+  const box=document.getElementById('nbox');
+  const p=document.getElementById('npb');
+  document.getElementById('ni').textContent=cfg.icon||'';
+  document.getElementById('nt').textContent=cfg.title||'';
+  document.getElementById('ns').innerHTML=cfg.sub||'';
+  const el=document.getElementById('nitems');
+  if (cfg.items&&cfg.items.length) {
+    el.innerHTML=cfg.items.map(it=>`<div class="nic"><div class="nie">${it.e}</div><div class="nin">${esc((it.n||'').slice(0,6))}</div></div>`).join('');
+    el.style.display='flex';
+  } else { el.innerHTML='';el.style.display='none'; }
+  const tc={'ns-start':'var(--green)','ns-round':'var(--gold)','ns-items':'var(--blue)','ns-dead':'var(--red)','ns-elim':'var(--orange)'};
+  box.className=cfg.theme||'ns-round';
+  p.style.color=tc[cfg.theme||'ns-round']||'var(--gold)';
+  p.style.width='100%'; p.style.transition='none';
+  clearTimeout(_nt);
+  o.classList.add('show'); b.classList.add('show');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{p.style.transition=`width ${dur}ms linear`;p.style.width='0%';}));
+  _nt=setTimeout(()=>{o.classList.remove('show');b.classList.remove('show');},dur);
 }
 
-// ============================================================
-// ROOM CREATION
-// ============================================================
+// ── PLAYER COUNT ────────────────────────────────────
+function selCount(n) {
+  selectedN=n;
+  document.querySelectorAll('.pc-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.n)===n));
+}
+
+// ── CREATE ROOM ─────────────────────────────────────
 async function createRoom() {
-  const name = document.getElementById('inp-name').value.trim();
-  if (!name) { showErr('⚠️ Masukkan namamu dulu!'); return; }
-  myName = name; roomId = genCode(); myPid = 'player1';
+  const name=document.getElementById('inp-name').value.trim();
+  if (!name){showErr('⚠️ Masukkan namamu dulu!');return;}
+  myName=name; roomId=genCode(); myPid='player1';
+
+  const players={};
+  ALL_PIDS.forEach(pid=>{
+    players[pid]={name:pid==='player1'?myName:'',hp:5,inventory:[],ready:false,rematch:false};
+  });
 
   try {
-    await db.ref(`rooms/${roomId}`).set({
-      status: 'waiting', round: 1,
-      currentTurn: 'player1', currentIndex: 0,
-      chamber: [0,0,0], doubleDamage: false,
-      blockedPlayer: null, winner: null,
-      players: {
-        player1: { name: myName, hp:5, inventory:[], ready:false },
-        player2: { name:'',      hp:5, inventory:[], ready:false }
-      },
-      log:  [`⏳ ${myName} membuat room. Menunggu pemain 2...`],
-      chat: []
+    await db.ref('rooms/'+roomId).set({
+      status:'waiting', round:1,
+      currentTurn:'player1', currentIndex:0,
+      chamber:[0,0,0], doubleDamage:false, blockedPlayer:null, winner:null,
+      playerCount:selectedN, players,
+      log:['⏳ '+myName+' membuat room ('+selectedN+' pemain). Menunggu...'],
+      chat:[]
     });
-    document.getElementById('disp-code').textContent = roomId;
+    document.getElementById('disp-code').textContent=roomId;
     showScreen('waiting');
     startRoomListener();
-  } catch(e) { showErr('❌ Gagal buat room. Cek Firebase!'); console.error(e); }
+  } catch(e){showErr('❌ Gagal buat room. Cek Firebase!');console.error(e);}
 }
 
+// ── JOIN ROOM ────────────────────────────────────────
 async function joinRoom() {
-  const name = document.getElementById('inp-name').value.trim();
-  const code = document.getElementById('inp-code').value.trim().toUpperCase();
-  if (!name)          { showErr('⚠️ Masukkan namamu dulu!'); return; }
-  if (code.length!==4){ showErr('⚠️ Kode harus 4 karakter!'); return; }
-  myName = name;
+  const name=document.getElementById('inp-name').value.trim();
+  const code=document.getElementById('inp-code').value.trim().toUpperCase();
+  if (!name){showErr('⚠️ Masukkan namamu dulu!');return;}
+  if (code.length!==4){showErr('⚠️ Kode harus 4 karakter!');return;}
+  myName=name;
 
   try {
-    const snap = await db.ref(`rooms/${code}`).once('value');
-    const data = snap.val();
-    if (!data)                      { showErr('❌ Room tidak ditemukan!'); return; }
-    if (data.status !== 'waiting')  { showErr('❌ Room tidak tersedia!'); return; }
-    if (data.players?.player2?.name){ showErr('❌ Room sudah penuh!'); return; }
+    const snap=await db.ref('rooms/'+code).once('value');
+    const data=snap.val();
+    if (!data){showErr('❌ Room tidak ditemukan!');return;}
+    if (data.status!=='waiting'){showErr('❌ Room sudah mulai atau penuh!');return;}
+    const pcount=data.playerCount||2;
+    const avail=ALL_PIDS.slice(0,pcount).filter(pid=>!data.players[pid]?.name);
+    if (!avail.length){showErr('❌ Room sudah penuh!');return;}
 
-    roomId = code; myPid = 'player2';
+    myPid=avail[0]; roomId=code;
+    const filledAfter=ALL_PIDS.slice(0,pcount).filter(pid=>data.players[pid]?.name).length+1;
+    const allIn=filledAfter>=pcount;
 
-    await db.ref(`rooms/${code}`).update({
-      status: 'lobby',
-      'players/player2/name':    myName,
-      'players/player2/hp':      5,
-      'players/player2/inventory': [],
-      'players/player2/ready':   false,
-    });
+    const upd={['players/'+myPid+'/name']:myName,['players/'+myPid+'/hp']:5,
+      ['players/'+myPid+'/inventory']:[],['players/'+myPid+'/ready']:false,['players/'+myPid+'/rematch']:false};
+    if (allIn) upd.status='lobby';
+    await db.ref('rooms/'+code).update(upd);
 
-    document.getElementById('g-code').textContent    = code;
-    document.getElementById('ready-code').textContent = code;
-    showScreen('ready');
+    document.getElementById('g-code').textContent=code;
+    document.getElementById('ready-code').textContent=code;
+    if (allIn){showScreen('ready');}else{showScreen('waiting');}
     startRoomListener();
     startChatListener();
-  } catch(e) { showErr('❌ Gagal join. Cek Firebase!'); console.error(e); }
+  } catch(e){showErr('❌ Gagal join. Cek Firebase!');console.error(e);}
 }
 
-// ============================================================
-// READY
-// ============================================================
+// ── READY SYSTEM ────────────────────────────────────
 async function setReady() {
-  if (!roomId || !myPid) return;
-  const btn = document.getElementById('btn-ready');
-  btn.disabled = true;
-
-  await db.ref(`rooms/${roomId}/players/${myPid}/ready`).set(true);
-
-  const snap = await db.ref(`rooms/${roomId}/players`).once('value');
-  const pl   = snap.val();
-  if (pl?.player1?.ready && pl?.player2?.ready) await startGame();
+  if (!roomId||!myPid) return;
+  document.getElementById('btn-ready').disabled=true;
+  await db.ref('rooms/'+roomId+'/players/'+myPid+'/ready').set(true);
+  const snap=await db.ref('rooms/'+roomId).once('value');
+  const data=snap.val();
+  const pids=ALL_PIDS.slice(0,data.playerCount||2);
+  if (pids.every(pid=>data.players[pid]?.ready)) await startGame(data);
 }
 
-async function startGame() {
-  const snap = await db.ref(`rooms/${roomId}`).once('value');
-  const data = snap.val();
-  if (!data || data.status !== 'lobby') return;
-  if (!data.players?.player1?.ready || !data.players?.player2?.ready) return;
+async function startGame(data) {
+  if (!data||data.status!=='lobby') return;
+  const pcount=data.playerCount||2;
+  const pids=ALL_PIDS.slice(0,pcount);
+  if (!pids.every(pid=>data.players[pid]?.ready)) return;
 
-  const cfg     = getChamberConfig(1);
-  const chamber = generateChamber(1);
-  const p1inv   = giveItems([], 1);
-  const p2inv   = giveItems([], 1);
-  const p1n     = data.players.player1.name;
-  const p2n     = data.players.player2.name;
-
-  await db.ref(`rooms/${roomId}`).update({
-    status: 'playing', round: 1,
-    currentTurn: 'player1', currentIndex: 0,
-    chamber, doubleDamage: false, blockedPlayer: null, winner: null,
-    'players/player1/hp': 5, 'players/player1/inventory': p1inv,
-    'players/player2/hp': 5, 'players/player2/inventory': p2inv,
-    log: [
-      `🎮 Game dimulai! ${p1n} VS ${p2n}`,
-      `🔫 Chamber: ${cfg.slots} slot — ${cfg.bullets} peluru (rasio ${cfg.bullets}:${cfg.slots})`,
-      `📦 ${p1n}: ${p1inv.map(ie).join(' ')}  |  ${p2n}: ${p2inv.map(ie).join(' ')}`,
-      `🎯 ${p1n} memulai giliran pertama`,
-    ]
+  const chamber=genChamber(1);
+  const cfg=getCfg(1);
+  const upd={status:'playing',round:1,currentTurn:'player1',currentIndex:0,
+    chamber,doubleDamage:false,blockedPlayer:null,winner:null};
+  pids.forEach(pid=>{
+    const inv=giveItems([],1);
+    upd['players/'+pid+'/hp']=5;
+    upd['players/'+pid+'/inventory']=inv;
+    // Store inv for log
+    data.players[pid]._inv=inv;
   });
+  const invLine=pids.map(pid=>data.players[pid].name+': '+((data.players[pid]._inv||[]).map(ie).join(' '))).join('  |  ');
+  upd['log']=[
+    '🎮 Game dimulai! '+pids.map(pid=>data.players[pid].name).join(' vs '),
+    '🔫 Chamber: '+cfg.slots+' slot — '+cfg.bullets+' peluru ('+cfg.bullets+':'+cfg.slots+')',
+    '📦 '+invLine,
+    '🎯 '+data.players['player1'].name+' memulai giliran pertama'
+  ];
+  await db.ref('rooms/'+roomId).update(upd);
 }
 
-// ============================================================
-// REALTIME LISTENER
-// ============================================================
+// ── ROOM LISTENER ────────────────────────────────────
 function startRoomListener() {
-  if (roomRef) db.ref(`rooms/${roomId}`).off('value', roomRef);
-
-  roomRef = db.ref(`rooms/${roomId}`).on('value', snap => {
-    const data = snap.val();
+  if (roomRef) db.ref('rooms/'+roomId).off('value',roomRef);
+  roomRef=db.ref('rooms/'+roomId).on('value',snap=>{
+    const data=snap.val();
     if (!data) return;
-    lastData = data;
+    lastData=data;
 
-    if (data.status === 'waiting') {
-      showScreen('waiting');
+    if (data.status==='waiting') {
+      showScreen('waiting'); renderWaiting(data);
 
-    } else if (data.status === 'lobby') {
-      // reset transition flags so new game triggers notifications fresh
-      _firstRender = true;
-      _prevStatus  = null;
-      _prevRound   = null;
-      _prevTurn    = null;
-      document.getElementById('ready-code').textContent = roomId;
-      showScreen('ready');
-      renderReady(data);
+    } else if (data.status==='lobby') {
+      _firstRender=true; _prevRound=null;
+      document.getElementById('ready-code').textContent=roomId;
+      showScreen('ready'); renderReady(data);
       startChatListener();
 
-    } else if (data.status === 'playing' || data.status === 'finished') {
-      document.getElementById('g-code').textContent = roomId;
+    } else if (data.status==='playing') {
+      document.getElementById('g-code').textContent=roomId;
+      showScreen('game');
+      handleTransitions(data);
+      renderGame(data);
 
-      if (data.status === 'playing') {
+    } else if (data.status==='finished') {
+      document.getElementById('g-code').textContent=roomId;
+      const onFin=!document.getElementById('screen-finished').classList.contains('hidden');
+      if (onFin) { updateRematchStatus(data); }
+      else {
         showScreen('game');
         handleTransitions(data);
         renderGame(data);
-      } else {
-        // finished — if we're already on finished screen, just update rematch chips live
-        const onFinished = !document.getElementById('screen-finished').classList.contains('hidden');
-        if (onFinished) {
-          updateRematchStatus(data);
-        } else {
-          showScreen('game');
-          handleTransitions(data);
-          renderGame(data);
-          setTimeout(() => renderFinished(data), 1400);
-        }
+        setTimeout(()=>renderFinished(data),1400);
       }
     }
-
-    _prevStatus = data.status;
-    _prevRound  = data.round;
-    _prevTurn   = data.currentTurn;
-    _firstRender = false;
+    _prevRound=data.round; _firstRender=false;
   });
 }
 
-// ============================================================
-// TRANSITION DETECTOR → triggers notifications
-// ============================================================
+// ── TRANSITIONS ─────────────────────────────────────
 function handleTransitions(data) {
-  const isNewGame   = _firstRender && data.status === 'playing';
-  const isNewRound  = !_firstRender && data.round !== _prevRound;
-  const isTurnSwitch = !_firstRender && data.currentTurn !== _prevTurn;
-
-  if (isNewGame) {
-    const cfg = getChamberConfig(1);
-    const p1n = data.players.player1.name;
-    const p2n = data.players.player2.name;
+  if (_firstRender && data.status==='playing') {
+    const cfg=getCfg(1);
+    const pids=activePids(data.players);
     showNotif({
-      icon: '🎮', title: 'GAME DIMULAI!',
-      sub:  `${esc(p1n)} <span style="color:var(--text3)">vs</span> ${esc(p2n)}<br>
-             <span style="color:var(--green2)">Ronde 1 — ${cfg.slots} slot, ${cfg.bullets} peluru (${cfg.bullets}:${cfg.slots})</span>`,
-      theme: 'notif-start', duration: 3500,
+      icon:'🎮', title:'GAME DIMULAI!',
+      sub: pids.map(pid=>esc(data.players[pid].name)).join(' <span style="color:var(--text3)">vs</span> ')
+        +'<br><span style="color:var(--green2)">Ronde 1 — '+cfg.slots+' slot, '+cfg.bullets+' peluru ('+cfg.bullets+':'+cfg.slots+')</span>',
+      theme:'ns-start', duration:3500
     });
     return;
   }
-
-  if (isNewRound) {
-    const round = data.round;
-    const cfg   = getChamberConfig(round);
-    const prevCfg = getChamberConfig(round - 1);
-    const slotsAdded = cfg.slots - prevCfg.slots;
-    const p1inv = toArr(data.players.player1.inventory);
-    const p2inv = toArr(data.players.player2.inventory);
-    const oppId = myPid === 'player1' ? 'player2' : 'player1';
-    const myInv = toArr(data.players[myPid].inventory);
-
-    // First show round notif
+  if (!_firstRender && data.round !== _prevRound && _prevRound !== null) {
+    const r=data.round;
+    const cfg=getCfg(r);
+    const pc=getCfg(r-1);
+    const added=cfg.slots-pc.slots;
+    const amt=r>=3?2:1;
+    const myInv=toArr(data.players[myPid]?.inventory);
+    const myNew=myInv.slice(-amt).map(i=>({e:ie(i),n:iname(i)}));
     showNotif({
-      icon: '🔄', title: `RONDE ${round}!`,
-      sub: `Chamber diperluas ke <strong style="color:var(--gold)">${cfg.slots} slot</strong>${slotsAdded > 0 ? ` (+${slotsAdded})` : ''}<br>
-            Peluru: <strong style="color:var(--red2)">${cfg.bullets}</strong> — Rasio: <strong style="color:var(--gold)">${cfg.bullets}:${cfg.slots}</strong>`,
-      theme: 'notif-round', duration: 3200,
+      icon:'🔄', title:'RONDE '+r+'!',
+      sub:'Chamber diperluas ke <strong style="color:var(--gold)">'+cfg.slots+' slot</strong>'+(added>0?' (+'+added+')':'')
+        +'<br>Peluru: <strong style="color:var(--red2)">'+cfg.bullets+'</strong> — Rasio: <strong style="color:var(--gold)">'+cfg.bullets+':'+cfg.slots+'</strong>',
+      theme:'ns-round', duration:3000
     });
-
-    // Then show item notif after
-    const myNewItems = myInv.slice(-2).map(i => ({ e: ie(i), n: iname(i) }));
-    setTimeout(() => {
-      showNotif({
-        icon: '📦', title: 'ITEM DIBERIKAN!',
-        sub: `Kamu mendapat ${myNewItems.length} item baru`,
-        items: myNewItems,
-        theme: 'notif-items-notif', duration: 3000,
-      });
-    }, 3400);
+    setTimeout(()=>showNotif({
+      icon:'📦', title:'ITEM DIBERIKAN!',
+      sub:'Kamu mendapat '+myNew.length+' item baru',
+      items:myNew, theme:'ns-items', duration:2600
+    }),3200);
   }
 }
 
-// ============================================================
-// RENDER: READY SCREEN
-// ============================================================
+// ── RENDER: WAITING ──────────────────────────────────
+function renderWaiting(data) {
+  const pcount=data.playerCount||2;
+  const pids=ALL_PIDS.slice(0,pcount);
+  const filled=pids.filter(pid=>data.players[pid]?.name).length;
+  document.getElementById('wt').textContent='⏳ Menunggu Pemain ('+filled+'/'+pcount+')';
+  document.getElementById('join-slots').innerHTML=pids.map(pid=>{
+    const p=data.players[pid];
+    const has=!!p?.name;
+    return '<div class="jslot '+(has?'filled':'')+'"><div class="jsav">'+(has?AVATARS[pid]:'👤')+'</div><div class="jsname">'+(has?esc(p.name):'Menunggu...')+'</div></div>';
+  }).join('');
+  document.getElementById('wmsg').innerHTML=filled>=pcount
+    ?'<span style="color:var(--green2)">✅ Semua terhubung!</span>'
+    :'<span class="pulse-dot"></span>'+filled+'/'+pcount+' pemain terhubung...';
+}
+
+// ── RENDER: READY ────────────────────────────────────
 function renderReady(data) {
-  const p1 = data.players?.player1;
-  const p2 = data.players?.player2;
+  const pcount=data.playerCount||2;
+  const pids=ALL_PIDS.slice(0,pcount);
+  const grid=document.getElementById('ready-grid');
+  grid.style.gridTemplateColumns=pcount<=2?'1fr 1fr':'repeat(auto-fit,minmax(130px,1fr))';
+  grid.innerHTML=pids.map(pid=>{
+    const p=data.players[pid];
+    const isMe=pid===myPid;
+    const ready=!!p?.ready;
+    const has=!!p?.name;
+    return '<div class="rcard'+(ready?' rdone':'')+(isMe?' is-you-card':'')+(has?'':' empty')+'">'
+      +'<div class="rav">'+AVATARS[pid]+'</div>'
+      +'<div class="rname">'+esc(p?.name||'Menunggu...')+(isMe?'<span class="you-badge">KAMU</span>':'')+'</div>'
+      +'<div><span class="rbadge '+(has?(ready?'rb-yes':'rb-no'):'rb-w')+'">'+(has?(ready?'✅ READY!':'⬜ Belum'):'🔌 Kosong')+'</span></div>'
+      +'</div>';
+  }).join('');
 
-  document.getElementById('rname-p1').innerHTML = esc(p1?.name || '—') + (myPid === 'player1' ? '<span class="you-badge">KAMU</span>' : '');
-  document.getElementById('rname-p2').innerHTML = esc(p2?.name || 'Menunggu...') + (myPid === 'player2' ? '<span class="you-badge">KAMU</span>' : '');
+  const btn=document.getElementById('btn-ready');
+  const myR=!!data.players[myPid]?.ready;
+  btn.disabled=myR; btn.textContent=myR?'✅ Sudah Ready!':'✅ READY!';
 
-  const s1 = document.getElementById('rst-p1');
-  const c1 = document.getElementById('rcard-p1');
-  if (p1?.ready) { s1.textContent='✅ READY!'; s1.className='ready-badge rb-ready'; c1.classList.add('rdone'); }
-  else           { s1.textContent='⬜ Belum Ready'; s1.className='ready-badge rb-not'; c1.classList.remove('rdone'); }
-
-  const s2 = document.getElementById('rst-p2');
-  const c2 = document.getElementById('rcard-p2');
-  if (!p2?.name)    { s2.textContent='🔌 Menunggu...'; s2.className='ready-badge rb-waiting'; c2.classList.remove('rdone'); }
-  else if (p2?.ready){ s2.textContent='✅ READY!'; s2.className='ready-badge rb-ready'; c2.classList.add('rdone'); }
-  else              { s2.textContent='⬜ Belum Ready'; s2.className='ready-badge rb-not'; c2.classList.remove('rdone'); }
-
-  (myPid === 'player1' ? c1 : c2).classList.add('is-you-card');
-
-  const btn = document.getElementById('btn-ready');
-  btn.disabled  = !!data.players?.[myPid]?.ready;
-  btn.textContent = btn.disabled ? '✅ SUDAH READY' : '✅ READY!';
-
-  const foot = document.getElementById('ready-foot');
-  if (p1?.ready && p2?.ready) {
-    foot.innerHTML = '<span style="color:var(--green2)">🚀 Memulai game...</span>';
-  } else if (!p2?.name) {
-    foot.innerHTML = '<span class="pulse-dot"></span>Menunggu pemain 2 bergabung...';
-  } else {
-    const p1r = p1?.ready ? `<span style="color:var(--green2)">✅</span>` : `<span style="color:var(--text3)">⬜</span>`;
-    const p2r = p2?.ready ? `<span style="color:var(--green2)">✅</span>` : `<span style="color:var(--text3)">⬜</span>`;
-    foot.innerHTML = `${p1r} ${esc(p1?.name||'P1')} &nbsp;|&nbsp; ${p2r} ${esc(p2?.name||'P2')}`;
+  const allR=pids.every(pid=>data.players[pid]?.ready);
+  const foot=document.getElementById('rfoot');
+  if (allR) { foot.innerHTML='<span style="color:var(--green2)">🚀 Memulai game...</span>'; }
+  else {
+    foot.innerHTML=pids.map(pid=>{
+      const p=data.players[pid];
+      return (p?.ready?'<span style="color:var(--green2)">✅</span>':'<span style="color:var(--text3)">⬜</span>')+' '+esc(p?.name||'?');
+    }).join(' &nbsp;|&nbsp; ');
   }
-
-  if (p1?.ready && p2?.ready && data.status === 'lobby') startGame();
+  if (allR && data.status==='lobby') startGame(data);
 }
 
-// ============================================================
-// RENDER: GAME
-// ============================================================
+// ── RENDER: GAME ─────────────────────────────────────
 function renderGame(data) {
   if (!data?.players) return;
-  const oppId   = myPid === 'player1' ? 'player2' : 'player1';
-  const self    = data.players[myPid];
-  const opp     = data.players[oppId];
-  if (!self || !opp) return;
+  const pcount=data.playerCount||2;
+  const active=activePids(data.players);
+  const myTurn=data.currentTurn===myPid;
+  const canAct=myTurn && data.status==='playing';
 
-  const myTurn = data.currentTurn === myPid;
-  const canAct = myTurn && data.status === 'playing';
+  document.getElementById('g-round').textContent=data.round||1;
+  const tname=data.players[data.currentTurn]?.name||'?';
+  document.getElementById('g-turn').innerHTML=myTurn
+    ?'<span style="color:var(--red2);font-family:var(--fm);font-size:.7rem">🎯 GILIRAN KAMU</span>'
+    :'<span style="color:var(--text3);font-family:var(--fm);font-size:.7rem">⏳ '+esc(tname)+'</span>';
 
-  // Header
-  document.getElementById('g-round').textContent = data.round || 1;
-  document.getElementById('g-turn').innerHTML = myTurn
-    ? `<span style="color:var(--red2);font-family:var(--font-m);font-size:0.7rem">🎯 GILIRAN KAMU</span>`
-    : `<span style="color:var(--text3);font-family:var(--font-m);font-size:0.7rem">⏳ ${esc(opp.name||'?')}</span>`;
+  const pg=document.getElementById('pgrid');
+  pg.className='pgrid pg'+Math.min(pcount,4);
+  pg.innerHTML=active.map(pid=>buildPlayerCard(pid,data,canAct)).join('');
 
-  // Turn borders
-  document.getElementById('pcard-self').classList.toggle('my-turn', myTurn);
-  document.getElementById('pcard-opp').classList.toggle('my-turn', !myTurn);
-
-  // Avatars + names
-  document.getElementById('self-av').textContent  = myPid === 'player1' ? '🤠' : '😈';
-  document.getElementById('opp-av').textContent   = oppId === 'player1' ? '🤠' : '😈';
-  document.getElementById('self-name').textContent = self.name || 'Kamu';
-  document.getElementById('opp-name').textContent  = opp.name  || 'Musuh';
-
-  // HP
-  renderHearts('self-hearts', self.hp);
-  renderHearts('opp-hearts',  opp.hp);
-  document.getElementById('self-hpn').textContent = `${self.hp}/5`;
-  document.getElementById('opp-hpn').textContent  = `${opp.hp}/5`;
-
-  // Effects
-  const sfx=[], ofx=[];
-  if (data.doubleDamage) (myTurn ? sfx : ofx).push(`<span class="fx-tag fx-double">🔪 DMG ×2</span>`);
-  if (data.blockedPlayer === myPid) sfx.push(`<span class="fx-tag fx-blocked">⛓️ BORGOL</span>`);
-  if (data.blockedPlayer === oppId) ofx.push(`<span class="fx-tag fx-blocked">⛓️ BORGOL</span>`);
-  document.getElementById('self-fx').innerHTML = sfx.join('');
-  document.getElementById('opp-fx').innerHTML  = ofx.join('');
-
-  // Inventory
-  document.getElementById('self-inv').innerHTML = buildInv(toArr(self.inventory), canAct);
-  document.getElementById('opp-inv').innerHTML  = buildOppInv(toArr(opp.inventory));
-
-  // Chamber
-  const chamber = toArr(data.chamber);
-  const idx     = data.currentIndex || 0;
-  renderChamber(chamber, idx, data.round || 1);
-
-  // Buttons
-  document.getElementById('btn-ss').disabled = !canAct;
-  document.getElementById('btn-se').disabled = !canAct;
-
-  // Log
+  renderChamber(toArr(data.chamber),data.currentIndex||0,data.round||1);
+  renderTargets(data,canAct);
   renderLog(toArr(data.log));
 }
 
-function renderHearts(id, hp) {
-  document.getElementById(id).innerHTML =
-    Array.from({length:5},(_,i)=>`<div class="heart ${i<hp?'alive':'dead'}"></div>`).join('');
+function buildPlayerCard(pid,data,canAct) {
+  const p=data.players[pid];
+  const isMe=pid===myPid;
+  const isTurn=data.currentTurn===pid;
+  const isDead=p.hp<=0;
+  const isBlocked=data.blockedPlayer===pid;
+  const myTurn=data.currentTurn===myPid;
+
+  const fx=[];
+  if (data.doubleDamage && isTurn) fx.push('<span class="fx-tag fx-double">🔪 DMG ×2</span>');
+  if (isBlocked) fx.push('<span class="fx-tag fx-blocked">⛓️ BORGOL</span>');
+
+  const inv=toArr(p.inventory);
+  const invHtml=isMe&&!isDead ? buildInv(inv,canAct) : buildEInv(inv);
+
+  const heartsHtml=Array.from({length:5},(_,i)=>'<div class="heart '+(i<p.hp?'alive':'dead')+'"></div>').join('');
+
+  return '<div class="pcard'+(isMe?' is-you':'')+(isTurn?' my-turn':'')+(isDead?' dead-card':'')+'"><div class="ph"><div class="pav">'+AVATARS[pid]+'</div><div class="pname">'+esc(p.name||'?')+'</div>'+(isMe?'<span class="you-tag">KAMU</span>':'')+'</div><div class="hp-row"><div class="hearts">'+heartsHtml+'</div><div class="hp-num">'+p.hp+'/5</div></div><div class="inv-label">INV'+(isMe?' (KLIK PAKAI)':'')+'</div><div class="inv-row">'+invHtml+'</div><div class="fx-row">'+fx.join('')+'</div></div>';
 }
 
-function buildInv(inv, active) {
-  if (!inv.length) return `<span class="no-items">— kosong —</span>`;
-  return inv.map((item, i) => {
-    const info = ITEMS[item] || {};
-    return `<button class="ibtn" onclick="${active?`useItem('${item}',${i})`:''}"
-      onmouseenter="showTip(event,'${item}')" onmouseleave="hideTip()"
-      ${!active?'disabled':''}>
-      <span>${info.e||'❓'}</span>
-      <span class="itag">${(info.n||item).slice(0,5).toUpperCase()}</span>
-    </button>`;
+function buildInv(inv,active) {
+  if (!inv.length) return '<span class="no-items">— kosong —</span>';
+  return inv.map((item,i)=>{
+    const info=ITEMS[item]||{};
+    return '<button class="ibtn" onclick="'+(active?'useItem(\''+item+'\','+i+')':'')+'" onmouseenter="showTip(event,\''+item+'\')" onmouseleave="hideTip()" '+(active?'':'disabled')+'><span>'+(info.e||'❓')+'</span><span class="itag">'+((info.n||item).slice(0,5).toUpperCase())+'</span></button>';
   }).join('');
 }
 
-function buildOppInv(inv) {
-  if (!inv.length) return `<span class="no-items">— kosong —</span>`;
-  return inv.map(item => {
-    const info = ITEMS[item] || {};
-    return `<button class="ibtn enemy" disabled
-      onmouseenter="showTip(event,'${item}')" onmouseleave="hideTip()">
-      <span>${info.e||'❓'}</span>
-      <span class="itag">${(info.n||item).slice(0,5).toUpperCase()}</span>
-    </button>`;
+function buildEInv(inv) {
+  if (!inv.length) return '<span class="no-items">— kosong —</span>';
+  return inv.map(item=>{
+    const info=ITEMS[item]||{};
+    return '<button class="ibtn enemy" disabled onmouseenter="showTip(event,\''+item+'\')" onmouseleave="hideTip()"><span>'+(info.e||'❓')+'</span><span class="itag">'+((info.n||item).slice(0,5).toUpperCase())+'</span></button>';
   }).join('');
 }
 
-function renderChamber(chamber, idx, round) {
-  const el    = document.getElementById('ch-slots');
-  const total = chamber.length;
+// ── TARGETS ─────────────────────────────────────────
+function renderTargets(data,canAct) {
+  const alive=alivePids(data.players);
+  const panel=document.getElementById('tpanel');
+  // Self
+  let html='<button class="btn-tgt bt-self" onclick="handleShoot(\''+myPid+'\')" '+(canAct?'':'disabled')+'><span class="bt-icon">🔫</span><span class="bt-name">Tembak Diri</span><span style="font-family:var(--fm);font-size:.52rem;color:rgba(212,168,67,.6)">'+esc(data.players[myPid]?.name||'Kamu')+'</span></button>';
+  // Enemies (alive only)
+  alive.filter(pid=>pid!==myPid).forEach(pid=>{
+    const name=data.players[pid]?.name||'?';
+    html+='<button class="btn-tgt bt-enemy" onclick="handleShoot(\''+pid+'\')" '+(canAct?'':'disabled')+'><span class="bt-icon">'+AVATARS[pid]+' 💀</span><span class="bt-name">'+esc(name)+'</span></button>';
+  });
+  panel.innerHTML=html;
+}
 
-  document.getElementById('ch-idx').textContent    = Math.min(idx + 1, total);
-  document.getElementById('ch-total').textContent  = total;
-  document.getElementById('ch-rinfo').textContent  = `RONDE ${round}`;
+// ── CHAMBER ─────────────────────────────────────────
+function renderChamber(chamber,idx,round) {
+  const el=document.getElementById('ch-slots');
+  const total=chamber.length;
+  document.getElementById('ch-idx').textContent=Math.min(idx+1,total);
+  document.getElementById('ch-tot').textContent=total;
+  document.getElementById('ch-ri').textContent='RONDE '+round;
+  const cfg=getCfg(round);
+  document.getElementById('ch-cfg').textContent=cfg.slots+' SLOT — '+cfg.bullets+' PELURU';
 
-  const cfg = getChamberConfig(round);
-  document.getElementById('ch-config').textContent = `${cfg.slots} SLOT — ${cfg.bullets} PELURU`;
-
-  el.innerHTML = chamber.map((_, i) => {
-    let cls, icon;
-    if      (i < idx)  { cls='s-fired';   icon='×'; }
-    else if (i === idx) { cls='s-current'; icon='◆'; }
-    else               { cls='s-unknown'; icon='?'; }
-    const con = i < total - 1 ? `<div class="slot-con"></div>` : '';
-    return `<div class="slot ${cls}">${icon}</div>${con}`;
+  el.innerHTML=chamber.map((_,i)=>{
+    let cls,icon;
+    if (i<idx){cls='sf';icon='×';}
+    else if(i===idx){cls='sc';icon='◆';}
+    else{cls='su';icon='?';}
+    return '<div class="slot '+cls+'">'+icon+'</div>'+(i<total-1?'<div class="scon"></div>':'');
   }).join('');
 
-  // Ratio calc
-  const firedBullets     = chamber.slice(0, idx).filter(x => x === 1).length;
-  const remainingSlots   = total - idx;
-  const remainingBullets = cfg.bullets - firedBullets;
-  const rb = Math.max(0, remainingBullets);
-  const rs = Math.max(0, remainingSlots);
-
-  document.getElementById('ratio-b').textContent = rb;
-  document.getElementById('ratio-s').textContent = rs;
-  document.getElementById('ratio-lbl').textContent = 'PELURU : SLOT TERSISA';
-
-  // Ratio bar
-  const bar  = document.getElementById('ratio-bar');
-  const pct  = rs > 0 ? (rb / rs) * 100 : 0;
-  bar.style.width = `${pct}%`;
-  if      (pct >= 65) bar.style.background = 'linear-gradient(90deg, #8e1f1f, var(--red2))';
-  else if (pct >= 40) bar.style.background = 'linear-gradient(90deg, #8e4e00, var(--orange))';
-  else                bar.style.background = 'linear-gradient(90deg, #1a5e30, var(--green))';
+  const fired=chamber.slice(0,idx).filter(x=>x===1).length;
+  const rb=Math.max(0,cfg.bullets-fired);
+  const rs=Math.max(0,total-idx);
+  document.getElementById('ratio-b').textContent=rb;
+  document.getElementById('ratio-s').textContent=rs;
+  const pct=rs>0?(rb/rs)*100:0;
+  const bar=document.getElementById('ratio-bar');
+  bar.style.width=pct+'%';
+  if (pct>=65) bar.style.background='linear-gradient(90deg,#8e1f1f,var(--red2))';
+  else if (pct>=40) bar.style.background='linear-gradient(90deg,#8e4e00,var(--orange))';
+  else bar.style.background='linear-gradient(90deg,#1a5e30,var(--green))';
 }
 
 function renderLog(logs) {
-  const el = document.getElementById('action-log');
-  const wasBot = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
-  el.innerHTML = logs.map((e,i) =>
-    `<div class="log-entry" style="animation-delay:${i*0.022}s">${e}</div>`
-  ).join('');
-  if (wasBot) el.scrollTop = el.scrollHeight;
+  const el=document.getElementById('action-log');
+  const bot=(el.scrollHeight-el.scrollTop-el.clientHeight)<50;
+  el.innerHTML=logs.map((e,i)=>'<div class="log-entry" style="animation-delay:'+(i*.02)+'s">'+e+'</div>').join('');
+  if (bot) el.scrollTop=el.scrollHeight;
 }
 
-// ============================================================
-// CHAT LISTENER
-// ============================================================
+// ── CHAT ────────────────────────────────────────────
 function startChatListener() {
-  if (chatListener) return;
-  chatListener = db.ref(`rooms/${roomId}/chat`).on('value', snap => {
-    const msgs = toArr(snap.val() || []);
-    renderChat(msgs);
+  if (chatRef) return;
+  chatRef=db.ref('rooms/'+roomId+'/chat').on('value',snap=>{
+    renderChat(toArr(snap.val()||[]));
   });
 }
 
 async function sendChat() {
-  const input = document.getElementById('ci');
-  const text  = input.value.trim();
-  if (!text || !roomId || !myPid) return;
-
-  const name = lastData?.players?.[myPid]?.name || myName;
-  input.value = '';
-
-  const snap = await db.ref(`rooms/${roomId}/chat`).once('value');
-  const msgs = toArr(snap.val() || []);
-  msgs.push({ pid: myPid, name, text, ts: Date.now() });
-  if (msgs.length > 60) msgs.splice(0, msgs.length - 60);
-  await db.ref(`rooms/${roomId}/chat`).set(msgs);
+  const inp=document.getElementById('ci');
+  const text=inp.value.trim();
+  if (!text||!roomId||!myPid) return;
+  const name=lastData?.players?.[myPid]?.name||myName;
+  inp.value='';
+  const snap=await db.ref('rooms/'+roomId+'/chat').once('value');
+  const msgs=toArr(snap.val()||[]);
+  msgs.push({pid:myPid,name,text,ts:Date.now()});
+  if (msgs.length>60) msgs.splice(0,msgs.length-60);
+  await db.ref('rooms/'+roomId+'/chat').set(msgs);
 }
 
 function renderChat(msgs) {
-  const el = document.getElementById('chat-body');
+  const el=document.getElementById('chat-body');
   if (!el) return;
-  const wasBot = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
-  el.innerHTML = msgs.map(m => {
-    if (m.system) return `<div class="chat-sys">— ${esc(m.text)} —</div>`;
-    const mine   = m.pid === myPid;
-    const avatar = m.pid === 'player1' ? '🤠' : '😈';
-    return `<div class="chat-msg ${mine?'mine':''}">
-      <div class="cm-av">${avatar}</div>
-      <div class="cm-bd">
-        <div class="cm-name ${mine?'mine':'theirs'}">${esc(m.name)}</div>
-        <div class="cm-text">${esc(m.text)}</div>
-      </div>
-    </div>`;
+  const bot=(el.scrollHeight-el.scrollTop-el.clientHeight)<50;
+  el.innerHTML=msgs.map(m=>{
+    if (m.system) return '<div class="chat-sys">— '+esc(m.text)+' —</div>';
+    const mine=m.pid===myPid;
+    const col=P_COLORS[m.pid]||'var(--text3)';
+    return '<div class="chat-msg '+(mine?'mine':'')+'"><div class="cm-av">'+(AVATARS[m.pid]||'👤')+'</div><div class="cm-bd"><div class="cm-name" style="'+(mine?'color:var(--blue)':'color:'+col)+'">'+esc(m.name)+'</div><div class="cm-text">'+esc(m.text)+'</div></div></div>';
   }).join('');
-  if (wasBot) el.scrollTop = el.scrollHeight;
+  if (bot) el.scrollTop=el.scrollHeight;
 }
 
-// ============================================================
-// USE ITEM
-// ============================================================
+// ── USE ITEM ─────────────────────────────────────────
 async function useItem(itemParam, itemIndex) {
   if (busy) return;
-  const data = lastData;
-  if (!data || data.currentTurn !== myPid || data.status !== 'playing') return;
+  const data=lastData;
+  if (!data||data.currentTurn!==myPid||data.status!=='playing') return;
+  const inv=toArr(data.players[myPid].inventory);
+  if (itemIndex>=inv.length) return;
+  const item=inv[itemIndex];
+  const sn=data.players[myPid].name;
+  const newInv=[...inv]; newInv.splice(itemIndex,1);
 
-  const inv    = toArr(data.players[myPid].inventory);
-  if (itemIndex >= inv.length) return;
-  const item   = inv[itemIndex];
-  const oppId  = myPid === 'player1' ? 'player2' : 'player1';
-  const sn     = data.players[myPid].name;
-  const on     = data.players[oppId].name;
-  const newInv = [...inv]; newInv.splice(itemIndex, 1);
-
-  if (item === 'magnifier') {
-    const ch = toArr(data.chamber);
-    const sl = ch[data.currentIndex];
-    await db.ref(`rooms/${roomId}/players/${myPid}/inventory`).set(newInv);
-    toast(sl===1
-      ? '🔴 <strong>PELURU!</strong><br><span style="font-size:0.78rem;color:var(--text3)">Slot aktif berisi peluru</span>'
-      : '⚪ <strong>KOSONG</strong><br><span style="font-size:0.78rem;color:var(--text3)">Slot aktif kosong</span>',
-      sl===1 ? '' : 't-blank', 3600);
+  if (item==='magnifier') {
+    const ch=toArr(data.chamber);
+    const sl=ch[data.currentIndex];
+    await db.ref('rooms/'+roomId+'/players/'+myPid+'/inventory').set(newInv);
+    toast(sl===1?'🔴 <strong>PELURU!</strong><br><span style="font-size:.74rem;color:var(--text3)">Slot aktif berisi peluru</span>':'⚪ <strong>KOSONG</strong><br><span style="font-size:.74rem;color:var(--text3)">Slot aktif kosong</span>',sl===1?'':'tb',3400);
     return;
   }
 
-  busy = true;
+  busy=true;
   try {
-    const upd  = {};
-    const logs = toArr(data.log);
-    upd[`players/${myPid}/inventory`] = newInv;
+    const upd={};
+    const logs=toArr(data.log);
+    upd['players/'+myPid+'/inventory']=newInv;
 
-    if (item === 'rokok') {
-      const hp = Math.min(5, data.players[myPid].hp + 1);
-      upd[`players/${myPid}/hp`] = hp;
-      logs.push(`🚬 ${sn} merokok — HP +1 (${hp}/5)`);
-      toast('🚬 +1 HP!','t-gold',1800);
-    } else if (item === 'silet') {
-      upd['doubleDamage'] = true;
-      logs.push(`🔪 ${sn} menggunakan silet — damage berikutnya ×2!`);
-      toast('🔪 Damage ×2 aktif!','',1800);
-    } else if (item === 'beer') {
-      const sh = shuffleArr(toArr(data.chamber));
-      upd['chamber'] = sh; upd['currentIndex'] = 0;
-      logs.push(`🍺 ${sn} minum bir — chamber dikocok, index reset ke 0`);
-      toast('🍺 Chamber dikocok!','',1800);
-    } else if (item === 'handcuff') {
-      upd['blockedPlayer'] = oppId;
-      logs.push(`⛓️ ${sn} memasang borgol ke ${on} — giliran berikutnya skip!`);
-      toast(`⛓️ ${esc(on)} di-borgol!`,'',2000);
+    if (item==='rokok') {
+      const hp=Math.min(5,data.players[myPid].hp+1);
+      upd['players/'+myPid+'/hp']=hp;
+      logs.push('🚬 '+sn+' merokok — HP +1 ('+hp+'/5)');
+      toast('🚬 +1 HP!','tg',1600);
+    } else if (item==='silet') {
+      upd['doubleDamage']=true;
+      logs.push('🔪 '+sn+' menggunakan silet — damage berikutnya ×2!');
+      toast('🔪 Damage ×2 aktif!','',1600);
+    } else if (item==='beer') {
+      upd['chamber']=shuffle(toArr(data.chamber));
+      upd['currentIndex']=0;
+      logs.push('🍺 '+sn+' minum bir — chamber dikocok, index reset ke 0');
+      toast('🍺 Chamber dikocok!','',1600);
+    } else if (item==='handcuff') {
+      // Target next alive player in rotation
+      const alive=alivePids(data.players);
+      const si=alive.indexOf(myPid);
+      const target=alive[(si+1)%alive.length];
+      upd['blockedPlayer']=target;
+      logs.push('⛓️ '+sn+' memasang borgol ke '+data.players[target]?.name+' — skip giliran berikutnya!');
+      toast('⛓️ '+esc(data.players[target]?.name)+' di-borgol!','',1800);
     }
 
-    if (logs.length > 35) logs.splice(0, logs.length - 35);
-    upd['log'] = logs;
-    await db.ref(`rooms/${roomId}`).update(upd);
-  } finally { busy = false; }
+    if (logs.length>40) logs.splice(0,logs.length-40);
+    upd['log']=logs;
+    await db.ref('rooms/'+roomId).update(upd);
+  } finally { busy=false; }
 }
 
-// ============================================================
-// SHOOT
-// ============================================================
-async function handleShoot(target) {
+// ── SHOOT ────────────────────────────────────────────
+async function handleShoot(targetId) {
   if (busy) return;
-  const data = lastData;
-  if (!data || data.currentTurn !== myPid || data.status !== 'playing') return;
-  const oppId    = myPid === 'player1' ? 'player2' : 'player1';
-  await pullTrigger(target === 'self' ? myPid : oppId);
+  const data=lastData;
+  if (!data||data.currentTurn!==myPid||data.status!=='playing') return;
+  await pullTrigger(targetId);
 }
 
 async function pullTrigger(targetId) {
-  busy = true;
+  busy=true;
   try {
-    const snap = await db.ref(`rooms/${roomId}`).once('value');
-    const data = snap.val();
-    if (!data || data.currentTurn !== myPid || data.status !== 'playing') return;
+    const snap=await db.ref('rooms/'+roomId).once('value');
+    const data=snap.val();
+    if (!data||data.currentTurn!==myPid||data.status!=='playing') return;
 
-    const chamber   = toArr(data.chamber);
-    const idx       = data.currentIndex || 0;
-    const bullet    = chamber[idx];
-    const doubleDmg = data.doubleDamage || false;
-    const oppId     = myPid === 'player1' ? 'player2' : 'player1';
-    const sn        = data.players[myPid].name;
-    const tn        = data.players[targetId].name;
-    const logs      = toArr(data.log);
-    const upd       = {};
+    const chamber=toArr(data.chamber);
+    const idx=data.currentIndex||0;
+    const bullet=chamber[idx];
+    const ddmg=data.doubleDamage||false;
+    const sn=data.players[myPid].name;
+    const tn=data.players[targetId]?.name||'?';
+    const logs=toArr(data.log);
+    const upd={};
 
-    if (bullet === 1) {
+    if (bullet===1) {
       flash(); shake();
-      const dmg   = doubleDmg ? 2 : 1;
-      const newHp = Math.max(0, data.players[targetId].hp - dmg);
-      upd[`players/${targetId}/hp`] = newHp;
-      const who = targetId === myPid ? 'dirinya sendiri' : tn;
-      logs.push(`💥 ${sn} menembak ${who}!${doubleDmg?' (×2)':''} −${dmg} HP → ${newHp} HP`);
-      toast(doubleDmg ? '💥 BOOM! ×2 Damage!' : '💥 TERKENA!','',1800);
+      const dmg=ddmg?2:1;
+      const newHp=Math.max(0,data.players[targetId].hp-dmg);
+      upd['players/'+targetId+'/hp']=newHp;
+      logs.push('💥 '+sn+' menembak '+(targetId===myPid?'dirinya sendiri':tn)+'!'+(ddmg?' (×2)':'')+' −'+dmg+' HP → '+newHp+' HP');
+      toast(ddmg?'💥 BOOM! ×2 Damage!':'💥 TERKENA!','',1600);
 
-      if (newHp <= 0) {
-        upd['status']       = 'finished';
-        upd['winner']       = myPid;
-        upd['doubleDamage'] = false;
-        upd['currentIndex'] = idx + 1;
-        logs.push(`💀 ${tn} tewas! 🏆 ${sn} menang!`);
-        if (logs.length > 35) logs.splice(0, logs.length - 35);
-        upd['log'] = logs;
-        await db.ref(`rooms/${roomId}`).update(upd);
+      if (newHp<=0) {
+        logs.push('💀 '+tn+' tereliminasi!');
+        // Check win: count alive after this kill
+        const afterPlayers={...data.players};
+        afterPlayers[targetId]={...afterPlayers[targetId],hp:0};
+        const stillAlive=alivePids(afterPlayers);
+
+        if (stillAlive.length<=1) {
+          // Game over
+          const wid=stillAlive[0]||myPid;
+          const wname=data.players[wid]?.name||'?';
+          upd['status']='finished'; upd['winner']=wid;
+          upd['doubleDamage']=false; upd['currentIndex']=idx+1;
+          logs.push('🏆 '+wname+' menang! Terakhir bertahan!');
+          if (logs.length>40) logs.splice(0,logs.length-40);
+          upd['log']=logs;
+          await db.ref('rooms/'+roomId).update(upd);
+          return;
+        }
+
+        // Continue — advance turn, target is dead so they auto-skip
+        upd['doubleDamage']=false;
+        const newIdx=idx+1;
+        if (newIdx>=chamber.length) {
+          await doNewRound(data,upd,logs,stillAlive);
+        } else {
+          upd['currentIndex']=newIdx;
+          const si=stillAlive.indexOf(myPid);
+          let ni=(si+1)%stillAlive.length;
+          let unb=false;
+          if (stillAlive[ni]===data.blockedPlayer){ni=(ni+1)%stillAlive.length;unb=true;}
+          if (unb){upd['blockedPlayer']=null;logs.push('⛓️ '+data.players[data.blockedPlayer]?.name+' skip giliran (borgol)!');}
+          upd['currentTurn']=stillAlive[ni];
+          logs.push('🎯 Giliran '+data.players[stillAlive[ni]]?.name);
+          if (logs.length>40) logs.splice(0,logs.length-40);
+          upd['log']=logs;
+          await db.ref('rooms/'+roomId).update(upd);
+        }
         return;
       }
     } else {
-      const who = targetId === myPid ? 'dirinya sendiri' : tn;
-      logs.push(`💨 Klik... ${sn} menembak ${who} — kosong!`);
-      toast('💨 Klik! Kosong.','t-blank',1800);
+      logs.push('💨 Klik... '+sn+' menembak '+(targetId===myPid?'dirinya sendiri':tn)+' — kosong!');
+      toast('💨 Klik! Kosong.','tb',1600);
     }
 
-    upd['doubleDamage'] = false;
-    const newIdx = idx + 1;
+    upd['doubleDamage']=false;
+    const newIdx=idx+1;
 
-    if (newIdx >= chamber.length) {
-      // New round
-      const newRound  = (data.round || 1) + 1;
-      const newChamber = generateChamber(newRound);
-      const newCfg    = getChamberConfig(newRound);
-      const itemAmt   = newRound >= 3 ? 2 : 1;
-      const p1inv     = giveItems(toArr(data.players.player1.inventory), itemAmt);
-      const p2inv     = giveItems(toArr(data.players.player2.inventory), itemAmt);
-
-      upd['round']        = newRound;
-      upd['currentIndex'] = 0;
-      upd['chamber']      = newChamber;
-      upd['blockedPlayer'] = null;
-      upd['players/player1/inventory'] = p1inv;
-      upd['players/player2/inventory'] = p2inv;
-      upd['currentTurn']  = oppId;
-
-      logs.push(`━━━━━━━━━━━━━━━━━━━━━━`);
-      logs.push(`🔄 Ronde ${newRound} dimulai!`);
-      logs.push(`🔫 Chamber diperluas: ${newCfg.slots} slot — ${newCfg.bullets} peluru (${newCfg.bullets}:${newCfg.slots})`);
-      logs.push(`📦 Item baru dibagikan (+${itemAmt} masing-masing)`);
-      logs.push(`🎯 Giliran ${data.players[oppId].name}`);
-
+    if (newIdx>=chamber.length) {
+      const alive=alivePids(data.players);
+      await doNewRound(data,upd,logs,alive);
     } else {
-      upd['currentIndex'] = newIdx;
-
-      if (bullet === 0 && targetId === myPid) {
-        upd['currentTurn'] = myPid;
-        logs.push(`↩️ ${sn} tembak diri (kosong) — dapat giliran lagi!`);
+      upd['currentIndex']=newIdx;
+      if (bullet===0 && targetId===myPid) {
+        upd['currentTurn']=myPid;
+        logs.push('↩️ '+sn+' tembak diri (kosong) — dapat giliran lagi!');
       } else {
-        if (data.blockedPlayer === oppId) {
-          upd['blockedPlayer'] = null;
-          upd['currentTurn']   = myPid;
-          logs.push(`⛓️ ${data.players[oppId].name} skip giliran (borgol)!`);
-          logs.push(`🎯 ${sn} mendapat giliran lagi!`);
-        } else {
-          upd['currentTurn'] = oppId;
-          logs.push(`🎯 Giliran ${data.players[oppId].name}`);
-        }
+        const res=calcNext(data,myPid,targetId,bullet===1);
+        if (res.unblocked){upd['blockedPlayer']=null;logs.push('⛓️ '+data.players[data.blockedPlayer]?.name+' skip giliran (borgol)!');}
+        upd['currentTurn']=res.pid;
+        logs.push('🎯 Giliran '+data.players[res.pid]?.name);
       }
+      if (logs.length>40) logs.splice(0,logs.length-40);
+      upd['log']=logs;
+      await db.ref('rooms/'+roomId).update(upd);
     }
-
-    if (logs.length > 35) logs.splice(0, logs.length - 35);
-    upd['log'] = logs;
-    await db.ref(`rooms/${roomId}`).update(upd);
-  } catch(e) { console.error(e); } finally { busy = false; }
+  } catch(e){console.error(e);} finally {busy=false;}
 }
 
-// ============================================================
-// FINISHED + REMATCH
-// ============================================================
+async function doNewRound(data,upd,logs,alivePids_arr) {
+  const nr=(data.round||1)+1;
+  const nc=genChamber(nr); const cfg=getCfg(nr);
+  const amt=nr>=3?2:1;
+  alivePids_arr.forEach(pid=>{
+    upd['players/'+pid+'/inventory']=giveItems(toArr(data.players[pid].inventory),amt);
+  });
+  upd['round']=nr; upd['currentIndex']=0; upd['chamber']=nc; upd['blockedPlayer']=null;
+  upd['currentTurn']=alivePids_arr[0];
+  logs.push('━━━━━━━━━━━━━━━━━━━━━━');
+  logs.push('🔄 Ronde '+nr+' dimulai!');
+  logs.push('🔫 Chamber diperluas: '+cfg.slots+' slot — '+cfg.bullets+' peluru ('+cfg.bullets+':'+cfg.slots+')');
+  logs.push('📦 Item baru dibagikan (+'+amt+' untuk pemain hidup)');
+  logs.push('🎯 '+data.players[alivePids_arr[0]]?.name+' memulai ronde baru');
+  if (logs.length>40) logs.splice(0,logs.length-40);
+  upd['log']=logs;
+  await db.ref('rooms/'+roomId).update(upd);
+}
+
+// ── FINISHED ────────────────────────────────────────
 function renderFinished(data) {
   if (!data?.players) return;
-  const w    = data.winner;
-  const wObj = data.players[w];
-  const lKey = w === 'player1' ? 'player2' : 'player1';
-  const lObj = data.players[lKey];
-  const iWon = w === myPid;
+  const w=data.winner; const wObj=data.players[w];
+  const iWon=w===myPid;
+  const pcount=data.playerCount||2;
+  const pids=ALL_PIDS.slice(0,pcount);
 
-  document.getElementById('fin-trophy').textContent = iWon ? '🏆' : '💀';
-  document.getElementById('fin-title').textContent  = iWon ? `${wObj?.name||'?'} MENANG!` : `${wObj?.name||'?'} MENANG`;
-  document.getElementById('fin-title').style.color  = iWon ? 'var(--gold)' : 'var(--text2)';
-  document.getElementById('fin-sub').textContent    = iWon ? 'Selamat! Kamu selamat dari roulette.' : 'Kamu tidak selamat kali ini...';
-  document.getElementById('fin-stats').innerHTML    = `
-    <div class="stat-item"><div class="stat-lbl">RONDE</div><div class="stat-val">${data.round||1}</div></div>
-    <div class="stat-item"><div class="stat-lbl">HP ${esc(wObj?.name||'?')}</div><div class="stat-val" style="color:var(--green)">${wObj?.hp||0}</div></div>
-    <div class="stat-item"><div class="stat-lbl">HP ${esc(lObj?.name||'?')}</div><div class="stat-val" style="color:var(--red2)">0</div></div>`;
+  document.getElementById('fin-trophy').textContent=iWon?'🏆':'💀';
+  document.getElementById('fin-title').textContent=iWon?wObj?.name+' MENANG!':wObj?.name+' MENANG';
+  document.getElementById('fin-title').style.color=iWon?'var(--gold)':'var(--text2)';
+  document.getElementById('fin-sub').textContent=iWon?'Selamat! Kamu yang terakhir bertahan.':'Kamu tidak selamat kali ini...';
+  document.getElementById('fin-stats').innerHTML=
+    '<div class="stat-item"><div class="stat-lbl">RONDE</div><div class="stat-val">'+(data.round||1)+'</div></div>'
+    +pids.map(pid=>{
+      const p=data.players[pid];
+      const col=pid===w?'var(--green)':'var(--red2)';
+      return '<div class="stat-item"><div class="stat-lbl">'+esc(p?.name||'?')+'</div><div class="stat-val" style="color:'+col+'">'+(p?.hp||0)+' HP</div></div>';
+    }).join('');
 
-  // Reset rematch button state
-  const btn = document.getElementById('btn-rematch');
-  btn.disabled = false;
-  btn.textContent = '🔄 MAIN LAGI (Room Sama)';
-
+  const btn=document.getElementById('btn-rm');
+  btn.disabled=false; btn.textContent='🔄 MAIN LAGI (Room Sama)';
   updateRematchStatus(data);
-
   showNotif({
-    icon: iWon ? '🏆' : '💀',
-    title: iWon ? 'KAMU MENANG!' : 'KAMU KALAH',
-    sub: iWon
-      ? `Selamat ${esc(wObj?.name||'?')}!<br>Bertahan hingga ronde ${data.round||1}`
-      : `${esc(wObj?.name||'?')} menang dengan ${wObj?.hp||0} HP tersisa`,
-    theme: iWon ? 'notif-start' : 'notif-dead',
-    duration: 4000,
+    icon:iWon?'🏆':'💀',
+    title:iWon?'KAMU MENANG!':'KAMU KALAH',
+    sub:iWon?'Selamat '+esc(wObj?.name||'?')+'!<br>Bertahan hingga ronde '+(data.round||1):esc(wObj?.name||'?')+' menang dengan '+(wObj?.hp||0)+' HP tersisa',
+    theme:iWon?'ns-start':'ns-dead', duration:4000
   });
-
-  setTimeout(() => showScreen('finished'), 4200);
+  setTimeout(()=>showScreen('finished'),4200);
 }
 
 function updateRematchStatus(data) {
-  // Called from room listener when status==='finished', refreshes rematch UI
-  if (!data?.players) return;
-  const p1 = data.players.player1;
-  const p2 = data.players.player2;
-  const myR  = data.players[myPid]?.rematch;
-  const oppId = myPid === 'player1' ? 'player2' : 'player1';
-  const oppR = data.players[oppId]?.rematch;
+  const pcount=data.playerCount||2;
+  const pids=ALL_PIDS.slice(0,pcount);
+  const sel=document.getElementById('rm-status');
+  const msg=document.getElementById('rm-msg');
+  const btn=document.getElementById('btn-rm');
+  if (!sel) return;
 
-  const statusEl = document.getElementById('rematch-status');
-  const msgEl    = document.getElementById('rematch-msg');
-  const btn      = document.getElementById('btn-rematch');
-  if (!statusEl) return;
+  sel.innerHTML=pids.map(pid=>{
+    const p=data.players[pid]; const r=!!p?.rematch;
+    return '<div style="display:flex;align-items:center;gap:5px;font-family:var(--fm);font-size:.7rem;background:'+(r?'rgba(39,174,96,.12)':'rgba(90,90,90,.1)')+';border:1px solid '+(r?'rgba(39,174,96,.35)':'var(--border)')+';border-radius:6px;padding:4px 9px;color:'+(r?'var(--green2)':'var(--text3)')+';">'+(r?'✅':'⬜')+' '+esc(p?.name||'?')+'</div>';
+  }).join('');
 
-  const chip = (name, ready) =>
-    `<div style="display:flex;align-items:center;gap:6px;font-family:var(--font-m);font-size:0.72rem;
-      background:${ready?'rgba(39,174,96,0.12)':'rgba(90,90,90,0.1)'};
-      border:1px solid ${ready?'rgba(39,174,96,0.35)':'var(--border)'};
-      border-radius:6px;padding:5px 10px;color:${ready?'var(--green2)':'var(--text3)'}">
-      ${ready?'✅':'⬜'} ${esc(name||'?')}
-    </div>`;
-
-  statusEl.innerHTML = chip(p1?.name, p1?.rematch) + chip(p2?.name, p2?.rematch);
-
-  if (myR) {
-    btn.disabled = true;
-    btn.textContent = '✅ Menunggu lawan...';
-  }
-
-  if (p1?.rematch && p2?.rematch) {
-    msgEl.innerHTML = '<span style="color:var(--green2)">🚀 Kedua pemain setuju! Memulai ulang...</span>';
-    resetForRematch(data);
-  } else if (myR && !oppR) {
-    msgEl.innerHTML = '<span class="pulse-dot"></span>Menunggu lawan menerima...';
-  } else if (!myR) {
-    msgEl.textContent = '';
-  }
+  const myR=!!data.players[myPid]?.rematch;
+  if (myR){btn.disabled=true;btn.textContent='✅ Menunggu pemain lain...';}
+  const allR=pids.every(pid=>data.players[pid]?.rematch);
+  if (allR){msg.innerHTML='<span style="color:var(--green2)">🚀 Semua setuju! Memulai ulang...</span>';resetForRematch(data);}
+  else if (myR){msg.innerHTML='<span class="pulse-dot"></span>Menunggu '+pids.filter(pid=>!data.players[pid]?.rematch).map(pid=>esc(data.players[pid]?.name||'?')).join(', ')+'...';}
+  else msg.textContent='';
 }
 
 async function requestRematch() {
-  if (!roomId || !myPid) return;
-  document.getElementById('btn-rematch').disabled = true;
-  document.getElementById('btn-rematch').textContent = '✅ Menunggu lawan...';
-  await db.ref(`rooms/${roomId}/players/${myPid}/rematch`).set(true);
-
-  // Check if both already agreed (race condition safety)
-  const snap = await db.ref(`rooms/${roomId}/players`).once('value');
-  const pl = snap.val();
-  if (pl?.player1?.rematch && pl?.player2?.rematch) {
-    const fullSnap = await db.ref(`rooms/${roomId}`).once('value');
-    await resetForRematch(fullSnap.val());
-  }
+  if (!roomId||!myPid) return;
+  document.getElementById('btn-rm').disabled=true;
+  document.getElementById('btn-rm').textContent='✅ Menunggu pemain lain...';
+  await db.ref('rooms/'+roomId+'/players/'+myPid+'/rematch').set(true);
+  const snap=await db.ref('rooms/'+roomId).once('value');
+  const data=snap.val();
+  const pids=ALL_PIDS.slice(0,data.playerCount||2);
+  if (pids.every(pid=>data.players[pid]?.rematch)) await resetForRematch(data);
 }
 
 async function resetForRematch(data) {
-  if (!data || !roomId) return;
-  const p1name = data.players?.player1?.name || '';
-  const p2name = data.players?.player2?.name || '';
-
-  // Reset _firstRender so game-start notif fires again next round
-  _firstRender   = true;
-  _prevStatus    = null;
-  _prevRound     = null;
-  _prevTurn      = null;
-
-  await db.ref(`rooms/${roomId}`).update({
-    status:       'lobby',
-    round:        1,
-    currentTurn:  'player1',
-    currentIndex: 0,
-    chamber:      [0,0,0],
-    doubleDamage: false,
-    blockedPlayer: null,
-    winner:       null,
-    'players/player1/hp':        5,
-    'players/player1/inventory': [],
-    'players/player1/ready':     false,
-    'players/player1/rematch':   false,
-    'players/player2/hp':        5,
-    'players/player2/inventory': [],
-    'players/player2/ready':     false,
-    'players/player2/rematch':   false,
-    log: [`🔄 ${p1name} dan ${p2name} main lagi! Klik READY untuk mulai.`],
-    // chat sengaja tidak di-reset — histori tetap ada
+  if (!data||!roomId) return;
+  _firstRender=true; _prevRound=null;
+  const pcount=data.playerCount||2;
+  const pids=ALL_PIDS.slice(0,pcount);
+  const upd={status:'lobby',round:1,currentTurn:'player1',currentIndex:0,chamber:[0,0,0],doubleDamage:false,blockedPlayer:null,winner:null};
+  pids.forEach(pid=>{
+    upd['players/'+pid+'/hp']=5;
+    upd['players/'+pid+'/inventory']=[];
+    upd['players/'+pid+'/ready']=false;
+    upd['players/'+pid+'/rematch']=false;
   });
+  upd['log']=['🔄 Rematch! '+pids.map(pid=>esc(data.players[pid]?.name||'?')).join(' vs ')+' — klik READY untuk mulai.'];
+  await db.ref('rooms/'+roomId).update(upd);
 }
 
-// ============================================================
-// TOOLTIP
-// ============================================================
-const _tip = document.getElementById('tip');
-function showTip(e, item) {
-  _tip.innerHTML = `<strong style="color:var(--text)">${ie(item)} ${iname(item)}</strong><br>${idesc(item)}`;
-  _tip.style.display = 'block'; posTip(e);
-}
-function posTip(e) {
-  let x = e.clientX + 12, y = e.clientY - 52;
-  if (x + 190 > window.innerWidth) x = e.clientX - 202;
-  if (y < 4) y = e.clientY + 14;
-  _tip.style.left = x+'px'; _tip.style.top = y+'px';
-}
-function hideTip() { _tip.style.display='none'; }
-document.addEventListener('mousemove', e => { if (_tip.style.display!=='none') posTip(e); });
+// ── TOOLTIP ─────────────────────────────────────────
+const _tip=document.getElementById('tip');
+function showTip(e,item){_tip.innerHTML='<strong style="color:var(--text)">'+ie(item)+' '+iname(item)+'</strong><br>'+idesc(item);_tip.style.display='block';posTip(e);}
+function posTip(e){let x=e.clientX+12,y=e.clientY-52;if(x+190>window.innerWidth)x=e.clientX-202;if(y<4)y=e.clientY+14;_tip.style.left=x+'px';_tip.style.top=y+'px';}
+function hideTip(){_tip.style.display='none';}
+document.addEventListener('mousemove',e=>{if(_tip.style.display!=='none')posTip(e);});
 
-// ============================================================
-// INPUT BINDINGS
-// ============================================================
+// ── BINDINGS ─────────────────────────────────────────
 document.getElementById('inp-name').focus();
-document.getElementById('inp-name').addEventListener('keydown', e => {
-  if (e.key==='Enter') { const c=document.getElementById('inp-code').value.trim(); c?joinRoom():createRoom(); }
-});
-document.getElementById('inp-code').addEventListener('keydown', e => { if (e.key==='Enter') joinRoom(); });
-document.getElementById('inp-code').addEventListener('input',   e => { e.target.value=e.target.value.toUpperCase(); });
-document.getElementById('ci').addEventListener('keydown', e => { if (e.key==='Enter') sendChat(); });
+document.getElementById('inp-name').addEventListener('keydown',e=>{if(e.key==='Enter'){const c=document.getElementById('inp-code').value.trim();c?joinRoom():createRoom();}});
+document.getElementById('inp-code').addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom();});
+document.getElementById('inp-code').addEventListener('input',e=>{e.target.value=e.target.value.toUpperCase();});
+document.getElementById('ci').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
 </script>
 </body>
 </html>
