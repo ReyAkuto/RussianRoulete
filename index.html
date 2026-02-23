@@ -8,30 +8,30 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-/* ==================== RESET ==================== */
+/* ── RESET ─────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #080808;
-  --bg2: #0f0f0f;
-  --bg3: #161616;
-  --bg4: #1e1e1e;
-  --border: #2a2a2a;
+  --bg:      #080808;
+  --bg2:     #0f0f0f;
+  --bg3:     #161616;
+  --bg4:     #1e1e1e;
+  --border:  #2a2a2a;
   --border2: #383838;
-  --red: #c0392b;
-  --red2: #e74c3c;
-  --gold: #d4a843;
-  --gold2: #f0c060;
-  --text: #d0d0d0;
-  --text2: #888;
-  --text3: #555;
-  --green: #27ae60;
-  --green2: #2ecc71;
-  --blue: #2980b9;
-  --purple: #8e44ad;
-  --font-title: 'Bebas Neue', cursive;
+  --red:     #c0392b;
+  --red2:    #e74c3c;
+  --gold:    #d4a843;
+  --gold2:   #f0c060;
+  --text:    #d0d0d0;
+  --text2:   #888;
+  --text3:   #555;
+  --green:   #27ae60;
+  --green2:  #2ecc71;
+  --blue:    #2980b9;
+  --orange:  #e67e22;
+  --font-t:  'Bebas Neue', cursive;
   --font-ui: 'Oswald', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
+  --font-m:  'Share Tech Mono', monospace;
 }
 
 html { font-size: 16px; }
@@ -40,13 +40,11 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: flex; flex-direction: column; align-items: center;
   overflow-x: hidden;
   background-image:
-    radial-gradient(ellipse at 20% 20%, rgba(139, 0, 0, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(100, 60, 0, 0.04) 0%, transparent 60%);
+    radial-gradient(ellipse at 20% 20%, rgba(139,0,0,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(100,60,0,0.04) 0%, transparent 60%);
 }
 body::before {
   content: '';
@@ -58,154 +56,86 @@ body::before {
 .screen { position: relative; z-index: 1; width: 100%; max-width: 780px; padding: 16px; }
 .hidden { display: none !important; }
 
-/* ==================== TYPE ==================== */
-h1 {
-  font-family: var(--font-title);
-  font-size: 3.5rem;
-  color: var(--red2);
-  text-shadow: 0 0 40px rgba(192,57,43,0.5), 0 2px 0 #000;
-  letter-spacing: 0.08em; line-height: 1;
-}
-h2 { font-family: var(--font-title); font-size: 1.6rem; letter-spacing: 0.06em; }
-h3 { font-family: var(--font-ui); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; }
-
-/* ==================== HEADER ==================== */
+/* ── TYPOGRAPHY ─────────────────────────────────── */
+h1 { font-family: var(--font-t); font-size: 3.5rem; color: var(--red2); text-shadow: 0 0 40px rgba(192,57,43,0.5), 0 2px 0 #000; letter-spacing: 0.08em; line-height: 1; }
+h2 { font-family: var(--font-t); font-size: 1.6rem; letter-spacing: 0.06em; }
 .site-header { text-align: center; padding: 28px 16px 12px; position: relative; z-index: 1; }
-.site-header p { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text3); letter-spacing: 0.2em; margin-top: 4px; }
+.site-header p { font-family: var(--font-m); font-size: 0.72rem; color: var(--text3); letter-spacing: 0.2em; margin-top: 4px; }
 
-/* ==================== CARDS ==================== */
-.card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 8px 0;
-  position: relative;
-  overflow: hidden;
-}
-.card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(192,57,43,0.35), transparent);
-}
-.card-dimmed { background: var(--bg2); }
+/* ── CARDS ──────────────────────────────────────── */
+.card { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 8px 0; position: relative; overflow: hidden; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(192,57,43,0.3), transparent); }
+.card-dim { background: var(--bg2); }
 
-/* ==================== INPUTS ==================== */
-input[type="text"] {
-  width: 100%;
-  background: var(--bg2); border: 1px solid var(--border2);
-  border-radius: 6px; color: var(--text);
-  padding: 11px 14px; font-family: var(--font-ui); font-size: 1rem;
-  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-  letter-spacing: 0.05em; margin: 6px 0;
-}
-input[type="text"]:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.15); }
+/* ── INPUTS ─────────────────────────────────────── */
+input[type="text"] { width: 100%; background: var(--bg2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); padding: 11px 14px; font-family: var(--font-ui); font-size: 1rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; letter-spacing: 0.05em; margin: 6px 0; }
+input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.15); }
 input::placeholder { color: var(--text3); }
-input.code-input { font-family: var(--font-mono); font-size: 1.5rem; text-align: center; text-transform: uppercase; letter-spacing: 0.4em; }
+.code-input { font-family: var(--font-m) !important; font-size: 1.5rem !important; text-align: center; text-transform: uppercase; letter-spacing: 0.4em !important; }
 
-/* ==================== BUTTONS ==================== */
+/* ── BUTTONS ────────────────────────────────────── */
 button { border: none; border-radius: 6px; font-family: var(--font-ui); font-weight: 600; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em; text-transform: uppercase; }
-
-.btn-red { background: var(--red); color: #fff; padding: 12px 24px; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(192,57,43,0.3); }
-.btn-red:hover:not(:disabled) { background: var(--red2); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(192,57,43,0.45); }
-.btn-red:active:not(:disabled) { transform: none; }
-
+.btn-red   { background: var(--red); color: #fff; padding: 12px 24px; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(192,57,43,0.3); }
+.btn-red:hover:not(:disabled)   { background: var(--red2); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(192,57,43,0.45); }
 .btn-green { background: var(--green); color: #fff; padding: 12px 24px; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(39,174,96,0.3); }
-.btn-green:hover:not(:disabled) { background: var(--green2); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(39,174,96,0.4); }
-.btn-green:active:not(:disabled) { transform: none; }
-
+.btn-green:hover:not(:disabled) { background: var(--green2); transform: translateY(-1px); }
 .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); padding: 12px 24px; font-size: 0.9rem; }
 .btn-ghost:hover:not(:disabled) { background: var(--bg4); color: var(--text); border-color: var(--text3); }
-
 button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
 .btn-full { width: 100%; }
-.btn-row { display: flex; gap: 10px; margin-top: 10px; }
-.mt-8 { margin-top: 8px; }
-.mt-12 { margin-top: 12px; }
+.btn-row  { display: flex; gap: 10px; margin-top: 10px; }
+.mt8 { margin-top: 8px; }
+.mt12 { margin-top: 12px; }
+.tc { text-align: center; }
 
-/* ==================== LOBBY ==================== */
-.lobby-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--text3); font-size: 0.75rem; letter-spacing: 0.2em; }
-.lobby-divider::before, .lobby-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+/* ── LOBBY ──────────────────────────────────────── */
+.divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--text3); font-size: 0.72rem; letter-spacing: 0.2em; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.error-text { color: var(--red2); font-family: var(--font-m); font-size: 0.78rem; margin-top: 5px; }
 
-/* ==================== WAITING ==================== */
-.room-code-box {
-  background: var(--bg); border: 2px solid var(--gold); border-radius: 10px;
-  padding: 18px 24px; margin: 14px 0; text-align: center;
-  box-shadow: 0 0 30px rgba(212,168,67,0.15);
-}
-.room-code-label { font-size: 0.7rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 8px; }
-.room-code-value { font-family: var(--font-mono); font-size: 3rem; color: var(--gold2); letter-spacing: 0.5em; text-shadow: 0 0 20px rgba(212,168,67,0.4); }
+/* ── WAITING ────────────────────────────────────── */
+.code-box { background: var(--bg); border: 2px solid var(--gold); border-radius: 10px; padding: 18px 24px; margin: 14px 0; text-align: center; box-shadow: 0 0 30px rgba(212,168,67,0.15); }
+.code-box-label { font-size: 0.68rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 8px; }
+.code-box-val   { font-family: var(--font-m); font-size: 3rem; color: var(--gold2); letter-spacing: 0.5em; text-shadow: 0 0 20px rgba(212,168,67,0.4); }
 
 .pulse-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulseDot 1.5s ease-in-out infinite; }
-@keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
 
-/* ==================== READY ROOM ==================== */
-.ready-players-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
-
-.ready-player-card {
-  background: var(--bg2); border: 1.5px solid var(--border);
-  border-radius: 10px; padding: 16px;
-  text-align: center; transition: border-color 0.4s, box-shadow 0.4s;
-}
-.ready-player-card.is-ready {
-  border-color: var(--green);
-  box-shadow: 0 0 20px rgba(39,174,96,0.2);
-}
-.ready-player-card.is-you-card { border-left: 3px solid var(--blue); }
-
+/* ── READY ROOM ─────────────────────────────────── */
+.ready-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.ready-card { background: var(--bg2); border: 1.5px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; transition: border-color 0.4s, box-shadow 0.4s; }
+.ready-card.rdone { border-color: var(--green); box-shadow: 0 0 20px rgba(39,174,96,0.2); }
+.ready-card.is-you-card { border-left: 3px solid var(--blue); }
 .ready-avatar { font-size: 2.2rem; margin-bottom: 8px; }
-.ready-player-name { font-family: var(--font-ui); font-weight: 600; font-size: 1rem; margin-bottom: 4px; color: var(--text); }
-.ready-you-badge { font-size: 0.6rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.4); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.1em; margin-left: 6px; }
-.ready-status {
-  font-family: var(--font-mono); font-size: 0.75rem;
-  padding: 6px 10px; border-radius: 4px;
-  display: inline-block; margin-top: 8px;
-  letter-spacing: 0.1em;
-}
-.ready-status.not-ready { background: rgba(90,90,90,0.15); color: var(--text3); border: 1px solid var(--border2); }
-.ready-status.is-ready  { background: rgba(39,174,96,0.15); color: var(--green2); border: 1px solid rgba(39,174,96,0.4); animation: readyPulse 1.5s ease-in-out infinite; }
-.ready-status.waiting-player { color: var(--text3); font-style: italic; border: 1px dashed var(--border); }
+.ready-pname  { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+.you-badge { font-size: 0.55rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.4); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.08em; margin-left: 5px; }
+.ready-badge { font-family: var(--font-m); font-size: 0.72rem; padding: 5px 10px; border-radius: 4px; display: inline-block; margin-top: 7px; letter-spacing: 0.08em; }
+.rb-not     { background: rgba(90,90,90,0.15); color: var(--text3); border: 1px solid var(--border2); }
+.rb-ready   { background: rgba(39,174,96,0.15); color: var(--green2); border: 1px solid rgba(39,174,96,0.4); animation: blinkGreen 1.5s ease-in-out infinite; }
+.rb-waiting { color: var(--text3); border: 1px dashed var(--border); font-style: italic; }
+@keyframes blinkGreen { 0%,100%{opacity:1} 50%{opacity:0.55} }
+.ready-foot { font-family: var(--font-m); font-size: 0.72rem; color: var(--text3); text-align: center; padding: 10px 0 2px; letter-spacing: 0.08em; }
 
-@keyframes readyPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+/* ── GAME HEADER ────────────────────────────────── */
+.game-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.gi { font-family: var(--font-m); font-size: 0.7rem; color: var(--text3); letter-spacing: 0.08em; }
+.gi span { color: var(--gold); font-size: 0.82rem; }
+.round-badge { background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 5px 14px; font-family: var(--font-t); font-size: 1.1rem; color: var(--gold); letter-spacing: 0.1em; }
 
-.ready-waiting-bar {
-  font-family: var(--font-mono); font-size: 0.75rem; color: var(--text3);
-  text-align: center; padding: 12px 0; letter-spacing: 0.1em;
-}
+/* ── PLAYER CARDS ───────────────────────────────── */
+.pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.pcard { background: var(--bg3); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; transition: border-color 0.3s, box-shadow 0.3s; position: relative; }
+.pcard.is-you  { border-left: 3px solid var(--blue); }
+.pcard.my-turn { border-color: var(--red); box-shadow: 0 0 20px rgba(192,57,43,0.2), inset 0 0 30px rgba(192,57,43,0.03); }
+.pcard.my-turn::after { content: 'GILIRAN'; position: absolute; top: 9px; right: 9px; font-family: var(--font-m); font-size: 0.56rem; color: var(--red2); letter-spacing: 0.14em; animation: blinkRed 1.2s ease-in-out infinite; }
+@keyframes blinkRed { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-/* ==================== GAME HEADER ==================== */
-.game-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
-.game-info-item { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); letter-spacing: 0.1em; }
-.game-info-item span { color: var(--gold); font-size: 0.85rem; }
-.round-badge { background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 5px 14px; font-family: var(--font-title); font-size: 1.1rem; color: var(--gold); letter-spacing: 0.1em; }
+.ph { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.pav { width: 28px; height: 28px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; flex-shrink: 0; }
+.pname { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.you-tag { font-size: 0.52rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.5); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.08em; flex-shrink: 0; }
 
-/* ==================== PLAYER CARDS ==================== */
-.players-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-
-.player-card {
-  background: var(--bg3); border: 1.5px solid var(--border);
-  border-radius: 10px; padding: 12px;
-  transition: border-color 0.3s, box-shadow 0.3s; position: relative;
-}
-.player-card.is-you { border-left: 3px solid var(--blue); }
-.player-card.active-turn {
-  border-color: var(--red);
-  box-shadow: 0 0 20px rgba(192,57,43,0.2), inset 0 0 30px rgba(192,57,43,0.03);
-}
-.player-card.active-turn::after {
-  content: 'GILIRAN';
-  position: absolute; top: 9px; right: 9px;
-  font-family: var(--font-mono); font-size: 0.58rem;
-  color: var(--red2); letter-spacing: 0.15em;
-  animation: blinkText 1.2s ease-in-out infinite;
-}
-@keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-
-.player-header { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
-.player-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
-.player-name-text { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.you-badge { font-size: 0.55rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.5); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.1em; flex-shrink: 0; }
-
+/* Hearts */
 .hp-row { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
 .hearts { display: flex; gap: 3px; }
 .heart { width: 16px; height: 16px; display: inline-block; position: relative; transition: all 0.3s; }
@@ -213,430 +143,427 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important
 .heart.alive::before { width: 10px; height: 10px; left: 0; top: 2px; }
 .heart.alive::after  { width: 10px; height: 10px; right: 0; top: 2px; }
 .heart.alive { background: var(--red2); transform: rotate(45deg) scale(0.78); box-shadow: 0 0 5px rgba(231,76,60,0.5); }
-.heart.dead { background: var(--bg4); transform: rotate(45deg) scale(0.65); opacity: 0.2; }
+.heart.dead  { background: var(--bg4); transform: rotate(45deg) scale(0.65); opacity: 0.2; }
 .heart.dead::before, .heart.dead::after { content: ''; position: absolute; background: var(--border2); border-radius: 50% 50% 0 0; }
 .heart.dead::before { width: 10px; height: 10px; left: 0; top: 2px; }
 .heart.dead::after  { width: 10px; height: 10px; right: 0; top: 2px; }
-.hp-num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text3); margin-left: 4px; }
+.hp-num { font-family: var(--font-m); font-size: 0.72rem; color: var(--text3); margin-left: 4px; }
 
-.inventory-label { font-size: 0.6rem; color: var(--text3); letter-spacing: 0.15em; margin-bottom: 5px; }
-.inventory-row { display: flex; flex-wrap: wrap; gap: 4px; min-height: 32px; }
+/* Inventory */
+.inv-label { font-size: 0.58rem; color: var(--text3); letter-spacing: 0.14em; margin-bottom: 5px; }
+.inv-row   { display: flex; flex-wrap: wrap; gap: 4px; min-height: 30px; }
+.ibtn { background: var(--bg4); border: 1px solid var(--border2); border-radius: 6px; padding: 4px 6px; font-size: 0.92rem; cursor: pointer; transition: all 0.15s; min-width: 34px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ibtn .itag { font-family: var(--font-m); font-size: 0.46rem; color: var(--text3); }
+.ibtn:hover:not(:disabled) { background: var(--bg3); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(212,168,67,0.2); }
+.ibtn.enemy { cursor: default; opacity: 0.45; }
+.ibtn:disabled:not(.enemy) { opacity: 0.3; cursor: not-allowed; }
+.no-items { font-family: var(--font-m); font-size: 0.66rem; color: var(--text3); align-self: center; }
 
-.item-btn {
-  background: var(--bg4); border: 1px solid var(--border2);
-  border-radius: 6px; padding: 4px 7px; font-size: 0.95rem; cursor: pointer;
-  transition: all 0.15s; min-width: 36px;
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-}
-.item-btn .item-tag { font-family: var(--font-mono); font-size: 0.48rem; color: var(--text3); }
-.item-btn:hover:not(:disabled) { background: var(--bg3); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(212,168,67,0.2); }
-.item-btn.enemy-item { cursor: default; opacity: 0.5; }
-.item-btn:disabled:not(.enemy-item) { opacity: 0.3; cursor: not-allowed; }
-.no-items { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); align-self: center; padding: 4px 0; }
+/* Effects */
+.fx-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; min-height: 18px; }
+.fx-tag { font-family: var(--font-m); font-size: 0.56rem; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.07em; }
+.fx-double  { background: rgba(230,126,34,0.15); border: 1px solid rgba(230,126,34,0.4); color: #f39c12; }
+.fx-blocked { background: rgba(90,90,90,0.15); border: 1px solid rgba(90,90,90,0.4); color: var(--text3); }
 
-.effects-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; min-height: 18px; }
-.effect-tag { font-family: var(--font-mono); font-size: 0.58rem; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.08em; }
-.effect-double  { background: rgba(230,126,34,0.15); border: 1px solid rgba(230,126,34,0.4); color: #f39c12; }
-.effect-blocked { background: rgba(90,90,90,0.15); border: 1px solid rgba(90,90,90,0.4); color: var(--text3); }
-
-/* ==================== CHAMBER ==================== */
+/* ── CHAMBER ────────────────────────────────────── */
 .chamber-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
+.ch-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 12px; }
+.ch-left { flex: 1; }
+.ch-label-sm { font-size: 0.62rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 6px; }
 
-.chamber-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 12px; }
+/* Ratio display */
+.ratio-block { display: flex; align-items: baseline; gap: 5px; margin-bottom: 2px; }
+.ratio-bullets { font-family: var(--font-t); font-size: 2.4rem; line-height: 1; color: var(--red2); text-shadow: 0 0 18px rgba(231,76,60,0.4); }
+.ratio-sep    { font-family: var(--font-m); font-size: 1.1rem; color: var(--text3); }
+.ratio-slots  { font-family: var(--font-t); font-size: 2.4rem; line-height: 1; color: var(--text3); }
+.ratio-sub    { font-family: var(--font-m); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.12em; margin-top: 2px; }
 
-.chamber-left { flex: 1; }
-.chamber-title-sm { font-size: 0.65rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 6px; }
+/* Ratio bar (simple color strip, no %) */
+.ratio-bar-wrap  { margin-top: 8px; }
+.ratio-bar-track { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+.ratio-bar-fill  { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
 
-/* Bullet ratio display */
-.bullet-ratio {
-  display: flex; align-items: center; gap: 8px;
-}
-.ratio-count {
-  font-family: var(--font-title); font-size: 1.5rem; letter-spacing: 0.05em;
-  color: var(--red2);
-  text-shadow: 0 0 16px rgba(231,76,60,0.4);
-  line-height: 1;
-}
-.ratio-sep { color: var(--text3); font-family: var(--font-mono); font-size: 0.9rem; }
-.ratio-total { font-family: var(--font-title); font-size: 1.5rem; color: var(--text3); line-height: 1; }
-.ratio-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.1em; }
+.ch-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.ch-counter { font-family: var(--font-m); font-size: 0.7rem; color: var(--text3); white-space: nowrap; }
+.ch-counter span { color: var(--gold); }
+.ch-round-info { font-family: var(--font-m); font-size: 0.6rem; color: var(--text3); text-align: right; }
 
-/* Probability bar */
-.prob-bar-wrap { margin-top: 8px; }
-.prob-bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
-.prob-bar-label span { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); }
-.prob-bar-label .prob-val { color: var(--gold); }
-.prob-bar-track { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
-.prob-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, var(--red), var(--red2)); }
+/* Slots */
+.ch-slots { display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.slot { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); font-family: var(--font-m); }
+.slot-con { width: 6px; height: 2px; background: var(--border); flex-shrink: 0; }
+.s-fired   { background: var(--bg); border: 1.5px solid var(--border); color: var(--text3); font-size: 0.72rem; }
+.s-current { background: radial-gradient(circle, #2a0a08, #1a0505); border: 2px solid var(--red); color: var(--red2); font-size: 1.1rem; box-shadow: 0 0 20px rgba(192,57,43,0.4), inset 0 0 15px rgba(192,57,43,0.1); animation: chPulse 1.8s ease-in-out infinite; }
+.s-unknown { background: var(--bg3); border: 1.5px dashed var(--border2); color: var(--text3); font-size: 0.82rem; }
+@keyframes chPulse { 0%,100%{box-shadow:0 0 12px rgba(192,57,43,0.3)} 50%{box-shadow:0 0 28px rgba(192,57,43,0.6)} }
 
-.chamber-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.chamber-counter { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); white-space: nowrap; }
-.chamber-counter span { color: var(--gold); }
-
-.chamber-slots { display: flex; gap: 6px; justify-content: center; align-items: center; }
-
-.slot { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; font-family: var(--font-mono); }
-.slot-connector { width: 6px; height: 2px; background: var(--border); flex-shrink: 0; }
-
-.slot-fired   { background: var(--bg); border: 1.5px solid var(--border); color: var(--text3); font-size: 0.75rem; }
-.slot-current { background: radial-gradient(circle, #2a0a08, #1a0505); border: 2px solid var(--red); color: var(--red2); box-shadow: 0 0 20px rgba(192,57,43,0.4), inset 0 0 15px rgba(192,57,43,0.1); animation: chamberPulse 1.8s ease-in-out infinite; font-size: 1.1rem; }
-.slot-unknown { background: var(--bg3); border: 1.5px dashed var(--border2); color: var(--text3); font-size: 0.85rem; }
-@keyframes chamberPulse { 0%, 100% { box-shadow: 0 0 12px rgba(192,57,43,0.3); } 50% { box-shadow: 0 0 28px rgba(192,57,43,0.6); } }
-
-/* ==================== SHOOT BUTTONS ==================== */
+/* ── SHOOT BUTTONS ──────────────────────────────── */
 .shoot-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-
-.btn-shoot {
-  padding: 14px 12px; font-size: 0.95rem; font-weight: 600; border-radius: 8px;
-  letter-spacing: 0.06em; display: flex; flex-direction: column; align-items: center; gap: 4px;
-  transition: all 0.2s; position: relative; overflow: hidden;
-}
+.btn-shoot { padding: 14px 12px; font-size: 0.95rem; font-weight: 600; border-radius: 8px; letter-spacing: 0.06em; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; overflow: hidden; }
 .btn-shoot::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none; }
+.bss { background: linear-gradient(135deg, #5a3a00, #3a2600); border: 1px solid #6b4500; color: #d4a843; }
+.bss:hover:not(:disabled) { background: linear-gradient(135deg, #7a5000, #5a3600); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,168,67,0.2); }
+.bse { background: linear-gradient(135deg, #4a0a08, #2a0505); border: 1px solid #6a1010; color: #e74c3c; }
+.bse:hover:not(:disabled) { background: linear-gradient(135deg, #6a1010, #4a0808); border-color: var(--red2); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.3); }
+.shoot-icon  { font-size: 1.4rem; }
+.shoot-label { font-size: 0.7rem; letter-spacing: 0.1em; }
 
-.btn-shoot-self  { background: linear-gradient(135deg, #5a3a00, #3a2600); border: 1px solid #6b4500; color: #d4a843; }
-.btn-shoot-self:hover:not(:disabled)  { background: linear-gradient(135deg, #7a5000, #5a3600); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,168,67,0.2); }
-
-.btn-shoot-enemy { background: linear-gradient(135deg, #4a0a08, #2a0505); border: 1px solid #6a1010; color: #e74c3c; }
-.btn-shoot-enemy:hover:not(:disabled) { background: linear-gradient(135deg, #6a1010, #4a0808); border-color: var(--red2); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.3); }
-
-.btn-shoot .shoot-icon  { font-size: 1.4rem; }
-.btn-shoot .shoot-label { font-size: 0.72rem; letter-spacing: 0.1em; }
-
-/* ==================== BOTTOM PANELS (LOG + CHAT) ==================== */
+/* ── BOTTOM PANELS (LOG + CHAT) ─────────────────── */
 .bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-
-@media (max-width: 580px) { .bottom-panels { grid-template-columns: 1fr; } }
-
 .panel-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
-.panel-header { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.2em; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
-
-/* Log */
-.log-body { flex: 1; height: 130px; overflow-y: auto; padding: 7px 10px; }
-.log-entry { font-family: var(--font-mono); font-size: 0.72rem; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.025); line-height: 1.5; color: var(--text2); opacity: 0; animation: fadeInLog 0.4s forwards; }
+.panel-hd  { padding: 7px 12px; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.2em; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.log-body  { flex: 1; height: 130px; overflow-y: auto; padding: 6px 10px; }
+.log-entry { font-family: var(--font-m); font-size: 0.7rem; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.025); line-height: 1.5; color: var(--text2); opacity: 0; animation: fadeIn 0.4s forwards; }
 .log-entry:last-child { border-bottom: none; }
-@keyframes fadeInLog { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:none} }
 
-/* Chat */
-.chat-body { flex: 1; height: 130px; overflow-y: auto; padding: 7px 10px; }
+.chat-body { flex: 1; height: 130px; overflow-y: auto; padding: 6px 10px; }
+.chat-msg  { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px; animation: fadeIn 0.3s forwards; opacity: 0; }
+.cm-av { width: 20px; height: 20px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; margin-top: 1px; }
+.cm-bd { flex: 1; min-width: 0; }
+.cm-name { font-family: var(--font-m); font-size: 0.6rem; color: var(--text3); margin-bottom: 2px; }
+.cm-name.mine   { color: var(--blue); }
+.cm-name.theirs { color: var(--gold); }
+.cm-text { font-family: var(--font-m); font-size: 0.73rem; color: var(--text); background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; word-break: break-word; line-height: 1.4; display: inline-block; max-width: 100%; }
+.chat-msg.mine .cm-text { background: rgba(41,128,185,0.12); border-color: rgba(41,128,185,0.25); color: #b8d8ef; }
+.chat-sys { font-family: var(--font-m); font-size: 0.63rem; color: var(--text3); text-align: center; padding: 3px 0; font-style: italic; }
 
-.chat-msg {
-  display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px;
-  animation: fadeInLog 0.3s forwards; opacity: 0;
-}
-.chat-msg-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; margin-top: 1px; }
-.chat-msg-body   { flex: 1; min-width: 0; }
-.chat-msg-name   { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-bottom: 2px; letter-spacing: 0.05em; }
-.chat-msg-name.mine { color: var(--blue); }
-.chat-msg-name.theirs { color: var(--gold); }
-.chat-msg-text   { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text); background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; word-break: break-word; line-height: 1.4; display: inline-block; max-width: 100%; }
-.chat-msg.mine .chat-msg-text { background: rgba(41,128,185,0.12); border-color: rgba(41,128,185,0.25); color: #b8d8ef; }
-.chat-system-msg { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); text-align: center; padding: 3px 0; letter-spacing: 0.08em; font-style: italic; }
-
-.chat-input-row { display: flex; gap: 6px; padding: 7px 10px; border-top: 1px solid var(--border); flex-shrink: 0; }
-.chat-input {
-  flex: 1; background: var(--bg3); border: 1px solid var(--border2);
-  border-radius: 5px; color: var(--text); padding: 6px 10px;
-  font-family: var(--font-mono); font-size: 0.78rem; outline: none;
-  transition: border-color 0.2s; margin: 0;
-  min-width: 0;
-}
-.chat-input:focus { border-color: var(--blue); }
-.chat-input::placeholder { color: var(--text3); }
-.btn-send {
-  background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.35);
-  color: #5ba4d0; padding: 6px 10px; font-size: 0.8rem; border-radius: 5px;
-  cursor: pointer; flex-shrink: 0; transition: all 0.15s;
-  font-family: var(--font-mono); letter-spacing: 0;
-}
+.chat-input-row { display: flex; gap: 6px; padding: 6px 10px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.ci { flex: 1; background: var(--bg3); border: 1px solid var(--border2); border-radius: 5px; color: var(--text); padding: 6px 10px; font-family: var(--font-m); font-size: 0.76rem; outline: none; transition: border-color 0.2s; margin: 0; min-width: 0; }
+.ci:focus { border-color: var(--blue); }
+.ci::placeholder { color: var(--text3); }
+.btn-send { background: rgba(41,128,185,0.18); border: 1px solid rgba(41,128,185,0.32); color: #5ba4d0; padding: 6px 10px; font-size: 0.78rem; border-radius: 5px; cursor: pointer; flex-shrink: 0; transition: all 0.15s; font-family: var(--font-m); letter-spacing: 0; }
 .btn-send:hover:not(:disabled) { background: rgba(41,128,185,0.3); border-color: var(--blue); }
 .btn-send:disabled { opacity: 0.3; cursor: not-allowed; }
 
-/* Scrollbars */
 .log-body::-webkit-scrollbar, .chat-body::-webkit-scrollbar { width: 3px; }
 .log-body::-webkit-scrollbar-track, .chat-body::-webkit-scrollbar-track { background: transparent; }
 .log-body::-webkit-scrollbar-thumb, .chat-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-/* ==================== TOAST ==================== */
+/* ── TOAST (small) ──────────────────────────────── */
 #toast {
   position: fixed; top: 20px; left: 50%;
   transform: translateX(-50%) translateY(-120px);
   background: var(--bg3); border: 1.5px solid var(--red);
-  border-radius: 10px; padding: 13px 22px;
-  font-family: var(--font-mono); font-size: 0.95rem;
-  z-index: 9999; transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.45s;
-  text-align: center; pointer-events: none; min-width: 180px;
+  border-radius: 10px; padding: 12px 22px;
+  font-family: var(--font-m); font-size: 0.92rem;
+  z-index: 9999; transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.45s;
+  text-align: center; pointer-events: none; min-width: 160px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0;
 }
-#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-#toast.toast-gold  { border-color: var(--gold); }
-#toast.toast-blank { border-color: var(--text3); }
-#toast.toast-green { border-color: var(--green); }
+#toast.show   { transform: translateX(-50%) translateY(0); opacity: 1; }
+#toast.t-gold { border-color: var(--gold); }
+#toast.t-blank{ border-color: var(--text3); }
+#toast.t-green{ border-color: var(--green); }
 
-/* ==================== ANIMATIONS ==================== */
-@keyframes gunshotShake {
-  0%   { transform: translate(0,0) rotate(0deg); }
-  10%  { transform: translate(-4px,-3px) rotate(-0.5deg); }
-  25%  { transform: translate(4px,2px) rotate(0.5deg); }
-  40%  { transform: translate(-3px,1px) rotate(0deg); }
-  60%  { transform: translate(3px,-2px) rotate(0.3deg); }
-  80%  { transform: translate(-1px,0) rotate(-0.1deg); }
-  100% { transform: translate(0,0) rotate(0deg); }
+/* ── BIG NOTIFICATION OVERLAY ───────────────────── */
+#notif-overlay {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 8000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
-.shake { animation: gunshotShake 0.4s ease; }
+#notif-overlay.show { opacity: 1; }
 
-#flash-overlay { position: fixed; inset: 0; background: rgba(200,30,10,0.14); pointer-events: none; z-index: 998; opacity: 0; transition: opacity 0.1s; }
-#flash-overlay.flash { opacity: 1; }
+#notif-box {
+  background: var(--bg2);
+  border-radius: 16px;
+  padding: 28px 40px;
+  text-align: center;
+  max-width: 420px; width: 90%;
+  position: relative;
+  transform: scale(0.7) translateY(20px);
+  transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+}
+#notif-overlay.show #notif-box { transform: scale(1) translateY(0); }
 
-/* ==================== FINISHED ==================== */
-.finished-card { text-align: center; padding: 36px 20px; }
-.winner-trophy { font-size: 5rem; margin-bottom: 14px; }
-.winner-title { font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 6px; }
-.winner-sub { color: var(--text3); font-family: var(--font-mono); font-size: 0.82rem; }
-.stats-row { display: flex; justify-content: center; gap: 28px; margin: 18px 0; padding: 14px; background: var(--bg2); border-radius: 8px; border: 1px solid var(--border); }
-.stat-item { text-align: center; }
-.stat-label { font-size: 0.62rem; color: var(--text3); letter-spacing: 0.15em; margin-bottom: 3px; }
-.stat-value { font-family: var(--font-mono); font-size: 1.15rem; color: var(--gold); }
+/* notif backdrop blur */
+#notif-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 7999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(3px);
+}
+#notif-backdrop.show { opacity: 1; }
 
-/* ==================== MISC ==================== */
-.text-center { text-align: center; }
-.error-text { color: var(--red2); font-family: var(--font-mono); font-size: 0.78rem; margin-top: 5px; }
+.notif-icon  { font-size: 3.5rem; margin-bottom: 10px; line-height: 1; }
+.notif-title { font-family: var(--font-t); font-size: 2.2rem; letter-spacing: 0.06em; margin-bottom: 6px; line-height: 1.1; }
+.notif-sub   { font-family: var(--font-m); font-size: 0.82rem; color: var(--text2); line-height: 1.7; margin-top: 4px; }
+.notif-items { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.notif-item-chip {
+  background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  min-width: 52px;
+}
+.notif-item-chip .ni-emoji { font-size: 1.4rem; }
+.notif-item-chip .ni-name  { font-family: var(--font-m); font-size: 0.58rem; color: var(--text3); }
 
-/* ==================== TOOLTIP ==================== */
-#item-tooltip {
-  position: fixed; display: none; z-index: 9998;
-  background: var(--bg3); border: 1px solid var(--border2);
-  border-radius: 6px; padding: 8px 12px;
-  font-family: var(--font-mono); font-size: 0.73rem;
-  color: var(--text2); pointer-events: none;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  max-width: 180px; line-height: 1.5;
+/* notif color themes */
+.notif-start  { border: 2px solid var(--green);  box-shadow: 0 0 40px rgba(39,174,96,0.3),  0 20px 60px rgba(0,0,0,0.7); }
+.notif-round  { border: 2px solid var(--gold);   box-shadow: 0 0 40px rgba(212,168,67,0.3), 0 20px 60px rgba(0,0,0,0.7); }
+.notif-items-notif { border: 2px solid var(--blue);  box-shadow: 0 0 40px rgba(41,128,185,0.3),  0 20px 60px rgba(0,0,0,0.7); }
+.notif-dead   { border: 2px solid var(--red);    box-shadow: 0 0 40px rgba(192,57,43,0.4),  0 20px 60px rgba(0,0,0,0.7); }
+
+.notif-progress {
+  width: 100%; height: 3px; background: var(--bg4); border-radius: 2px;
+  margin-top: 16px; overflow: hidden;
+}
+.notif-progress-bar {
+  height: 100%; border-radius: 2px; background: currentColor;
+  transition: width linear;
 }
 
-/* ==================== RESPONSIVE ==================== */
-@media (max-width: 520px) {
-  h1 { font-size: 2.3rem; }
-  .players-grid { grid-template-columns: 1fr; }
-  .ready-players-grid { grid-template-columns: 1fr; }
+/* ── ANIMATIONS ─────────────────────────────────── */
+@keyframes shake {
+  0%{transform:translate(0,0) rotate(0deg)} 10%{transform:translate(-4px,-3px) rotate(-0.5deg)}
+  25%{transform:translate(4px,2px) rotate(0.5deg)} 40%{transform:translate(-3px,1px) rotate(0deg)}
+  60%{transform:translate(3px,-2px) rotate(0.3deg)} 80%{transform:translate(-1px,0)}
+  100%{transform:translate(0,0)}
+}
+.do-shake { animation: shake 0.4s ease; }
+
+#flash { position: fixed; inset: 0; background: rgba(200,30,10,0.14); pointer-events: none; z-index: 998; opacity: 0; transition: opacity 0.1s; }
+#flash.on { opacity: 1; }
+
+/* ── FINISHED ───────────────────────────────────── */
+.fin-card { text-align: center; padding: 36px 20px; }
+.fin-trophy { font-size: 5rem; margin-bottom: 14px; }
+.fin-title  { font-family: var(--font-t); font-size: 2.5rem; margin-bottom: 6px; }
+.fin-sub    { color: var(--text3); font-family: var(--font-m); font-size: 0.8rem; }
+.stats-row  { display: flex; justify-content: center; gap: 28px; margin: 18px 0; padding: 14px; background: var(--bg2); border-radius: 8px; border: 1px solid var(--border); }
+.stat-item  { text-align: center; }
+.stat-lbl   { font-size: 0.6rem; color: var(--text3); letter-spacing: 0.14em; margin-bottom: 3px; }
+.stat-val   { font-family: var(--font-m); font-size: 1.1rem; color: var(--gold); }
+
+/* ── TOOLTIP ────────────────────────────────────── */
+#tip { position: fixed; display: none; z-index: 9998; background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 7px 11px; font-family: var(--font-m); font-size: 0.72rem; color: var(--text2); pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,0.4); max-width: 180px; line-height: 1.5; }
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media(max-width:520px){
+  h1 { font-size: 2.2rem; }
+  .pgrid { grid-template-columns: 1fr; }
+  .ready-grid { grid-template-columns: 1fr; }
   .shoot-panel { grid-template-columns: 1fr; }
-  .slot { width: 40px; height: 40px; }
-  .slot-connector { width: 4px; }
+  .bottom-panels { grid-template-columns: 1fr; }
+  .slot { width: 42px; height: 42px; }
+  .slot-con { width: 4px; }
   .screen { padding: 10px; }
   .btn-shoot { flex-direction: row; padding: 11px 14px; }
-  .btn-shoot .shoot-icon { font-size: 1.1rem; }
+  .shoot-icon { font-size: 1.1rem; }
+  #notif-box { padding: 22px 24px; }
+  .notif-title { font-size: 1.7rem; }
 }
 </style>
 </head>
 <body>
-<div id="flash-overlay"></div>
 
-<!-- ========== HEADER ========== -->
+<div id="flash"></div>
+<div id="notif-backdrop"></div>
+<div id="notif-overlay">
+  <div id="notif-box">
+    <div class="notif-icon" id="ni-icon"></div>
+    <div class="notif-title" id="ni-title"></div>
+    <div class="notif-sub" id="ni-sub"></div>
+    <div class="notif-items" id="ni-items"></div>
+    <div class="notif-progress"><div class="notif-progress-bar" id="ni-prog"></div></div>
+  </div>
+</div>
+<div id="toast"></div>
+<div id="tip"></div>
+
+<!-- ========== SITE HEADER ========== -->
 <div class="site-header">
   <h1>RUSSIAN ROULETTE</h1>
   <p>MULTIPLAYER • REALTIME • TURN-BASED</p>
 </div>
 
-<!-- ========== SCREEN: LOBBY ========== -->
+<!-- ========== LOBBY ========== -->
 <div id="screen-lobby" class="screen">
   <div class="card">
     <h2 style="margin-bottom:16px;color:var(--red2)">— Masuk ke Arena —</h2>
-    <label style="font-size:0.72rem;color:var(--text3);letter-spacing:0.15em">NAMA PEMAIN</label>
-    <input type="text" id="input-name" placeholder="Masukkan namamu..." maxlength="16" autocomplete="off">
-    <div id="lobby-error" class="error-text hidden"></div>
-    <div class="btn-row mt-12">
+    <label style="font-size:0.7rem;color:var(--text3);letter-spacing:0.14em">NAMA PEMAIN</label>
+    <input type="text" id="inp-name" placeholder="Masukkan namamu..." maxlength="16" autocomplete="off">
+    <div id="lb-err" class="error-text hidden"></div>
+    <div class="btn-row mt12">
       <button class="btn-red btn-full" onclick="createRoom()">➕ BUAT ROOM BARU</button>
     </div>
-    <div class="lobby-divider">ATAU BERGABUNG</div>
-    <label style="font-size:0.72rem;color:var(--text3);letter-spacing:0.15em">KODE ROOM</label>
-    <input type="text" id="input-code" class="code-input" placeholder="XXXX" maxlength="4" autocomplete="off">
-    <button class="btn-ghost btn-full mt-8" onclick="joinRoom()">🚪 JOIN ROOM</button>
+    <div class="divider">ATAU BERGABUNG</div>
+    <label style="font-size:0.7rem;color:var(--text3);letter-spacing:0.14em">KODE ROOM</label>
+    <input type="text" id="inp-code" class="code-input" placeholder="XXXX" maxlength="4" autocomplete="off">
+    <button class="btn-ghost btn-full mt8" onclick="joinRoom()">🚪 JOIN ROOM</button>
   </div>
-  <div class="card card-dimmed" style="font-size:0.78rem;color:var(--text3);line-height:1.9;margin-top:8px">
-    <h3 style="color:var(--text2);margin-bottom:8px">🎯 CARA MAIN</h3>
-    <div>• HP awal: <span style="color:var(--text)">5</span> | Gunakan <span style="color:var(--text)">item</span> sebelum menembak</div>
+  <div class="card card-dim" style="font-size:0.76rem;color:var(--text3);line-height:2">
+    <div style="font-weight:600;font-size:0.8rem;color:var(--text2);letter-spacing:0.12em;margin-bottom:6px">🎯 CARA MAIN</div>
+    <div>• HP awal: <span style="color:var(--text)">5</span> &nbsp;|&nbsp; Chamber mulai dari <span style="color:var(--text)">3 slot</span></div>
+    <div>• Setiap ronde slot bertambah, maks <span style="color:var(--gold)">6 slot</span> rasio maks <span style="color:var(--red2)">4:6</span></div>
     <div>• Tembak diri dengan <span style="color:var(--green)">blank</span> → giliran bertahan</div>
-    <div>• Ronde habis → peluru <span style="color:var(--red2)">bertambah</span> & dapat item baru</div>
-    <div>• HP ≤ 0 → <span style="color:var(--red2)">MATI</span></div>
+    <div>• Gunakan item sebelum menembak</div>
   </div>
 </div>
 
-<!-- ========== SCREEN: WAITING (P1 menunggu P2) ========== -->
+<!-- ========== WAITING (P1 nunggu P2) ========== -->
 <div id="screen-waiting" class="screen hidden">
-  <div class="card text-center">
+  <div class="card tc">
     <h2 style="color:var(--text2);margin-bottom:6px">⏳ Menunggu Pemain 2</h2>
-    <p style="color:var(--text3);font-family:var(--font-mono);font-size:0.78rem;margin-bottom:14px">Bagikan kode ini kepada temanmu</p>
-    <div class="room-code-box">
-      <div class="room-code-label">KODE ROOM</div>
-      <div class="room-code-value" id="display-room-code"></div>
+    <p style="color:var(--text3);font-family:var(--font-m);font-size:0.76rem;margin-bottom:12px">Bagikan kode ini ke temanmu</p>
+    <div class="code-box">
+      <div class="code-box-label">KODE ROOM</div>
+      <div class="code-box-val" id="disp-code"></div>
     </div>
-    <div style="margin-top:12px;font-family:var(--font-mono);font-size:0.78rem;color:var(--text3)">
+    <div style="margin-top:12px;font-family:var(--font-m);font-size:0.76rem;color:var(--text3)">
       <span class="pulse-dot"></span>Menunggu koneksi...
     </div>
   </div>
 </div>
 
-<!-- ========== SCREEN: READY CHECK ========== -->
+<!-- ========== READY CHECK ========== -->
 <div id="screen-ready" class="screen hidden">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
       <h2 style="color:var(--gold)">⚔️ Lobi Pertempuran</h2>
-      <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text3)">ROOM: <span style="color:var(--gold)" id="ready-room-code"></span></div>
+      <div style="font-family:var(--font-m);font-size:0.68rem;color:var(--text3)">ROOM: <span style="color:var(--gold)" id="ready-code"></span></div>
     </div>
-    <p style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text3);margin-bottom:2px">Kedua pemain harus READY untuk memulai</p>
-
-    <div class="ready-players-grid">
-      <!-- P1 card (opponent or self) -->
-      <div id="ready-card-p1" class="ready-player-card">
+    <p style="font-family:var(--font-m);font-size:0.72rem;color:var(--text3);margin-bottom:2px">Kedua pemain harus READY untuk memulai</p>
+    <div class="ready-grid">
+      <div id="rcard-p1" class="ready-card">
         <div class="ready-avatar">🤠</div>
-        <div class="ready-player-name" id="ready-name-p1">—</div>
-        <div><span class="ready-status not-ready" id="ready-status-p1">⬜ Belum Ready</span></div>
+        <div class="ready-pname" id="rname-p1">—</div>
+        <div><span class="ready-badge rb-not" id="rst-p1">⬜ Belum Ready</span></div>
       </div>
-      <!-- P2 card -->
-      <div id="ready-card-p2" class="ready-player-card">
+      <div id="rcard-p2" class="ready-card">
         <div class="ready-avatar">😈</div>
-        <div class="ready-player-name" id="ready-name-p2">—</div>
-        <div><span class="ready-status waiting-player" id="ready-status-p2">🔌 Menunggu...</span></div>
+        <div class="ready-pname" id="rname-p2">—</div>
+        <div><span class="ready-badge rb-waiting" id="rst-p2">🔌 Menunggu...</span></div>
       </div>
     </div>
-
-    <div id="ready-btn-wrapper" class="text-center">
-      <button class="btn-green" id="btn-ready" onclick="setReady()" style="padding:14px 48px;font-size:1rem;margin-bottom:10px">
-        ✅ READY!
-      </button>
+    <div class="tc">
+      <button class="btn-green" id="btn-ready" onclick="setReady()" style="padding:13px 48px;font-size:0.95rem">✅ READY!</button>
     </div>
-
-    <div class="ready-waiting-bar" id="ready-waiting-msg">
+    <div class="ready-foot" id="ready-foot">
       <span class="pulse-dot"></span>Menunggu kedua pemain ready...
     </div>
   </div>
-
-  <div class="card card-dimmed" style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);line-height:2.1">
-    <div>⚔️ Ronde 1 → <span style="color:var(--red2)">3 peluru</span> dari 6 slot (50%)</div>
-    <div>⚔️ Ronde 2 → <span style="color:var(--red2)">4 peluru</span> dari 6 slot (67%)</div>
-    <div>⚔️ Ronde 3+ → <span style="color:var(--red2)">5 peluru</span> dari 6 slot (83%)</div>
+  <div class="card card-dim" style="font-size:0.7rem;color:var(--text3);font-family:var(--font-m);line-height:2.2">
+    <div>🔫 Ronde 1 → <span style="color:var(--text)">3 slot</span> chamber, <span style="color:var(--red2)">1 peluru</span> (rasio 1:3)</div>
+    <div>🔫 Ronde 2 → <span style="color:var(--text)">4 slot</span> chamber, <span style="color:var(--red2)">2 peluru</span> (rasio 2:4)</div>
+    <div>🔫 Ronde 3 → <span style="color:var(--text)">5 slot</span> chamber, <span style="color:var(--red2)">3 peluru</span> (rasio 3:5)</div>
+    <div>🔫 Ronde 4+ → <span style="color:var(--text)">6 slot</span> chamber, <span style="color:var(--red2)">4 peluru</span> (rasio maks 4:6)</div>
   </div>
 </div>
 
-<!-- ========== SCREEN: GAME ========== -->
+<!-- ========== GAME ========== -->
 <div id="screen-game" class="screen hidden">
   <div class="game-header">
-    <div class="game-info-item">ROOM: <span id="game-room-code">—</span></div>
-    <div class="round-badge">RONDE <span id="game-round">1</span></div>
-    <div class="game-info-item" id="turn-label">—</div>
+    <div class="gi">ROOM: <span id="g-code">—</span></div>
+    <div class="round-badge">RONDE <span id="g-round">1</span></div>
+    <div class="gi" id="g-turn">—</div>
   </div>
 
-  <div class="players-grid">
+  <div class="pgrid">
     <!-- Opponent -->
-    <div id="card-opponent" class="player-card">
-      <div class="player-header">
-        <div class="player-avatar" id="opp-avatar">👤</div>
-        <div class="player-name-text" id="opp-name">—</div>
+    <div id="pcard-opp" class="pcard">
+      <div class="ph">
+        <div class="pav" id="opp-av">👤</div>
+        <div class="pname" id="opp-name">—</div>
       </div>
-      <div class="hp-row">
-        <div class="hearts" id="opp-hearts"></div>
-        <div class="hp-num" id="opp-hp-num"></div>
-      </div>
-      <div class="inventory-label">INVENTORY MUSUH</div>
-      <div class="inventory-row" id="opp-inventory"></div>
-      <div class="effects-row" id="opp-effects"></div>
+      <div class="hp-row"><div class="hearts" id="opp-hearts"></div><div class="hp-num" id="opp-hpn"></div></div>
+      <div class="inv-label">INVENTORY MUSUH</div>
+      <div class="inv-row" id="opp-inv"></div>
+      <div class="fx-row" id="opp-fx"></div>
     </div>
     <!-- Self -->
-    <div id="card-self" class="player-card is-you">
-      <div class="player-header">
-        <div class="player-avatar" id="self-avatar">👤</div>
-        <div class="player-name-text" id="self-name">—</div>
-        <span class="you-badge">KAMU</span>
+    <div id="pcard-self" class="pcard is-you">
+      <div class="ph">
+        <div class="pav" id="self-av">👤</div>
+        <div class="pname" id="self-name">—</div>
+        <span class="you-tag">KAMU</span>
       </div>
-      <div class="hp-row">
-        <div class="hearts" id="self-hearts"></div>
-        <div class="hp-num" id="self-hp-num"></div>
-      </div>
-      <div class="inventory-label">INVENTORY <span style="color:var(--text3);font-size:0.55rem">(KLIK PAKAI)</span></div>
-      <div class="inventory-row" id="self-inventory"></div>
-      <div class="effects-row" id="self-effects"></div>
+      <div class="hp-row"><div class="hearts" id="self-hearts"></div><div class="hp-num" id="self-hpn"></div></div>
+      <div class="inv-label">INVENTORY <span style="font-size:0.52rem;color:var(--text3)">(KLIK PAKAI)</span></div>
+      <div class="inv-row" id="self-inv"></div>
+      <div class="fx-row" id="self-fx"></div>
     </div>
   </div>
 
-  <!-- Chamber with bullet ratio -->
+  <!-- Chamber -->
   <div class="chamber-panel">
-    <div class="chamber-top-row">
-      <div class="chamber-left">
-        <div class="chamber-title-sm">🔲 CHAMBER</div>
-        <div class="bullet-ratio">
-          <span class="ratio-count" id="ratio-bullets">?</span>
-          <span class="ratio-sep">/</span>
-          <span class="ratio-total">6</span>
-          <span class="ratio-label">PELURU<br>TERSISA</span>
+    <div class="ch-top">
+      <div class="ch-left">
+        <div class="ch-label-sm">🔲 CHAMBER — RASIO PELURU</div>
+        <div class="ratio-block">
+          <span class="ratio-bullets" id="ratio-b">?</span>
+          <span class="ratio-sep">:</span>
+          <span class="ratio-slots"  id="ratio-s">?</span>
         </div>
-        <div class="prob-bar-wrap">
-          <div class="prob-bar-label">
-            <span>KEMUNGKINAN PELURU</span>
-            <span class="prob-val" id="prob-val">?%</span>
-          </div>
-          <div class="prob-bar-track">
-            <div class="prob-bar-fill" id="prob-bar" style="width:0%"></div>
+        <div class="ratio-sub" id="ratio-lbl">PELURU : SLOT TERSISA</div>
+        <div class="ratio-bar-wrap">
+          <div class="ratio-bar-track">
+            <div class="ratio-bar-fill" id="ratio-bar" style="width:0%"></div>
           </div>
         </div>
       </div>
-      <div class="chamber-right">
-        <div class="chamber-counter">SLOT <span id="chamber-idx">1</span>/6</div>
-        <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--text3)" id="round-ammo-label"></div>
+      <div class="ch-right">
+        <div class="ch-counter">SLOT <span id="ch-idx">1</span>/<span id="ch-total">3</span></div>
+        <div class="ch-round-info" id="ch-rinfo">RONDE 1</div>
+        <div class="ch-round-info" id="ch-config">3 SLOT — 1 PELURU</div>
       </div>
     </div>
-    <div class="chamber-slots" id="chamber-slots"></div>
+    <div class="ch-slots" id="ch-slots"></div>
   </div>
 
-  <!-- Shoot buttons -->
-  <div class="shoot-panel" id="shoot-panel">
-    <button class="btn-shoot btn-shoot-self" id="btn-shoot-self" onclick="handleShoot('self')" disabled>
+  <!-- Shoot -->
+  <div class="shoot-panel">
+    <button class="btn-shoot bss" id="btn-ss" onclick="handleShoot('self')" disabled>
       <span class="shoot-icon">🔫</span>
       <span class="shoot-label">TEMBAK DIRI</span>
     </button>
-    <button class="btn-shoot btn-shoot-enemy" id="btn-shoot-enemy" onclick="handleShoot('enemy')" disabled>
+    <button class="btn-shoot bse" id="btn-se" onclick="handleShoot('enemy')" disabled>
       <span class="shoot-icon">💀</span>
       <span class="shoot-label">TEMBAK MUSUH</span>
     </button>
   </div>
 
-  <!-- Log + Chat side by side -->
+  <!-- Log + Chat -->
   <div class="bottom-panels">
-    <!-- Action Log -->
     <div class="panel-box">
-      <div class="panel-header">📋 LOG AKSI</div>
+      <div class="panel-hd">📋 LOG AKSI</div>
       <div class="log-body" id="action-log"></div>
     </div>
-    <!-- Chat -->
     <div class="panel-box">
-      <div class="panel-header">💬 CHAT <span style="color:var(--blue);margin-left:4px" id="chat-notif"></span></div>
+      <div class="panel-hd">💬 CHAT</div>
       <div class="chat-body" id="chat-body"></div>
       <div class="chat-input-row">
-        <input type="text" id="chat-input" class="chat-input" placeholder="Kirim pesan..." maxlength="80" autocomplete="off">
-        <button class="btn-send" id="btn-send" onclick="sendChat()">➤</button>
+        <input type="text" id="ci" class="ci" placeholder="Kirim pesan..." maxlength="80" autocomplete="off">
+        <button class="btn-send" onclick="sendChat()">➤</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ========== SCREEN: FINISHED ========== -->
+<!-- ========== FINISHED ========== -->
 <div id="screen-finished" class="screen hidden">
-  <div class="card finished-card">
-    <div class="winner-trophy" id="finish-trophy">🏆</div>
-    <div class="winner-title" id="finish-title"></div>
-    <div class="winner-sub" id="finish-sub"></div>
-    <div class="stats-row" id="finish-stats"></div>
-    <button class="btn-red" style="padding:14px 40px;margin-top:8px" onclick="location.reload()">🔄 MAIN LAGI</button>
+  <div class="card fin-card">
+    <div class="fin-trophy" id="fin-trophy">🏆</div>
+    <div class="fin-title"  id="fin-title"></div>
+    <div class="fin-sub"    id="fin-sub"></div>
+    <div class="stats-row"  id="fin-stats"></div>
+    <button class="btn-red" style="padding:13px 38px;margin-top:8px" onclick="location.reload()">🔄 MAIN LAGI</button>
   </div>
 </div>
 
-<!-- Toast & Tooltip -->
-<div id="toast"></div>
-<div id="item-tooltip"></div>
-
 <script>
 /* ============================================================
-   ⚠️ GANTI DENGAN FIREBASE CONFIG KAMU
-   1. Buka console.firebase.google.com
-   2. Buat/pilih project → Web App → Copy config
-   3. Aktifkan Realtime Database (Test Mode)
+   ⚠️  GANTI DENGAN FIREBASE CONFIG KAMU
+   1. console.firebase.google.com
+   2. Buat project → Add Web App → copy config
+   3. Build → Realtime Database → Create (test mode)
 ============================================================ */
 const firebaseConfig = {
     apiKey: "AIzaSyAOqzh4tOPig70DwX2pWSPLU7kIL1yJ0cQ",
@@ -650,35 +577,57 @@ const firebaseConfig = {
   };
 /* ============================================================ */
 
-try { firebase.initializeApp(firebaseConfig); }
-catch(e) { console.error('Firebase init error:', e); }
-
+try { firebase.initializeApp(firebaseConfig); } catch(e) { console.error(e); }
 const db = firebase.database();
 
 // ============================================================
 // STATE
 // ============================================================
-let myPlayerId  = null;  // 'player1' | 'player2'
-let roomId      = null;
-let myName      = '';
-let roomListener = null;
+let myPid   = null;   // 'player1' | 'player2'
+let roomId  = null;
+let myName  = '';
+let roomRef = null;
+let lastData = null;
+let busy    = false;
+
+// Transition tracking (for notifications)
+let _prevStatus = null;
+let _prevRound  = null;
+let _prevTurn   = null;
+let _firstRender = true;
 let chatListener = null;
-let lastRoomData = null;
-let isProcessing = false;
-let chatMsgCount = 0;
-let chatVisible  = true;  // track if user scrolled up
+
+// ============================================================
+// CHAMBER CONFIG
+// ============================================================
+function getChamberConfig(round) {
+  // round → { slots, bullets }
+  const cfg = [
+    { slots: 3, bullets: 1 },  // ronde 1
+    { slots: 4, bullets: 2 },  // ronde 2
+    { slots: 5, bullets: 3 },  // ronde 3
+    { slots: 6, bullets: 4 },  // ronde 4+ (maks, 4:6)
+  ];
+  return cfg[Math.min(round - 1, cfg.length - 1)];
+}
+
+function generateChamber(round) {
+  const { slots, bullets } = getChamberConfig(round);
+  const arr = Array(slots).fill(0);
+  for (let i = 0; i < bullets; i++) arr[i] = 1;
+  return shuffleArr(arr);
+}
 
 // ============================================================
 // HELPERS
 // ============================================================
-function toArr(val) {
-  if (!val) return [];
-  if (Array.isArray(val)) return [...val];
-  const keys = Object.keys(val).map(Number).filter(k => !isNaN(k)).sort((a,b) => a-b);
-  return keys.map(k => val[k]);
+function toArr(v) {
+  if (!v) return [];
+  if (Array.isArray(v)) return [...v];
+  return Object.keys(v).map(Number).filter(k=>!isNaN(k)).sort((a,b)=>a-b).map(k=>v[k]);
 }
 
-function shuffleArray(arr) {
+function shuffleArr(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -687,52 +636,47 @@ function shuffleArray(arr) {
   return a;
 }
 
-function generateChamber(round) {
-  const bullets = round === 1 ? 3 : round === 2 ? 4 : 5;
-  const arr     = Array(6).fill(0);
-  for (let i = 0; i < bullets; i++) arr[i] = 1;
-  return shuffleArray(arr);
-}
-
-function giveRandomItems(inventory, amount) {
+function giveItems(inv, n) {
   const pool = ['magnifier','rokok','silet','beer','handcuff'];
-  const inv  = [...inventory];
-  for (let i = 0; i < amount; i++)
-    inv.push(pool[Math.floor(Math.random() * pool.length)]);
-  return inv;
+  const a = [...inv];
+  for (let i = 0; i < n; i++) a.push(pool[Math.floor(Math.random() * pool.length)]);
+  return a;
 }
 
-const ITEM_INFO = {
-  magnifier: { emoji: '🔍', name: 'Kaca Pembesar', desc: 'Lihat isi chamber aktif (privat)' },
-  rokok:     { emoji: '🚬', name: 'Rokok',         desc: '+1 HP (maksimal 5)' },
-  silet:     { emoji: '🔪', name: 'Silet',         desc: 'Tembakan berikutnya ×2 damage' },
-  beer:      { emoji: '🍺', name: 'Bir',           desc: 'Kocok ulang chamber + reset index' },
-  handcuff:  { emoji: '⛓️', name: 'Borgol',        desc: 'Musuh skip 1 giliran berikutnya' },
+const ITEMS = {
+  magnifier: { e:'🔍', n:'Kaca Pembesar', d:'Lihat isi slot aktif (rahasia, hanya kamu)' },
+  rokok:     { e:'🚬', n:'Rokok',         d:'+1 HP (maks 5)' },
+  silet:     { e:'🔪', n:'Silet',         d:'Tembakan berikutnya ×2 damage' },
+  beer:      { e:'🍺', n:'Bir',           d:'Kocok ulang chamber + reset index ke 0' },
+  handcuff:  { e:'⛓️', n:'Borgol',        d:'Musuh skip giliran berikutnya' },
 };
 
-function itemEmoji(i) { return ITEM_INFO[i]?.emoji || '❓'; }
-function itemName(i)  { return ITEM_INFO[i]?.name  || i; }
-function itemDesc(i)  { return ITEM_INFO[i]?.desc  || ''; }
+const ie = i => ITEMS[i]?.e || '❓';
+const iname = i => ITEMS[i]?.n || i;
+const idesc = i => ITEMS[i]?.d || '';
 
-function genRoomId() {
+function genCode() {
   const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({length:4}, () => c[Math.floor(Math.random() * c.length)]).join('');
+  return Array.from({length:4},()=>c[Math.floor(Math.random()*c.length)]).join('');
 }
 
-function showError(msg) {
-  const el = document.getElementById('lobby-error');
-  el.textContent = msg;
-  el.classList.remove('hidden');
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showErr(msg) {
+  const el = document.getElementById('lb-err');
+  el.textContent = msg; el.classList.remove('hidden');
   setTimeout(() => el.classList.add('hidden'), 3500);
 }
 
-let _toastTimer = null;
-function showToast(msg, cls='', duration=2800) {
+let _toastT = null;
+function toast(html, cls='', dur=2600) {
   const t = document.getElementById('toast');
-  t.innerHTML = msg;
-  t.className = `show ${cls}`;
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => { t.className = ''; }, duration);
+  t.innerHTML = html; t.className = `show ${cls}`;
+  clearTimeout(_toastT);
+  _toastT = setTimeout(() => { t.className = ''; }, dur);
 }
 
 function showScreen(id) {
@@ -741,87 +685,121 @@ function showScreen(id) {
   });
 }
 
-function flashScreen() {
-  const el = document.getElementById('flash-overlay');
-  el.classList.add('flash');
-  setTimeout(() => el.classList.remove('flash'), 160);
+function flash() {
+  const el = document.getElementById('flash');
+  el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 160);
 }
 
-function shakeScreen() {
+function shake() {
   const el = document.getElementById('screen-game');
-  el.classList.add('shake');
-  setTimeout(() => el.classList.remove('shake'), 430);
+  el.classList.add('do-shake'); setTimeout(() => el.classList.remove('do-shake'), 440);
 }
 
 // ============================================================
-// TOOLTIP
+// BIG NOTIFICATION
 // ============================================================
-const _tooltip = document.getElementById('item-tooltip');
+let _notifTimer = null;
 
-function showItemTooltip(e, item) {
-  _tooltip.innerHTML = `<strong style="color:var(--text)">${itemEmoji(item)} ${itemName(item)}</strong><br>${itemDesc(item)}`;
-  _tooltip.style.display = 'block';
-  _positionTip(e);
+function showNotif(cfg) {
+  /*  cfg: {
+        icon: '🎮', title: 'GAME DIMULAI!', sub: '...', 
+        items: [{e,n}], theme: 'notif-start',
+        duration: 3000
+      }  */
+  const dur  = cfg.duration || 3000;
+  const ov   = document.getElementById('notif-overlay');
+  const bd   = document.getElementById('notif-backdrop');
+  const box  = document.getElementById('notif-box');
+  const prog = document.getElementById('ni-prog');
+
+  document.getElementById('ni-icon').textContent  = cfg.icon  || '';
+  document.getElementById('ni-title').textContent = cfg.title || '';
+  document.getElementById('ni-sub').innerHTML     = cfg.sub   || '';
+
+  const itemsEl = document.getElementById('ni-items');
+  if (cfg.items && cfg.items.length) {
+    itemsEl.innerHTML = cfg.items.map(it => `
+      <div class="notif-item-chip">
+        <div class="ni-emoji">${it.e}</div>
+        <div class="ni-name">${esc(it.n.slice(0,6))}</div>
+      </div>`).join('');
+    itemsEl.style.display = 'flex';
+  } else {
+    itemsEl.innerHTML = ''; itemsEl.style.display = 'none';
+  }
+
+  // Set theme
+  box.className = `${cfg.theme || 'notif-round'}`;
+
+  // Progress bar color
+  const barColors = {
+    'notif-start':       'var(--green)',
+    'notif-round':       'var(--gold)',
+    'notif-items-notif': 'var(--blue)',
+    'notif-dead':        'var(--red)',
+  };
+  prog.style.color  = barColors[cfg.theme || 'notif-round'] || 'var(--gold)';
+  prog.style.width  = '100%';
+  prog.style.transition = 'none';
+
+  clearTimeout(_notifTimer);
+  ov.classList.add('show'); bd.classList.add('show');
+
+  // Animate bar shrink
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      prog.style.transition = `width ${dur}ms linear`;
+      prog.style.width = '0%';
+    });
+  });
+
+  _notifTimer = setTimeout(() => {
+    ov.classList.remove('show'); bd.classList.remove('show');
+  }, dur);
 }
-function _positionTip(e) {
-  let x = e.clientX + 12, y = e.clientY - 52;
-  if (x + 190 > window.innerWidth) x = e.clientX - 202;
-  if (y < 4) y = e.clientY + 14;
-  _tooltip.style.left = x + 'px'; _tooltip.style.top = y + 'px';
-}
-function hideTooltip() { _tooltip.style.display = 'none'; }
-document.addEventListener('mousemove', e => { if (_tooltip.style.display !== 'none') _positionTip(e); });
 
 // ============================================================
-// ROOM OPERATIONS
+// ROOM CREATION
 // ============================================================
 async function createRoom() {
-  const name = document.getElementById('input-name').value.trim();
-  if (!name) { showError('⚠️ Masukkan namamu dulu!'); return; }
-  myName     = name;
-  roomId     = genRoomId();
-  myPlayerId = 'player1';
+  const name = document.getElementById('inp-name').value.trim();
+  if (!name) { showErr('⚠️ Masukkan namamu dulu!'); return; }
+  myName = name; roomId = genCode(); myPid = 'player1';
 
   try {
     await db.ref(`rooms/${roomId}`).set({
-      status: 'waiting',
-      round:  1, currentTurn: 'player1',
-      currentIndex: 0,
-      chamber: [0,0,0,0,0,0],
-      doubleDamage: false, blockedPlayer: null, winner: null,
+      status: 'waiting', round: 1,
+      currentTurn: 'player1', currentIndex: 0,
+      chamber: [0,0,0], doubleDamage: false,
+      blockedPlayer: null, winner: null,
       players: {
-        player1: { name: myName, hp: 5, inventory: [], ready: false },
-        player2: { name: '',     hp: 5, inventory: [], ready: false }
+        player1: { name: myName, hp:5, inventory:[], ready:false },
+        player2: { name:'',      hp:5, inventory:[], ready:false }
       },
-      log: [`⏳ ${myName} membuat room. Menunggu pemain 2...`],
+      log:  [`⏳ ${myName} membuat room. Menunggu pemain 2...`],
       chat: []
     });
-
-    document.getElementById('display-room-code').textContent = roomId;
+    document.getElementById('disp-code').textContent = roomId;
     showScreen('waiting');
     startRoomListener();
-  } catch(err) {
-    showError('❌ Gagal membuat room. Cek konfigurasi Firebase!');
-    console.error(err);
-  }
+  } catch(e) { showErr('❌ Gagal buat room. Cek Firebase!'); console.error(e); }
 }
 
 async function joinRoom() {
-  const name = document.getElementById('input-name').value.trim();
-  const code = document.getElementById('input-code').value.trim().toUpperCase();
-  if (!name)          { showError('⚠️ Masukkan namamu dulu!'); return; }
-  if (code.length !== 4) { showError('⚠️ Kode harus 4 karakter!'); return; }
-
+  const name = document.getElementById('inp-name').value.trim();
+  const code = document.getElementById('inp-code').value.trim().toUpperCase();
+  if (!name)          { showErr('⚠️ Masukkan namamu dulu!'); return; }
+  if (code.length!==4){ showErr('⚠️ Kode harus 4 karakter!'); return; }
   myName = name;
+
   try {
     const snap = await db.ref(`rooms/${code}`).once('value');
     const data = snap.val();
-    if (!data)                    { showError('❌ Room tidak ditemukan!'); return; }
-    if (data.status !== 'waiting') { showError('❌ Room tidak tersedia atau sudah berjalan!'); return; }
-    if (data.players?.player2?.name) { showError('❌ Room sudah penuh!'); return; }
+    if (!data)                      { showErr('❌ Room tidak ditemukan!'); return; }
+    if (data.status !== 'waiting')  { showErr('❌ Room tidak tersedia!'); return; }
+    if (data.players?.player2?.name){ showErr('❌ Room sudah penuh!'); return; }
 
-    roomId     = code;
-    myPlayerId = 'player2';
+    roomId = code; myPid = 'player2';
 
     await db.ref(`rooms/${code}`).update({
       status: 'lobby',
@@ -831,35 +809,27 @@ async function joinRoom() {
       'players/player2/ready':   false,
     });
 
-    document.getElementById('game-room-code').textContent = code;
-    document.getElementById('ready-room-code').textContent = code;
+    document.getElementById('g-code').textContent    = code;
+    document.getElementById('ready-code').textContent = code;
     showScreen('ready');
     startRoomListener();
     startChatListener();
-  } catch(err) {
-    showError('❌ Gagal bergabung. Cek Firebase!');
-    console.error(err);
-  }
+  } catch(e) { showErr('❌ Gagal join. Cek Firebase!'); console.error(e); }
 }
 
 // ============================================================
-// READY SYSTEM
+// READY
 // ============================================================
 async function setReady() {
-  if (!roomId || !myPlayerId) return;
+  if (!roomId || !myPid) return;
   const btn = document.getElementById('btn-ready');
   btn.disabled = true;
-  btn.textContent = '✅ READY!';
 
-  await db.ref(`rooms/${roomId}/players/${myPlayerId}/ready`).set(true);
+  await db.ref(`rooms/${roomId}/players/${myPid}/ready`).set(true);
 
-  // Check if both ready → start game
   const snap = await db.ref(`rooms/${roomId}/players`).once('value');
-  const players = snap.val();
-
-  if (players?.player1?.ready && players?.player2?.ready) {
-    await startGame();
-  }
+  const pl   = snap.val();
+  if (pl?.player1?.ready && pl?.player2?.ready) await startGame();
 }
 
 async function startGame() {
@@ -868,29 +838,24 @@ async function startGame() {
   if (!data || data.status !== 'lobby') return;
   if (!data.players?.player1?.ready || !data.players?.player2?.ready) return;
 
-  const round   = 1;
-  const chamber = generateChamber(round);
-  const p1Inv   = giveRandomItems([], 1);
-  const p2Inv   = giveRandomItems([], 1);
-  const p1Name  = data.players.player1.name;
-  const p2Name  = data.players.player2.name;
+  const cfg     = getChamberConfig(1);
+  const chamber = generateChamber(1);
+  const p1inv   = giveItems([], 1);
+  const p2inv   = giveItems([], 1);
+  const p1n     = data.players.player1.name;
+  const p2n     = data.players.player2.name;
 
   await db.ref(`rooms/${roomId}`).update({
-    status: 'playing',
-    round: 1, currentTurn: 'player1',
-    currentIndex: 0, chamber,
-    doubleDamage: false, blockedPlayer: null, winner: null,
-    'players/player1/hp':        5,
-    'players/player1/inventory': p1Inv,
-    'players/player1/ready':     true,
-    'players/player2/hp':        5,
-    'players/player2/inventory': p2Inv,
-    'players/player2/ready':     true,
+    status: 'playing', round: 1,
+    currentTurn: 'player1', currentIndex: 0,
+    chamber, doubleDamage: false, blockedPlayer: null, winner: null,
+    'players/player1/hp': 5, 'players/player1/inventory': p1inv,
+    'players/player2/hp': 5, 'players/player2/inventory': p2inv,
     log: [
-      `🎮 Game dimulai! ${p1Name} VS ${p2Name}`,
-      `🔫 Ronde 1 — 3 dari 6 slot berisi peluru`,
-      `📦 ${p1Name}: ${p1Inv.map(itemEmoji).join(' ')}  |  ${p2Name}: ${p2Inv.map(itemEmoji).join(' ')}`,
-      `🎯 ${p1Name} memulai giliran pertama`,
+      `🎮 Game dimulai! ${p1n} VS ${p2n}`,
+      `🔫 Chamber: ${cfg.slots} slot — ${cfg.bullets} peluru (rasio ${cfg.bullets}:${cfg.slots})`,
+      `📦 ${p1n}: ${p1inv.map(ie).join(' ')}  |  ${p2n}: ${p2inv.map(ie).join(' ')}`,
+      `🎯 ${p1n} memulai giliran pertama`,
     ]
   });
 }
@@ -899,160 +864,128 @@ async function startGame() {
 // REALTIME LISTENER
 // ============================================================
 function startRoomListener() {
-  if (roomListener) db.ref(`rooms/${roomId}`).off('value', roomListener);
+  if (roomRef) db.ref(`rooms/${roomId}`).off('value', roomRef);
 
-  roomListener = db.ref(`rooms/${roomId}`).on('value', snap => {
+  roomRef = db.ref(`rooms/${roomId}`).on('value', snap => {
     const data = snap.val();
     if (!data) return;
-    lastRoomData = data;
+    lastData = data;
 
     if (data.status === 'waiting') {
       showScreen('waiting');
 
     } else if (data.status === 'lobby') {
-      document.getElementById('ready-room-code').textContent = roomId;
+      document.getElementById('ready-code').textContent = roomId;
       showScreen('ready');
-      renderReadyScreen(data);
-      startChatListener(); // start chat when both connected
+      renderReady(data);
+      startChatListener();
 
-    } else if (data.status === 'playing') {
-      document.getElementById('game-room-code').textContent = roomId;
+    } else if (data.status === 'playing' || data.status === 'finished') {
+      document.getElementById('g-code').textContent = roomId;
       showScreen('game');
+      handleTransitions(data);
       renderGame(data);
-
-    } else if (data.status === 'finished') {
-      document.getElementById('game-room-code').textContent = roomId;
-      showScreen('game');
-      renderGame(data);
-      setTimeout(() => renderFinished(data), 1400);
+      if (data.status === 'finished') setTimeout(() => renderFinished(data), 1400);
     }
+
+    _prevStatus = data.status;
+    _prevRound  = data.round;
+    _prevTurn   = data.currentTurn;
+    _firstRender = false;
   });
 }
 
 // ============================================================
-// CHAT LISTENER
+// TRANSITION DETECTOR → triggers notifications
 // ============================================================
-function startChatListener() {
-  if (chatListener) return; // already started
+function handleTransitions(data) {
+  const isNewGame   = _firstRender && data.status === 'playing';
+  const isNewRound  = !_firstRender && data.round !== _prevRound;
+  const isTurnSwitch = !_firstRender && data.currentTurn !== _prevTurn;
 
-  chatListener = db.ref(`rooms/${roomId}/chat`).on('value', snap => {
-    const rawMsgs = snap.val();
-    if (!rawMsgs) return;
+  if (isNewGame) {
+    const cfg = getChamberConfig(1);
+    const p1n = data.players.player1.name;
+    const p2n = data.players.player2.name;
+    showNotif({
+      icon: '🎮', title: 'GAME DIMULAI!',
+      sub:  `${esc(p1n)} <span style="color:var(--text3)">vs</span> ${esc(p2n)}<br>
+             <span style="color:var(--green2)">Ronde 1 — ${cfg.slots} slot, ${cfg.bullets} peluru (${cfg.bullets}:${cfg.slots})</span>`,
+      theme: 'notif-start', duration: 3500,
+    });
+    return;
+  }
 
-    const msgs = toArr(rawMsgs);
-    renderChat(msgs);
-  });
-}
+  if (isNewRound) {
+    const round = data.round;
+    const cfg   = getChamberConfig(round);
+    const prevCfg = getChamberConfig(round - 1);
+    const slotsAdded = cfg.slots - prevCfg.slots;
+    const p1inv = toArr(data.players.player1.inventory);
+    const p2inv = toArr(data.players.player2.inventory);
+    const oppId = myPid === 'player1' ? 'player2' : 'player1';
+    const myInv = toArr(data.players[myPid].inventory);
 
-async function sendChat() {
-  const input = document.getElementById('chat-input');
-  const text  = input.value.trim();
-  if (!text || !roomId || !myPlayerId) return;
+    // First show round notif
+    showNotif({
+      icon: '🔄', title: `RONDE ${round}!`,
+      sub: `Chamber diperluas ke <strong style="color:var(--gold)">${cfg.slots} slot</strong>${slotsAdded > 0 ? ` (+${slotsAdded})` : ''}<br>
+            Peluru: <strong style="color:var(--red2)">${cfg.bullets}</strong> — Rasio: <strong style="color:var(--gold)">${cfg.bullets}:${cfg.slots}</strong>`,
+      theme: 'notif-round', duration: 3200,
+    });
 
-  const data  = lastRoomData;
-  const name  = data?.players?.[myPlayerId]?.name || myName || 'Player';
-  input.value = '';
-
-  const newMsg = { pid: myPlayerId, name, text, ts: Date.now() };
-
-  const snap   = await db.ref(`rooms/${roomId}/chat`).once('value');
-  const msgs   = toArr(snap.val() || []);
-  msgs.push(newMsg);
-  if (msgs.length > 60) msgs.splice(0, msgs.length - 60);
-  await db.ref(`rooms/${roomId}/chat`).set(msgs);
-}
-
-function renderChat(msgs) {
-  const el = document.getElementById('chat-body');
-  if (!el) return;
-
-  const wasAtBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
-
-  el.innerHTML = msgs.map(m => {
-    if (m.system) {
-      return `<div class="chat-system-msg">— ${m.text} —</div>`;
-    }
-    const isMine = m.pid === myPlayerId;
-    const avatar = m.pid === 'player1' ? '🤠' : '😈';
-    return `
-      <div class="chat-msg ${isMine ? 'mine' : ''}">
-        <div class="chat-msg-avatar">${avatar}</div>
-        <div class="chat-msg-body">
-          <div class="chat-msg-name ${isMine ? 'mine' : 'theirs'}">${escapeHtml(m.name)}</div>
-          <div class="chat-msg-text">${escapeHtml(m.text)}</div>
-        </div>
-      </div>`;
-  }).join('');
-
-  if (wasAtBottom) el.scrollTop = el.scrollHeight;
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    // Then show item notif after
+    const myNewItems = myInv.slice(-2).map(i => ({ e: ie(i), n: iname(i) }));
+    setTimeout(() => {
+      showNotif({
+        icon: '📦', title: 'ITEM DIBERIKAN!',
+        sub: `Kamu mendapat ${myNewItems.length} item baru`,
+        items: myNewItems,
+        theme: 'notif-items-notif', duration: 3000,
+      });
+    }, 3400);
+  }
 }
 
 // ============================================================
 // RENDER: READY SCREEN
 // ============================================================
-function renderReadyScreen(data) {
+function renderReady(data) {
   const p1 = data.players?.player1;
   const p2 = data.players?.player2;
 
-  // Names
-  document.getElementById('ready-name-p1').innerHTML =
-    `${p1?.name || '—'}${myPlayerId === 'player1' ? '<span class="ready-you-badge">KAMU</span>' : ''}`;
-  document.getElementById('ready-name-p2').innerHTML =
-    `${p2?.name || 'Menunggu...'}${myPlayerId === 'player2' ? '<span class="ready-you-badge">KAMU</span>' : ''}`;
+  document.getElementById('rname-p1').innerHTML = esc(p1?.name || '—') + (myPid === 'player1' ? '<span class="you-badge">KAMU</span>' : '');
+  document.getElementById('rname-p2').innerHTML = esc(p2?.name || 'Menunggu...') + (myPid === 'player2' ? '<span class="you-badge">KAMU</span>' : '');
 
-  // Status P1
-  const s1 = document.getElementById('ready-status-p1');
-  const c1 = document.getElementById('ready-card-p1');
-  if (p1?.ready) {
-    s1.textContent = '✅ READY!'; s1.className = 'ready-status is-ready'; c1.classList.add('is-ready');
-  } else {
-    s1.textContent = '⬜ Belum Ready'; s1.className = 'ready-status not-ready'; c1.classList.remove('is-ready');
-  }
+  const s1 = document.getElementById('rst-p1');
+  const c1 = document.getElementById('rcard-p1');
+  if (p1?.ready) { s1.textContent='✅ READY!'; s1.className='ready-badge rb-ready'; c1.classList.add('rdone'); }
+  else           { s1.textContent='⬜ Belum Ready'; s1.className='ready-badge rb-not'; c1.classList.remove('rdone'); }
 
-  // Status P2
-  const s2 = document.getElementById('ready-status-p2');
-  const c2 = document.getElementById('ready-card-p2');
-  if (!p2?.name) {
-    s2.textContent = '🔌 Menunggu...'; s2.className = 'ready-status waiting-player'; c2.classList.remove('is-ready');
-  } else if (p2?.ready) {
-    s2.textContent = '✅ READY!'; s2.className = 'ready-status is-ready'; c2.classList.add('is-ready');
-  } else {
-    s2.textContent = '⬜ Belum Ready'; s2.className = 'ready-status not-ready'; c2.classList.remove('is-ready');
-  }
+  const s2 = document.getElementById('rst-p2');
+  const c2 = document.getElementById('rcard-p2');
+  if (!p2?.name)    { s2.textContent='🔌 Menunggu...'; s2.className='ready-badge rb-waiting'; c2.classList.remove('rdone'); }
+  else if (p2?.ready){ s2.textContent='✅ READY!'; s2.className='ready-badge rb-ready'; c2.classList.add('rdone'); }
+  else              { s2.textContent='⬜ Belum Ready'; s2.className='ready-badge rb-not'; c2.classList.remove('rdone'); }
 
-  // You card highlight
-  if (myPlayerId === 'player1') c1.classList.add('is-you-card');
-  else c2.classList.add('is-you-card');
+  (myPid === 'player1' ? c1 : c2).classList.add('is-you-card');
 
-  // Ready button
-  const myReady  = data.players?.[myPlayerId]?.ready;
-  const btn      = document.getElementById('btn-ready');
-  btn.disabled   = !!myReady;
-  btn.textContent = myReady ? '✅ SUDAH READY' : '✅ READY!';
+  const btn = document.getElementById('btn-ready');
+  btn.disabled  = !!data.players?.[myPid]?.ready;
+  btn.textContent = btn.disabled ? '✅ SUDAH READY' : '✅ READY!';
 
-  // Waiting msg
-  const both  = p1?.ready && p2?.ready;
-  const waitEl = document.getElementById('ready-waiting-msg');
-  if (both) {
-    waitEl.innerHTML = '<span style="color:var(--green2)">🚀 Memulai game...</span>';
+  const foot = document.getElementById('ready-foot');
+  if (p1?.ready && p2?.ready) {
+    foot.innerHTML = '<span style="color:var(--green2)">🚀 Memulai game...</span>';
   } else if (!p2?.name) {
-    waitEl.innerHTML = '<span class="pulse-dot"></span>Menunggu pemain 2 bergabung...';
+    foot.innerHTML = '<span class="pulse-dot"></span>Menunggu pemain 2 bergabung...';
   } else {
-    const p1r = p1?.ready ? '<span style="color:var(--green2)">✅</span>' : '<span style="color:var(--text3)">⬜</span>';
-    const p2r = p2?.ready ? '<span style="color:var(--green2)">✅</span>' : '<span style="color:var(--text3)">⬜</span>';
-    waitEl.innerHTML = `${p1r} ${p1?.name || 'P1'} &nbsp;|&nbsp; ${p2r} ${p2?.name || 'P2'}`;
+    const p1r = p1?.ready ? `<span style="color:var(--green2)">✅</span>` : `<span style="color:var(--text3)">⬜</span>`;
+    const p2r = p2?.ready ? `<span style="color:var(--green2)">✅</span>` : `<span style="color:var(--text3)">⬜</span>`;
+    foot.innerHTML = `${p1r} ${esc(p1?.name||'P1')} &nbsp;|&nbsp; ${p2r} ${esc(p2?.name||'P2')}`;
   }
 
-  // If both ready but still on lobby, trigger start (fallback)
-  if (p1?.ready && p2?.ready && data.status === 'lobby') {
-    startGame();
-  }
+  if (p1?.ready && p2?.ready && data.status === 'lobby') startGame();
 }
 
 // ============================================================
@@ -1060,55 +993,56 @@ function renderReadyScreen(data) {
 // ============================================================
 function renderGame(data) {
   if (!data?.players) return;
-
-  const oppId   = myPlayerId === 'player1' ? 'player2' : 'player1';
-  const self    = data.players[myPlayerId];
+  const oppId   = myPid === 'player1' ? 'player2' : 'player1';
+  const self    = data.players[myPid];
   const opp     = data.players[oppId];
   if (!self || !opp) return;
 
-  const isMyTurn = data.currentTurn === myPlayerId;
-  const canAct   = isMyTurn && data.status === 'playing';
+  const myTurn = data.currentTurn === myPid;
+  const canAct = myTurn && data.status === 'playing';
 
   // Header
-  document.getElementById('game-round').textContent = data.round || 1;
-  document.getElementById('turn-label').innerHTML = isMyTurn
-    ? `<span style="color:var(--red2);font-family:var(--font-mono);font-size:0.72rem">🎯 GILIRAN KAMU</span>`
-    : `<span style="color:var(--text3);font-family:var(--font-mono);font-size:0.72rem">⏳ ${escapeHtml(opp.name || '?')}</span>`;
+  document.getElementById('g-round').textContent = data.round || 1;
+  document.getElementById('g-turn').innerHTML = myTurn
+    ? `<span style="color:var(--red2);font-family:var(--font-m);font-size:0.7rem">🎯 GILIRAN KAMU</span>`
+    : `<span style="color:var(--text3);font-family:var(--font-m);font-size:0.7rem">⏳ ${esc(opp.name||'?')}</span>`;
 
-  // Active turn border
-  document.getElementById('card-self').classList.toggle('active-turn', isMyTurn);
-  document.getElementById('card-opponent').classList.toggle('active-turn', !isMyTurn);
+  // Turn borders
+  document.getElementById('pcard-self').classList.toggle('my-turn', myTurn);
+  document.getElementById('pcard-opp').classList.toggle('my-turn', !myTurn);
 
-  document.getElementById('self-avatar').textContent = myPlayerId === 'player1' ? '🤠' : '😈';
-  document.getElementById('opp-avatar').textContent  = oppId === 'player1' ? '🤠' : '😈';
-  document.getElementById('self-name').textContent   = self.name || 'Tu';
-  document.getElementById('opp-name').textContent    = opp.name  || 'Musuh';
+  // Avatars + names
+  document.getElementById('self-av').textContent  = myPid === 'player1' ? '🤠' : '😈';
+  document.getElementById('opp-av').textContent   = oppId === 'player1' ? '🤠' : '😈';
+  document.getElementById('self-name').textContent = self.name || 'Kamu';
+  document.getElementById('opp-name').textContent  = opp.name  || 'Musuh';
 
+  // HP
   renderHearts('self-hearts', self.hp);
   renderHearts('opp-hearts',  opp.hp);
-  document.getElementById('self-hp-num').textContent = `${self.hp}/5`;
-  document.getElementById('opp-hp-num').textContent  = `${opp.hp}/5`;
+  document.getElementById('self-hpn').textContent = `${self.hp}/5`;
+  document.getElementById('opp-hpn').textContent  = `${opp.hp}/5`;
 
   // Effects
-  const selfFx = [], oppFx = [];
-  if (data.doubleDamage)               isMyTurn ? selfFx.push(`<span class="effect-tag effect-double">🔪 DMG ×2</span>`) : oppFx.push(`<span class="effect-tag effect-double">🔪 DMG ×2</span>`);
-  if (data.blockedPlayer === myPlayerId) selfFx.push(`<span class="effect-tag effect-blocked">⛓️ BORGOL</span>`);
-  if (data.blockedPlayer === oppId)      oppFx.push(`<span class="effect-tag effect-blocked">⛓️ BORGOL</span>`);
-  document.getElementById('self-effects').innerHTML = selfFx.join('');
-  document.getElementById('opp-effects').innerHTML  = oppFx.join('');
+  const sfx=[], ofx=[];
+  if (data.doubleDamage) (myTurn ? sfx : ofx).push(`<span class="fx-tag fx-double">🔪 DMG ×2</span>`);
+  if (data.blockedPlayer === myPid) sfx.push(`<span class="fx-tag fx-blocked">⛓️ BORGOL</span>`);
+  if (data.blockedPlayer === oppId) ofx.push(`<span class="fx-tag fx-blocked">⛓️ BORGOL</span>`);
+  document.getElementById('self-fx').innerHTML = sfx.join('');
+  document.getElementById('opp-fx').innerHTML  = ofx.join('');
 
   // Inventory
-  document.getElementById('self-inventory').innerHTML = renderInvHTML(toArr(self.inventory), canAct);
-  document.getElementById('opp-inventory').innerHTML  = renderOppInvHTML(toArr(opp.inventory));
+  document.getElementById('self-inv').innerHTML = buildInv(toArr(self.inventory), canAct);
+  document.getElementById('opp-inv').innerHTML  = buildOppInv(toArr(opp.inventory));
 
   // Chamber
   const chamber = toArr(data.chamber);
   const idx     = data.currentIndex || 0;
   renderChamber(chamber, idx, data.round || 1);
 
-  // Shoot
-  document.getElementById('btn-shoot-self').disabled  = !canAct;
-  document.getElementById('btn-shoot-enemy').disabled = !canAct;
+  // Buttons
+  document.getElementById('btn-ss').disabled = !canAct;
+  document.getElementById('btn-se').disabled = !canAct;
 
   // Log
   renderLog(toArr(data.log));
@@ -1116,260 +1050,290 @@ function renderGame(data) {
 
 function renderHearts(id, hp) {
   document.getElementById(id).innerHTML =
-    Array.from({length:5}, (_,i) => `<div class="heart ${i < hp ? 'alive' : 'dead'}"></div>`).join('');
+    Array.from({length:5},(_,i)=>`<div class="heart ${i<hp?'alive':'dead'}"></div>`).join('');
 }
 
-function renderInvHTML(inv, active) {
+function buildInv(inv, active) {
   if (!inv.length) return `<span class="no-items">— kosong —</span>`;
-  return inv.map((item, idx) => {
-    const info = ITEM_INFO[item] || {};
-    return `
-      <button class="item-btn" onclick="${active ? `useItem('${item}',${idx})` : ''}"
-        onmouseenter="showItemTooltip(event,'${item}')" onmouseleave="hideTooltip()"
-        ${!active ? 'disabled' : ''}>
-        <span>${info.emoji || '❓'}</span>
-        <span class="item-tag">${(info.name||item).slice(0,5).toUpperCase()}</span>
-      </button>`;
+  return inv.map((item, i) => {
+    const info = ITEMS[item] || {};
+    return `<button class="ibtn" onclick="${active?`useItem('${item}',${i})`:''}"
+      onmouseenter="showTip(event,'${item}')" onmouseleave="hideTip()"
+      ${!active?'disabled':''}>
+      <span>${info.e||'❓'}</span>
+      <span class="itag">${(info.n||item).slice(0,5).toUpperCase()}</span>
+    </button>`;
   }).join('');
 }
 
-function renderOppInvHTML(inv) {
+function buildOppInv(inv) {
   if (!inv.length) return `<span class="no-items">— kosong —</span>`;
   return inv.map(item => {
-    const info = ITEM_INFO[item] || {};
-    return `
-      <button class="item-btn enemy-item" disabled
-        onmouseenter="showItemTooltip(event,'${item}')" onmouseleave="hideTooltip()">
-        <span>${info.emoji || '❓'}</span>
-        <span class="item-tag">${(info.name||item).slice(0,5).toUpperCase()}</span>
-      </button>`;
+    const info = ITEMS[item] || {};
+    return `<button class="ibtn enemy" disabled
+      onmouseenter="showTip(event,'${item}')" onmouseleave="hideTip()">
+      <span>${info.e||'❓'}</span>
+      <span class="itag">${(info.n||item).slice(0,5).toUpperCase()}</span>
+    </button>`;
   }).join('');
 }
 
-function renderChamber(chamber, currentIndex, round) {
-  const el = document.getElementById('chamber-slots');
-  document.getElementById('chamber-idx').textContent = Math.min(currentIndex + 1, 6);
+function renderChamber(chamber, idx, round) {
+  const el    = document.getElementById('ch-slots');
+  const total = chamber.length;
+
+  document.getElementById('ch-idx').textContent    = Math.min(idx + 1, total);
+  document.getElementById('ch-total').textContent  = total;
+  document.getElementById('ch-rinfo').textContent  = `RONDE ${round}`;
+
+  const cfg = getChamberConfig(round);
+  document.getElementById('ch-config').textContent = `${cfg.slots} SLOT — ${cfg.bullets} PELURU`;
 
   el.innerHTML = chamber.map((_, i) => {
     let cls, icon;
-    if      (i < currentIndex) { cls = 'slot-fired';   icon = '×'; }
-    else if (i === currentIndex) { cls = 'slot-current'; icon = '◆'; }
-    else                         { cls = 'slot-unknown'; icon = '?'; }
-    const connector = i < 5 ? `<div class="slot-connector"></div>` : '';
-    return `<div class="slot ${cls}">${icon}</div>${connector}`;
+    if      (i < idx)  { cls='s-fired';   icon='×'; }
+    else if (i === idx) { cls='s-current'; icon='◆'; }
+    else               { cls='s-unknown'; icon='?'; }
+    const con = i < total - 1 ? `<div class="slot-con"></div>` : '';
+    return `<div class="slot ${cls}">${icon}</div>${con}`;
   }).join('');
 
-  // Bullet ratio
-  const remainingSlots   = 6 - currentIndex;
-  const totalBullets     = round === 1 ? 3 : round === 2 ? 4 : 5;
-  const firedBullets     = chamber.slice(0, currentIndex).filter(x => x === 1).length;
-  const remainingBullets = totalBullets - firedBullets;
-  const prob             = remainingSlots > 0 ? Math.round((remainingBullets / remainingSlots) * 100) : 0;
+  // Ratio calc
+  const firedBullets     = chamber.slice(0, idx).filter(x => x === 1).length;
+  const remainingSlots   = total - idx;
+  const remainingBullets = cfg.bullets - firedBullets;
+  const rb = Math.max(0, remainingBullets);
+  const rs = Math.max(0, remainingSlots);
 
-  document.getElementById('ratio-bullets').textContent = Math.max(0, remainingBullets);
-  document.getElementById('prob-val').textContent      = `${prob}%`;
-  document.getElementById('prob-bar').style.width      = `${prob}%`;
-  document.getElementById('round-ammo-label').textContent = `RONDE ${round} — ${totalBullets}/6 TOTAL`;
+  document.getElementById('ratio-b').textContent = rb;
+  document.getElementById('ratio-s').textContent = rs;
+  document.getElementById('ratio-lbl').textContent = 'PELURU : SLOT TERSISA';
 
-  // Color bar based on prob
-  const bar = document.getElementById('prob-bar');
-  if      (prob >= 75) bar.style.background = 'linear-gradient(90deg, #8e1f1f, var(--red2))';
-  else if (prob >= 50) bar.style.background = 'linear-gradient(90deg, #8e4e00, var(--orange, #e67e22))';
-  else                 bar.style.background = 'linear-gradient(90deg, #1a5e30, var(--green))';
+  // Ratio bar
+  const bar  = document.getElementById('ratio-bar');
+  const pct  = rs > 0 ? (rb / rs) * 100 : 0;
+  bar.style.width = `${pct}%`;
+  if      (pct >= 65) bar.style.background = 'linear-gradient(90deg, #8e1f1f, var(--red2))';
+  else if (pct >= 40) bar.style.background = 'linear-gradient(90deg, #8e4e00, var(--orange))';
+  else                bar.style.background = 'linear-gradient(90deg, #1a5e30, var(--green))';
 }
 
 function renderLog(logs) {
   const el = document.getElementById('action-log');
-  if (!logs.length) return;
-  const wasBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
-  el.innerHTML = logs.map((entry, i) =>
-    `<div class="log-entry" style="animation-delay:${i*0.025}s">${entry}</div>`
+  const wasBot = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
+  el.innerHTML = logs.map((e,i) =>
+    `<div class="log-entry" style="animation-delay:${i*0.022}s">${e}</div>`
   ).join('');
-  if (wasBottom) el.scrollTop = el.scrollHeight;
+  if (wasBot) el.scrollTop = el.scrollHeight;
 }
 
 // ============================================================
-// ITEM USE
+// CHAT LISTENER
+// ============================================================
+function startChatListener() {
+  if (chatListener) return;
+  chatListener = db.ref(`rooms/${roomId}/chat`).on('value', snap => {
+    const msgs = toArr(snap.val() || []);
+    renderChat(msgs);
+  });
+}
+
+async function sendChat() {
+  const input = document.getElementById('ci');
+  const text  = input.value.trim();
+  if (!text || !roomId || !myPid) return;
+
+  const name = lastData?.players?.[myPid]?.name || myName;
+  input.value = '';
+
+  const snap = await db.ref(`rooms/${roomId}/chat`).once('value');
+  const msgs = toArr(snap.val() || []);
+  msgs.push({ pid: myPid, name, text, ts: Date.now() });
+  if (msgs.length > 60) msgs.splice(0, msgs.length - 60);
+  await db.ref(`rooms/${roomId}/chat`).set(msgs);
+}
+
+function renderChat(msgs) {
+  const el = document.getElementById('chat-body');
+  if (!el) return;
+  const wasBot = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
+  el.innerHTML = msgs.map(m => {
+    if (m.system) return `<div class="chat-sys">— ${esc(m.text)} —</div>`;
+    const mine   = m.pid === myPid;
+    const avatar = m.pid === 'player1' ? '🤠' : '😈';
+    return `<div class="chat-msg ${mine?'mine':''}">
+      <div class="cm-av">${avatar}</div>
+      <div class="cm-bd">
+        <div class="cm-name ${mine?'mine':'theirs'}">${esc(m.name)}</div>
+        <div class="cm-text">${esc(m.text)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  if (wasBot) el.scrollTop = el.scrollHeight;
+}
+
+// ============================================================
+// USE ITEM
 // ============================================================
 async function useItem(itemParam, itemIndex) {
-  if (isProcessing) return;
-  const data = lastRoomData;
-  if (!data || data.currentTurn !== myPlayerId || data.status !== 'playing') return;
+  if (busy) return;
+  const data = lastData;
+  if (!data || data.currentTurn !== myPid || data.status !== 'playing') return;
 
-  const inv      = toArr(data.players[myPlayerId].inventory);
+  const inv    = toArr(data.players[myPid].inventory);
   if (itemIndex >= inv.length) return;
-  const item     = inv[itemIndex];
-  const oppId    = myPlayerId === 'player1' ? 'player2' : 'player1';
-  const selfName = data.players[myPlayerId].name;
-  const oppName  = data.players[oppId].name;
+  const item   = inv[itemIndex];
+  const oppId  = myPid === 'player1' ? 'player2' : 'player1';
+  const sn     = data.players[myPid].name;
+  const on     = data.players[oppId].name;
+  const newInv = [...inv]; newInv.splice(itemIndex, 1);
 
-  const newInv = [...inv];
-  newInv.splice(itemIndex, 1);
-
-  // Magnifier: local reveal only
   if (item === 'magnifier') {
-    const chamber = toArr(data.chamber);
-    const slot    = chamber[data.currentIndex];
-    await db.ref(`rooms/${roomId}/players/${myPlayerId}/inventory`).set(newInv);
-    showToast(
-      slot === 1
-        ? '🔴 <strong>PELURU!</strong><br><span style="font-size:0.8rem;color:var(--text3)">Slot aktif berisi peluru</span>'
-        : '⚪ <strong>KOSONG</strong><br><span style="font-size:0.8rem;color:var(--text3)">Slot aktif kosong</span>',
-      slot === 1 ? '' : 'toast-blank', 3600
-    );
+    const ch = toArr(data.chamber);
+    const sl = ch[data.currentIndex];
+    await db.ref(`rooms/${roomId}/players/${myPid}/inventory`).set(newInv);
+    toast(sl===1
+      ? '🔴 <strong>PELURU!</strong><br><span style="font-size:0.78rem;color:var(--text3)">Slot aktif berisi peluru</span>'
+      : '⚪ <strong>KOSONG</strong><br><span style="font-size:0.78rem;color:var(--text3)">Slot aktif kosong</span>',
+      sl===1 ? '' : 't-blank', 3600);
     return;
   }
 
-  isProcessing = true;
+  busy = true;
   try {
-    const updates = {};
-    const logs    = toArr(data.log);
-    updates[`players/${myPlayerId}/inventory`] = newInv;
+    const upd  = {};
+    const logs = toArr(data.log);
+    upd[`players/${myPid}/inventory`] = newInv;
 
-    switch(item) {
-      case 'rokok': {
-        const hp = Math.min(5, data.players[myPlayerId].hp + 1);
-        updates[`players/${myPlayerId}/hp`] = hp;
-        logs.push(`🚬 ${selfName} merokok — HP +1 (${hp}/5)`);
-        showToast('🚬 +1 HP!', 'toast-gold', 1800);
-        break;
-      }
-      case 'silet': {
-        updates['doubleDamage'] = true;
-        logs.push(`🔪 ${selfName} menggunakan silet — damage berikutnya ×2!`);
-        showToast('🔪 Damage ×2 aktif!', '', 1800);
-        break;
-      }
-      case 'beer': {
-        const shuffled = shuffleArray(toArr(data.chamber));
-        updates['chamber']      = shuffled;
-        updates['currentIndex'] = 0;
-        logs.push(`🍺 ${selfName} minum bir — chamber dikocok, index reset ke 0`);
-        showToast('🍺 Chamber dikocok ulang!', '', 1800);
-        break;
-      }
-      case 'handcuff': {
-        updates['blockedPlayer'] = oppId;
-        logs.push(`⛓️ ${selfName} memasang borgol ke ${oppName} — giliran berikutnya skip!`);
-        showToast(`⛓️ ${oppName} di-borgol!`, '', 2000);
-        break;
-      }
+    if (item === 'rokok') {
+      const hp = Math.min(5, data.players[myPid].hp + 1);
+      upd[`players/${myPid}/hp`] = hp;
+      logs.push(`🚬 ${sn} merokok — HP +1 (${hp}/5)`);
+      toast('🚬 +1 HP!','t-gold',1800);
+    } else if (item === 'silet') {
+      upd['doubleDamage'] = true;
+      logs.push(`🔪 ${sn} menggunakan silet — damage berikutnya ×2!`);
+      toast('🔪 Damage ×2 aktif!','',1800);
+    } else if (item === 'beer') {
+      const sh = shuffleArr(toArr(data.chamber));
+      upd['chamber'] = sh; upd['currentIndex'] = 0;
+      logs.push(`🍺 ${sn} minum bir — chamber dikocok, index reset ke 0`);
+      toast('🍺 Chamber dikocok!','',1800);
+    } else if (item === 'handcuff') {
+      upd['blockedPlayer'] = oppId;
+      logs.push(`⛓️ ${sn} memasang borgol ke ${on} — giliran berikutnya skip!`);
+      toast(`⛓️ ${esc(on)} di-borgol!`,'',2000);
     }
 
-    if (logs.length > 30) logs.splice(0, logs.length - 30);
-    updates['log'] = logs;
-    await db.ref(`rooms/${roomId}`).update(updates);
-  } finally {
-    isProcessing = false;
-  }
+    if (logs.length > 35) logs.splice(0, logs.length - 35);
+    upd['log'] = logs;
+    await db.ref(`rooms/${roomId}`).update(upd);
+  } finally { busy = false; }
 }
 
 // ============================================================
 // SHOOT
 // ============================================================
 async function handleShoot(target) {
-  if (isProcessing) return;
-  const data = lastRoomData;
-  if (!data || data.currentTurn !== myPlayerId || data.status !== 'playing') return;
-  const oppId    = myPlayerId === 'player1' ? 'player2' : 'player1';
-  const targetId = target === 'self' ? myPlayerId : oppId;
-  await pullTrigger(targetId);
+  if (busy) return;
+  const data = lastData;
+  if (!data || data.currentTurn !== myPid || data.status !== 'playing') return;
+  const oppId    = myPid === 'player1' ? 'player2' : 'player1';
+  await pullTrigger(target === 'self' ? myPid : oppId);
 }
 
 async function pullTrigger(targetId) {
-  isProcessing = true;
+  busy = true;
   try {
     const snap = await db.ref(`rooms/${roomId}`).once('value');
     const data = snap.val();
-    if (!data || data.currentTurn !== myPlayerId || data.status !== 'playing') return;
+    if (!data || data.currentTurn !== myPid || data.status !== 'playing') return;
 
-    const chamber    = toArr(data.chamber);
-    const idx        = data.currentIndex || 0;
-    const bullet     = chamber[idx];
-    const doubleDmg  = data.doubleDamage || false;
-    const oppId      = myPlayerId === 'player1' ? 'player2' : 'player1';
-    const selfName   = data.players[myPlayerId].name;
-    const targetName = data.players[targetId].name;
-    const logs       = toArr(data.log);
-    const updates    = {};
+    const chamber   = toArr(data.chamber);
+    const idx       = data.currentIndex || 0;
+    const bullet    = chamber[idx];
+    const doubleDmg = data.doubleDamage || false;
+    const oppId     = myPid === 'player1' ? 'player2' : 'player1';
+    const sn        = data.players[myPid].name;
+    const tn        = data.players[targetId].name;
+    const logs      = toArr(data.log);
+    const upd       = {};
 
     if (bullet === 1) {
-      flashScreen(); shakeScreen();
-      const dmg    = doubleDmg ? 2 : 1;
-      const newHp  = Math.max(0, data.players[targetId].hp - dmg);
-      updates[`players/${targetId}/hp`] = newHp;
-      const who = targetId === myPlayerId ? 'dirinya sendiri' : targetName;
-      logs.push(`💥 ${selfName} menembak ${who}!${doubleDmg ? ' (×2)' : ''} −${dmg} HP → ${newHp} HP`);
-      if (doubleDmg) showToast('💥 BOOM! ×2 Damage!','', 2000);
-      else           showToast('💥 TERKENA!','', 1800);
+      flash(); shake();
+      const dmg   = doubleDmg ? 2 : 1;
+      const newHp = Math.max(0, data.players[targetId].hp - dmg);
+      upd[`players/${targetId}/hp`] = newHp;
+      const who = targetId === myPid ? 'dirinya sendiri' : tn;
+      logs.push(`💥 ${sn} menembak ${who}!${doubleDmg?' (×2)':''} −${dmg} HP → ${newHp} HP`);
+      toast(doubleDmg ? '💥 BOOM! ×2 Damage!' : '💥 TERKENA!','',1800);
 
       if (newHp <= 0) {
-        updates['status']        = 'finished';
-        updates['winner']        = myPlayerId;
-        updates['doubleDamage']  = false;
-        updates['currentIndex']  = idx + 1;
-        logs.push(`💀 ${targetName} tewas! 🏆 ${selfName} menang!`);
-        if (logs.length > 30) logs.splice(0, logs.length - 30);
-        updates['log'] = logs;
-        await db.ref(`rooms/${roomId}`).update(updates);
+        upd['status']       = 'finished';
+        upd['winner']       = myPid;
+        upd['doubleDamage'] = false;
+        upd['currentIndex'] = idx + 1;
+        logs.push(`💀 ${tn} tewas! 🏆 ${sn} menang!`);
+        if (logs.length > 35) logs.splice(0, logs.length - 35);
+        upd['log'] = logs;
+        await db.ref(`rooms/${roomId}`).update(upd);
         return;
       }
     } else {
-      const who = targetId === myPlayerId ? 'dirinya sendiri' : targetName;
-      logs.push(`💨 Klik... ${selfName} menembak ${who} — kosong!`);
-      showToast('💨 Klik! Kosong.', 'toast-blank', 1800);
+      const who = targetId === myPid ? 'dirinya sendiri' : tn;
+      logs.push(`💨 Klik... ${sn} menembak ${who} — kosong!`);
+      toast('💨 Klik! Kosong.','t-blank',1800);
     }
 
-    updates['doubleDamage'] = false;
-    const newIndex = idx + 1;
+    upd['doubleDamage'] = false;
+    const newIdx = idx + 1;
 
-    if (newIndex >= 6) {
+    if (newIdx >= chamber.length) {
       // New round
-      const newRound   = (data.round || 1) + 1;
+      const newRound  = (data.round || 1) + 1;
       const newChamber = generateChamber(newRound);
-      const itemAmt    = newRound >= 2 ? 2 : 1;
-      const p1Inv = giveRandomItems(toArr(data.players.player1.inventory), itemAmt);
-      const p2Inv = giveRandomItems(toArr(data.players.player2.inventory), itemAmt);
-      const bc    = newRound === 1 ? 3 : newRound === 2 ? 4 : 5;
+      const newCfg    = getChamberConfig(newRound);
+      const itemAmt   = newRound >= 3 ? 2 : 1;
+      const p1inv     = giveItems(toArr(data.players.player1.inventory), itemAmt);
+      const p2inv     = giveItems(toArr(data.players.player2.inventory), itemAmt);
 
-      updates['round']        = newRound;
-      updates['currentIndex'] = 0;
-      updates['chamber']      = newChamber;
-      updates['blockedPlayer'] = null;
-      updates['players/player1/inventory'] = p1Inv;
-      updates['players/player2/inventory'] = p2Inv;
-      updates['currentTurn']  = oppId;
+      upd['round']        = newRound;
+      upd['currentIndex'] = 0;
+      upd['chamber']      = newChamber;
+      upd['blockedPlayer'] = null;
+      upd['players/player1/inventory'] = p1inv;
+      upd['players/player2/inventory'] = p2inv;
+      upd['currentTurn']  = oppId;
 
       logs.push(`━━━━━━━━━━━━━━━━━━━━━━`);
-      logs.push(`🔄 Ronde ${newRound} dimulai! ${bc} dari 6 slot berisi peluru`);
+      logs.push(`🔄 Ronde ${newRound} dimulai!`);
+      logs.push(`🔫 Chamber diperluas: ${newCfg.slots} slot — ${newCfg.bullets} peluru (${newCfg.bullets}:${newCfg.slots})`);
       logs.push(`📦 Item baru dibagikan (+${itemAmt} masing-masing)`);
+      logs.push(`🎯 Giliran ${data.players[oppId].name}`);
 
     } else {
-      updates['currentIndex'] = newIndex;
+      upd['currentIndex'] = newIdx;
 
-      if (bullet === 0 && targetId === myPlayerId) {
-        // Self blank → keep turn
-        updates['currentTurn'] = myPlayerId;
-        logs.push(`↩️ ${selfName} tembak diri (kosong) — dapat giliran lagi!`);
+      if (bullet === 0 && targetId === myPid) {
+        upd['currentTurn'] = myPid;
+        logs.push(`↩️ ${sn} tembak diri (kosong) — dapat giliran lagi!`);
       } else {
         if (data.blockedPlayer === oppId) {
-          updates['blockedPlayer'] = null;
-          updates['currentTurn']  = myPlayerId;
+          upd['blockedPlayer'] = null;
+          upd['currentTurn']   = myPid;
           logs.push(`⛓️ ${data.players[oppId].name} skip giliran (borgol)!`);
+          logs.push(`🎯 ${sn} mendapat giliran lagi!`);
         } else {
-          updates['currentTurn'] = oppId;
+          upd['currentTurn'] = oppId;
+          logs.push(`🎯 Giliran ${data.players[oppId].name}`);
         }
       }
     }
 
-    if (logs.length > 30) logs.splice(0, logs.length - 30);
-    updates['log'] = logs;
-    await db.ref(`rooms/${roomId}`).update(updates);
-  } catch(err) {
-    console.error('pullTrigger error:', err);
-  } finally {
-    isProcessing = false;
-  }
+    if (logs.length > 35) logs.splice(0, logs.length - 35);
+    upd['log'] = logs;
+    await db.ref(`rooms/${roomId}`).update(upd);
+  } catch(e) { console.error(e); } finally { busy = false; }
 }
 
 // ============================================================
@@ -1377,38 +1341,61 @@ async function pullTrigger(targetId) {
 // ============================================================
 function renderFinished(data) {
   if (!data?.players) return;
-  const winner    = data.winner;
-  const winnerObj = data.players[winner];
-  const loserKey  = winner === 'player1' ? 'player2' : 'player1';
-  const loserObj  = data.players[loserKey];
-  const iWon      = winner === myPlayerId;
+  const w    = data.winner;
+  const wObj = data.players[w];
+  const lKey = w === 'player1' ? 'player2' : 'player1';
+  const lObj = data.players[lKey];
+  const iWon = w === myPid;
 
-  document.getElementById('finish-trophy').textContent  = iWon ? '🏆' : '💀';
-  document.getElementById('finish-title').textContent   = iWon ? `${winnerObj?.name || '?'} MENANG!` : `${winnerObj?.name || '?'} MENANG`;
-  document.getElementById('finish-title').style.color   = iWon ? 'var(--gold)' : 'var(--text2)';
-  document.getElementById('finish-sub').textContent     = iWon ? 'Selamat! Kamu selamat dari roulette.' : 'Kamu tidak selamat kali ini...';
-  document.getElementById('finish-stats').innerHTML = `
-    <div class="stat-item"><div class="stat-label">RONDE</div><div class="stat-value">${data.round||1}</div></div>
-    <div class="stat-item"><div class="stat-label">HP ${winnerObj?.name||'?'}</div><div class="stat-value" style="color:var(--green)">${winnerObj?.hp||0}</div></div>
-    <div class="stat-item"><div class="stat-label">HP ${loserObj?.name||'?'}</div><div class="stat-value" style="color:var(--red2)">0</div></div>`;
+  document.getElementById('fin-trophy').textContent = iWon ? '🏆' : '💀';
+  document.getElementById('fin-title').textContent  = iWon ? `${wObj?.name||'?'} MENANG!` : `${wObj?.name||'?'} MENANG`;
+  document.getElementById('fin-title').style.color  = iWon ? 'var(--gold)' : 'var(--text2)';
+  document.getElementById('fin-sub').textContent    = iWon ? 'Selamat! Kamu selamat dari roulette.' : 'Kamu tidak selamat kali ini...';
+  document.getElementById('fin-stats').innerHTML    = `
+    <div class="stat-item"><div class="stat-lbl">RONDE</div><div class="stat-val">${data.round||1}</div></div>
+    <div class="stat-item"><div class="stat-lbl">HP ${esc(wObj?.name||'?')}</div><div class="stat-val" style="color:var(--green)">${wObj?.hp||0}</div></div>
+    <div class="stat-item"><div class="stat-lbl">HP ${esc(lObj?.name||'?')}</div><div class="stat-val" style="color:var(--red2)">0</div></div>`;
 
-  showScreen('finished');
+  showNotif({
+    icon: iWon ? '🏆' : '💀',
+    title: iWon ? 'KAMU MENANG!' : 'KAMU KALAH',
+    sub: iWon
+      ? `Selamat ${esc(wObj?.name||'?')}!<br>Bertahan hingga ronde ${data.round||1}`
+      : `${esc(wObj?.name||'?')} menang dengan ${wObj?.hp||0} HP tersisa`,
+    theme: iWon ? 'notif-start' : 'notif-dead',
+    duration: 4000,
+  });
+
+  setTimeout(() => showScreen('finished'), 4200);
 }
 
 // ============================================================
-// INPUT HANDLERS
+// TOOLTIP
 // ============================================================
-document.getElementById('input-name').focus();
+const _tip = document.getElementById('tip');
+function showTip(e, item) {
+  _tip.innerHTML = `<strong style="color:var(--text)">${ie(item)} ${iname(item)}</strong><br>${idesc(item)}`;
+  _tip.style.display = 'block'; posTip(e);
+}
+function posTip(e) {
+  let x = e.clientX + 12, y = e.clientY - 52;
+  if (x + 190 > window.innerWidth) x = e.clientX - 202;
+  if (y < 4) y = e.clientY + 14;
+  _tip.style.left = x+'px'; _tip.style.top = y+'px';
+}
+function hideTip() { _tip.style.display='none'; }
+document.addEventListener('mousemove', e => { if (_tip.style.display!=='none') posTip(e); });
 
-document.getElementById('input-name').addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const code = document.getElementById('input-code').value.trim();
-    code ? joinRoom() : createRoom();
-  }
+// ============================================================
+// INPUT BINDINGS
+// ============================================================
+document.getElementById('inp-name').focus();
+document.getElementById('inp-name').addEventListener('keydown', e => {
+  if (e.key==='Enter') { const c=document.getElementById('inp-code').value.trim(); c?joinRoom():createRoom(); }
 });
-document.getElementById('input-code').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoom(); });
-document.getElementById('input-code').addEventListener('input',  e => { e.target.value = e.target.value.toUpperCase(); });
-document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+document.getElementById('inp-code').addEventListener('keydown', e => { if (e.key==='Enter') joinRoom(); });
+document.getElementById('inp-code').addEventListener('input',   e => { e.target.value=e.target.value.toUpperCase(); });
+document.getElementById('ci').addEventListener('keydown', e => { if (e.key==='Enter') sendChat(); });
 </script>
 </body>
 </html>
