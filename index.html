@@ -429,15 +429,17 @@ button:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
    2. Add Web App → copy firebaseConfig
    3. Build → Realtime Database → Create (Test Mode)
 ============================================================ */
-const firebaseConfig = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId:             "YOUR_APP_ID"
-};
+ const firebaseConfig = {
+    apiKey: "AIzaSyAOqzh4tOPig70DwX2pWSPLU7kIL1yJ0cQ",
+    authDomain: "rusianrouletegame.firebaseapp.com",
+    databaseURL: "https://rusianrouletegame-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "rusianrouletegame",
+    storageBucket: "rusianrouletegame.firebasestorage.app",
+    messagingSenderId: "435877009050",
+    appId: "1:435877009050:web:181f2c492bde4e386bf123",
+    measurementId: "G-3RBHLY54ZP"
+  };
+
 /* ============================================================ */
 
 try { firebase.initializeApp(firebaseConfig); } catch(e) { console.error(e); }
