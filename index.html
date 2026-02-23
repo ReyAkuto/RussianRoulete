@@ -8,7 +8,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-/* ========== RESET & BASE ========== */
+/* ==================== RESET ==================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -20,22 +20,21 @@
   --border2: #383838;
   --red: #c0392b;
   --red2: #e74c3c;
-  --red-dim: #5a1a14;
   --gold: #d4a843;
   --gold2: #f0c060;
   --text: #d0d0d0;
   --text2: #888;
   --text3: #555;
   --green: #27ae60;
-  --orange: #e67e22;
+  --green2: #2ecc71;
   --blue: #2980b9;
+  --purple: #8e44ad;
   --font-title: 'Bebas Neue', cursive;
   --font-ui: 'Oswald', sans-serif;
   --font-mono: 'Share Tech Mono', monospace;
 }
 
 html { font-size: 16px; }
-
 body {
   font-family: var(--font-ui);
   background: var(--bg);
@@ -44,833 +43,489 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image:
-    radial-gradient(ellipse at 20% 20%, rgba(139, 0, 0, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(100, 60, 0, 0.04) 0%, transparent 60%);
   overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(139, 0, 0, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(100, 60, 0, 0.04) 0%, transparent 60%);
 }
-
-/* Noise texture overlay */
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.6;
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.5;
 }
 
-.screen { position: relative; z-index: 1; width: 100%; max-width: 760px; padding: 16px; }
-
+.screen { position: relative; z-index: 1; width: 100%; max-width: 780px; padding: 16px; }
 .hidden { display: none !important; }
 
-/* ========== TYPOGRAPHY ========== */
+/* ==================== TYPE ==================== */
 h1 {
   font-family: var(--font-title);
   font-size: 3.5rem;
   color: var(--red2);
-  text-shadow: 0 0 40px rgba(192, 57, 43, 0.5), 0 2px 0 #000;
-  letter-spacing: 0.08em;
-  line-height: 1;
+  text-shadow: 0 0 40px rgba(192,57,43,0.5), 0 2px 0 #000;
+  letter-spacing: 0.08em; line-height: 1;
 }
-
 h2 { font-family: var(--font-title); font-size: 1.6rem; letter-spacing: 0.06em; }
-h3 { font-family: var(--font-ui); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.15em; text-transform: uppercase; }
+h3 { font-family: var(--font-ui); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; }
 
-/* ========== HEADER ========== */
-.site-header {
-  text-align: center;
-  padding: 28px 16px 12px;
-  position: relative;
-  z-index: 1;
-}
+/* ==================== HEADER ==================== */
+.site-header { text-align: center; padding: 28px 16px 12px; position: relative; z-index: 1; }
+.site-header p { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text3); letter-spacing: 0.2em; margin-top: 4px; }
 
-.site-header p {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text3);
-  letter-spacing: 0.2em;
-  margin-top: 4px;
-}
-
-/* ========== CARDS ========== */
+/* ==================== CARDS ==================== */
 .card {
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 22px;
-  margin: 10px 0;
+  padding: 20px;
+  margin: 8px 0;
   position: relative;
   overflow: hidden;
 }
-
 .card::before {
   content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(192, 57, 43, 0.4), transparent);
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(192,57,43,0.35), transparent);
 }
+.card-dimmed { background: var(--bg2); }
 
-.card-dimmed { background: var(--bg2); border-color: var(--border); }
-
-/* ========== INPUTS ========== */
+/* ==================== INPUTS ==================== */
 input[type="text"] {
   width: 100%;
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  color: var(--text);
-  padding: 11px 14px;
-  font-family: var(--font-ui);
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  letter-spacing: 0.05em;
-  margin: 6px 0;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 6px; color: var(--text);
+  padding: 11px 14px; font-family: var(--font-ui); font-size: 1rem;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.05em; margin: 6px 0;
 }
+input[type="text"]:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.15); }
+input::placeholder { color: var(--text3); }
+input.code-input { font-family: var(--font-mono); font-size: 1.5rem; text-align: center; text-transform: uppercase; letter-spacing: 0.4em; }
 
-input[type="text"]:focus {
-  border-color: var(--red);
-  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
-}
+/* ==================== BUTTONS ==================== */
+button { border: none; border-radius: 6px; font-family: var(--font-ui); font-weight: 600; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em; text-transform: uppercase; }
 
-input[type="text"]::placeholder { color: var(--text3); }
+.btn-red { background: var(--red); color: #fff; padding: 12px 24px; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(192,57,43,0.3); }
+.btn-red:hover:not(:disabled) { background: var(--red2); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(192,57,43,0.45); }
+.btn-red:active:not(:disabled) { transform: none; }
 
-input.code-input {
-  font-family: var(--font-mono);
-  font-size: 1.5rem;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.4em;
-}
+.btn-green { background: var(--green); color: #fff; padding: 12px 24px; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(39,174,96,0.3); }
+.btn-green:hover:not(:disabled) { background: var(--green2); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(39,174,96,0.4); }
+.btn-green:active:not(:disabled) { transform: none; }
 
-/* ========== BUTTONS ========== */
-button {
-  border: none;
-  border-radius: 6px;
-  font-family: var(--font-ui);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); padding: 12px 24px; font-size: 0.9rem; }
+.btn-ghost:hover:not(:disabled) { background: var(--bg4); color: var(--text); border-color: var(--text3); }
 
-.btn-red {
-  background: var(--red);
-  color: #fff;
-  padding: 12px 24px;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.3);
-}
-.btn-red:hover:not(:disabled) {
-  background: var(--red2);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(192, 57, 43, 0.4);
-}
-.btn-red:active:not(:disabled) { transform: translateY(0); }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text2);
-  border: 1px solid var(--border2);
-  padding: 12px 24px;
-  font-size: 0.9rem;
-}
-.btn-ghost:hover:not(:disabled) {
-  background: var(--bg4);
-  color: var(--text);
-  border-color: var(--text3);
-}
-
-button:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-/* ========== LOBBY ========== */
-.lobby-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 18px 0;
-  color: var(--text3);
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-}
-.lobby-divider::before, .lobby-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.btn-row { display: flex; gap: 10px; margin-top: 10px; }
+button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
 .btn-full { width: 100%; }
-
-/* ========== WAITING ROOM ========== */
-.room-code-box {
-  background: var(--bg);
-  border: 2px solid var(--gold);
-  border-radius: 10px;
-  padding: 18px 24px;
-  margin: 14px 0;
-  text-align: center;
-  box-shadow: 0 0 30px rgba(212, 168, 67, 0.15);
-}
-.room-code-label { font-size: 0.7rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 8px; }
-.room-code-value {
-  font-family: var(--font-mono);
-  font-size: 3rem;
-  color: var(--gold2);
-  letter-spacing: 0.5em;
-  text-shadow: 0 0 20px rgba(212, 168, 67, 0.4);
-}
-
-.pulse-dot {
-  width: 8px; height: 8px;
-  background: var(--green);
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 8px;
-  animation: pulseDot 1.5s ease-in-out infinite;
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.7); }
-}
-
-/* ========== GAME SCREEN ========== */
-.game-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0 14px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 14px;
-}
-
-.game-info-item {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text3);
-  letter-spacing: 0.1em;
-}
-
-.game-info-item span {
-  color: var(--gold);
-  font-size: 0.9rem;
-}
-
-.round-badge {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-family: var(--font-title);
-  font-size: 1.1rem;
-  color: var(--gold);
-  letter-spacing: 0.1em;
-}
-
-/* ========== PLAYER CARDS ========== */
-.players-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.player-card {
-  background: var(--bg3);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  position: relative;
-}
-
-.player-card.is-you { border-left: 3px solid var(--blue); }
-
-.player-card.active-turn {
-  border-color: var(--red);
-  box-shadow: 0 0 20px rgba(192, 57, 43, 0.2), inset 0 0 30px rgba(192, 57, 43, 0.03);
-}
-
-.player-card.active-turn::after {
-  content: 'GILIRAN';
-  position: absolute;
-  top: 10px; right: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: var(--red2);
-  letter-spacing: 0.15em;
-  animation: blinkText 1.2s ease-in-out infinite;
-}
-
-@keyframes blinkText {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.player-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.player-avatar {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: var(--bg4);
-  border: 1px solid var(--border2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
-
-.player-name-text {
-  font-family: var(--font-ui);
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.you-badge {
-  font-size: 0.55rem;
-  background: rgba(41, 128, 185, 0.2);
-  border: 1px solid rgba(41, 128, 185, 0.5);
-  color: #5ba4d0;
-  border-radius: 3px;
-  padding: 1px 5px;
-  letter-spacing: 0.1em;
-  flex-shrink: 0;
-}
-
-/* ========== HP DISPLAY ========== */
-.hp-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.hearts {
-  display: flex;
-  gap: 3px;
-}
-
-.heart {
-  width: 18px; height: 18px;
-  display: inline-block;
-  position: relative;
-  transition: all 0.3s;
-}
-
-.heart.alive::before, .heart.alive::after {
-  content: '';
-  position: absolute;
-  background: var(--red2);
-  border-radius: 50% 50% 0 0;
-}
-.heart.alive::before { width: 11px; height: 11px; left: 0; top: 2px; }
-.heart.alive::after { width: 11px; height: 11px; right: 0; top: 2px; }
-.heart.alive { background: var(--red2); transform: rotate(45deg) scale(0.8); box-shadow: 0 0 6px rgba(231, 76, 60, 0.6); }
-
-.heart.dead {
-  background: var(--bg4);
-  transform: rotate(45deg) scale(0.7);
-  opacity: 0.25;
-}
-.heart.dead::before, .heart.dead::after {
-  content: '';
-  position: absolute;
-  background: var(--border2);
-  border-radius: 50% 50% 0 0;
-}
-.heart.dead::before { width: 11px; height: 11px; left: 0; top: 2px; }
-.heart.dead::after { width: 11px; height: 11px; right: 0; top: 2px; }
-
-.hp-num {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--text3);
-  margin-left: 4px;
-}
-
-/* ========== INVENTORY ========== */
-.inventory-label {
-  font-size: 0.65rem;
-  color: var(--text3);
-  letter-spacing: 0.15em;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-}
-
-.inventory-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  min-height: 34px;
-}
-
-.item-btn {
-  background: var(--bg4);
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  padding: 5px 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  min-width: 38px;
-}
-
-.item-btn .item-tag {
-  font-family: var(--font-mono);
-  font-size: 0.5rem;
-  color: var(--text3);
-  letter-spacing: 0.05em;
-}
-
-.item-btn:hover:not(:disabled) {
-  background: var(--bg3);
-  border-color: var(--gold);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(212, 168, 67, 0.2);
-}
-
-.item-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-.item-btn.enemy-item { cursor: default; opacity: 0.5; }
-
-.no-items {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text3);
-  align-self: center;
-  padding: 4px 0;
-}
-
-/* ========== STATUS EFFECTS ========== */
-.effects-row {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 6px;
-  min-height: 20px;
-}
-
-.effect-tag {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  padding: 2px 7px;
-  border-radius: 3px;
-  letter-spacing: 0.1em;
-}
-
-.effect-double {
-  background: rgba(230, 126, 34, 0.15);
-  border: 1px solid rgba(230, 126, 34, 0.4);
-  color: #f39c12;
-}
-
-.effect-blocked {
-  background: rgba(90, 90, 90, 0.15);
-  border: 1px solid rgba(90, 90, 90, 0.4);
-  color: var(--text3);
-}
-
-/* ========== CHAMBER ========== */
-.chamber-panel {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-}
-
-.chamber-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.chamber-title {
-  font-size: 0.7rem;
-  color: var(--text3);
-  letter-spacing: 0.2em;
-}
-
-.chamber-counter {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text3);
-}
-.chamber-counter span { color: var(--gold); }
-
-.chamber-slots {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-}
-
-.slot {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  font-family: var(--font-mono);
-}
-
-.slot-connector {
-  width: 8px; height: 2px;
-  background: var(--border);
-  flex-shrink: 0;
-}
-
-.slot-fired {
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  color: var(--text3);
-  font-size: 0.8rem;
-}
-
-.slot-current {
-  background: radial-gradient(circle, #2a0a08 0%, #1a0505 100%);
-  border: 2px solid var(--red);
-  color: var(--red2);
-  box-shadow: 0 0 20px rgba(192, 57, 43, 0.4), inset 0 0 15px rgba(192, 57, 43, 0.1);
-  animation: chamberPulse 1.8s ease-in-out infinite;
-  font-size: 1.2rem;
-}
-
-.slot-unknown {
-  background: var(--bg3);
-  border: 1.5px dashed var(--border2);
-  color: var(--text3);
-  font-size: 0.9rem;
-}
-
-@keyframes chamberPulse {
-  0%, 100% { box-shadow: 0 0 15px rgba(192, 57, 43, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(192, 57, 43, 0.6); }
-}
-
-/* ========== SHOOT BUTTONS ========== */
-.shoot-panel {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.btn-shoot {
-  padding: 16px 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  letter-spacing: 0.06em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-shoot::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
-  pointer-events: none;
-}
-
-.btn-shoot-self {
-  background: linear-gradient(135deg, #5a3a00, #3a2600);
-  border: 1px solid #6b4500;
-  color: #d4a843;
-}
-.btn-shoot-self:hover:not(:disabled) {
-  background: linear-gradient(135deg, #7a5000, #5a3600);
-  border-color: var(--gold);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(212, 168, 67, 0.2);
-}
-
-.btn-shoot-enemy {
-  background: linear-gradient(135deg, #4a0a08, #2a0505);
-  border: 1px solid #6a1010;
-  color: #e74c3c;
-}
-.btn-shoot-enemy:hover:not(:disabled) {
-  background: linear-gradient(135deg, #6a1010, #4a0808);
-  border-color: var(--red2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(192, 57, 43, 0.3);
-}
-
-.btn-shoot .shoot-icon { font-size: 1.5rem; }
-.btn-shoot .shoot-label { font-size: 0.75rem; letter-spacing: 0.1em; }
-
-/* ========== ACTION LOG ========== */
-.log-panel {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.log-header {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.65rem;
-  color: var(--text3);
-  letter-spacing: 0.2em;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.log-body {
-  height: 140px;
-  overflow-y: auto;
-  padding: 8px 12px;
-}
-
-.log-entry {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  padding: 4px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  line-height: 1.5;
-  color: var(--text2);
-  opacity: 0;
-  animation: fadeInLog 0.4s forwards;
-}
-
-@keyframes fadeInLog {
-  from { opacity: 0; transform: translateX(-8px); }
-  to { opacity: 1; transform: none; }
-}
-
-.log-entry:last-child { border-bottom: none; }
-
-.log-body::-webkit-scrollbar { width: 3px; }
-.log-body::-webkit-scrollbar-track { background: transparent; }
-.log-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-/* ========== TOAST ========== */
-#toast {
-  position: fixed;
-  top: 20px; left: 50%;
-  transform: translateX(-50%) translateY(-120px);
-  background: var(--bg3);
-  border: 1.5px solid var(--red);
-  border-radius: 10px;
-  padding: 14px 24px;
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  z-index: 9999;
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.45s;
-  text-align: center;
-  pointer-events: none;
-  min-width: 200px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  opacity: 0;
-}
-
-#toast.show {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-}
-
-#toast.toast-gold { border-color: var(--gold); }
-#toast.toast-blank { border-color: var(--text3); }
-
-/* ========== GUNSHOT ANIMATION ========== */
-@keyframes gunshotShake {
-  0% { transform: translate(0,0) rotate(0deg); }
-  10% { transform: translate(-4px, -3px) rotate(-0.5deg); }
-  20% { transform: translate(4px, 2px) rotate(0.5deg); }
-  30% { transform: translate(-3px, 1px) rotate(0deg); }
-  40% { transform: translate(3px, -2px) rotate(0.3deg); }
-  50% { transform: translate(-2px, 0) rotate(-0.2deg); }
-  100% { transform: translate(0,0) rotate(0deg); }
-}
-
-.shake { animation: gunshotShake 0.4s ease; }
-
-/* Flash overlay */
-#flash-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(200, 30, 10, 0.15);
-  pointer-events: none;
-  z-index: 998;
-  opacity: 0;
-  transition: opacity 0.1s;
-}
-
-#flash-overlay.flash { opacity: 1; }
-
-/* ========== FINISHED SCREEN ========== */
-.finished-card {
-  text-align: center;
-  padding: 40px 20px;
-}
-
-.winner-trophy { font-size: 5rem; margin-bottom: 16px; }
-.winner-title { font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 8px; }
-.winner-sub { color: var(--text3); font-family: var(--font-mono); font-size: 0.85rem; }
-
-.stats-row {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin: 20px 0;
-  padding: 16px;
-  background: var(--bg2);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-}
-
-.stat-item { text-align: center; }
-.stat-label { font-size: 0.65rem; color: var(--text3); letter-spacing: 0.15em; margin-bottom: 4px; }
-.stat-value { font-family: var(--font-mono); font-size: 1.2rem; color: var(--gold); }
-
-/* ========== MISC ========== */
+.btn-row { display: flex; gap: 10px; margin-top: 10px; }
 .mt-8 { margin-top: 8px; }
 .mt-12 { margin-top: 12px; }
-.text-muted { color: var(--text3); font-size: 0.85rem; }
-.text-center { text-align: center; }
-.text-mono { font-family: var(--font-mono); }
-.error-text { color: var(--red2); font-family: var(--font-mono); font-size: 0.8rem; margin-top: 6px; }
 
-/* Loading spinner */
-.spinner {
-  width: 20px; height: 20px;
-  border: 2px solid var(--border);
-  border-top-color: var(--red);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  display: inline-block;
+/* ==================== LOBBY ==================== */
+.lobby-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--text3); font-size: 0.75rem; letter-spacing: 0.2em; }
+.lobby-divider::before, .lobby-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ==================== WAITING ==================== */
+.room-code-box {
+  background: var(--bg); border: 2px solid var(--gold); border-radius: 10px;
+  padding: 18px 24px; margin: 14px 0; text-align: center;
+  box-shadow: 0 0 30px rgba(212,168,67,0.15);
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+.room-code-label { font-size: 0.7rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 8px; }
+.room-code-value { font-family: var(--font-mono); font-size: 3rem; color: var(--gold2); letter-spacing: 0.5em; text-shadow: 0 0 20px rgba(212,168,67,0.4); }
 
-/* ========== RESPONSIVE ========== */
+.pulse-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulseDot 1.5s ease-in-out infinite; }
+@keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+
+/* ==================== READY ROOM ==================== */
+.ready-players-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+
+.ready-player-card {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 16px;
+  text-align: center; transition: border-color 0.4s, box-shadow 0.4s;
+}
+.ready-player-card.is-ready {
+  border-color: var(--green);
+  box-shadow: 0 0 20px rgba(39,174,96,0.2);
+}
+.ready-player-card.is-you-card { border-left: 3px solid var(--blue); }
+
+.ready-avatar { font-size: 2.2rem; margin-bottom: 8px; }
+.ready-player-name { font-family: var(--font-ui); font-weight: 600; font-size: 1rem; margin-bottom: 4px; color: var(--text); }
+.ready-you-badge { font-size: 0.6rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.4); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.1em; margin-left: 6px; }
+.ready-status {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  padding: 6px 10px; border-radius: 4px;
+  display: inline-block; margin-top: 8px;
+  letter-spacing: 0.1em;
+}
+.ready-status.not-ready { background: rgba(90,90,90,0.15); color: var(--text3); border: 1px solid var(--border2); }
+.ready-status.is-ready  { background: rgba(39,174,96,0.15); color: var(--green2); border: 1px solid rgba(39,174,96,0.4); animation: readyPulse 1.5s ease-in-out infinite; }
+.ready-status.waiting-player { color: var(--text3); font-style: italic; border: 1px dashed var(--border); }
+
+@keyframes readyPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.ready-waiting-bar {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--text3);
+  text-align: center; padding: 12px 0; letter-spacing: 0.1em;
+}
+
+/* ==================== GAME HEADER ==================== */
+.game-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.game-info-item { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); letter-spacing: 0.1em; }
+.game-info-item span { color: var(--gold); font-size: 0.85rem; }
+.round-badge { background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 5px 14px; font-family: var(--font-title); font-size: 1.1rem; color: var(--gold); letter-spacing: 0.1em; }
+
+/* ==================== PLAYER CARDS ==================== */
+.players-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+.player-card {
+  background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 12px;
+  transition: border-color 0.3s, box-shadow 0.3s; position: relative;
+}
+.player-card.is-you { border-left: 3px solid var(--blue); }
+.player-card.active-turn {
+  border-color: var(--red);
+  box-shadow: 0 0 20px rgba(192,57,43,0.2), inset 0 0 30px rgba(192,57,43,0.03);
+}
+.player-card.active-turn::after {
+  content: 'GILIRAN';
+  position: absolute; top: 9px; right: 9px;
+  font-family: var(--font-mono); font-size: 0.58rem;
+  color: var(--red2); letter-spacing: 0.15em;
+  animation: blinkText 1.2s ease-in-out infinite;
+}
+@keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+.player-header { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.player-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.player-name-text { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.you-badge { font-size: 0.55rem; background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.5); color: #5ba4d0; border-radius: 3px; padding: 1px 5px; letter-spacing: 0.1em; flex-shrink: 0; }
+
+.hp-row { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+.hearts { display: flex; gap: 3px; }
+.heart { width: 16px; height: 16px; display: inline-block; position: relative; transition: all 0.3s; }
+.heart.alive::before, .heart.alive::after { content: ''; position: absolute; background: var(--red2); border-radius: 50% 50% 0 0; }
+.heart.alive::before { width: 10px; height: 10px; left: 0; top: 2px; }
+.heart.alive::after  { width: 10px; height: 10px; right: 0; top: 2px; }
+.heart.alive { background: var(--red2); transform: rotate(45deg) scale(0.78); box-shadow: 0 0 5px rgba(231,76,60,0.5); }
+.heart.dead { background: var(--bg4); transform: rotate(45deg) scale(0.65); opacity: 0.2; }
+.heart.dead::before, .heart.dead::after { content: ''; position: absolute; background: var(--border2); border-radius: 50% 50% 0 0; }
+.heart.dead::before { width: 10px; height: 10px; left: 0; top: 2px; }
+.heart.dead::after  { width: 10px; height: 10px; right: 0; top: 2px; }
+.hp-num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text3); margin-left: 4px; }
+
+.inventory-label { font-size: 0.6rem; color: var(--text3); letter-spacing: 0.15em; margin-bottom: 5px; }
+.inventory-row { display: flex; flex-wrap: wrap; gap: 4px; min-height: 32px; }
+
+.item-btn {
+  background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 4px 7px; font-size: 0.95rem; cursor: pointer;
+  transition: all 0.15s; min-width: 36px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.item-btn .item-tag { font-family: var(--font-mono); font-size: 0.48rem; color: var(--text3); }
+.item-btn:hover:not(:disabled) { background: var(--bg3); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(212,168,67,0.2); }
+.item-btn.enemy-item { cursor: default; opacity: 0.5; }
+.item-btn:disabled:not(.enemy-item) { opacity: 0.3; cursor: not-allowed; }
+.no-items { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); align-self: center; padding: 4px 0; }
+
+.effects-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; min-height: 18px; }
+.effect-tag { font-family: var(--font-mono); font-size: 0.58rem; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.08em; }
+.effect-double  { background: rgba(230,126,34,0.15); border: 1px solid rgba(230,126,34,0.4); color: #f39c12; }
+.effect-blocked { background: rgba(90,90,90,0.15); border: 1px solid rgba(90,90,90,0.4); color: var(--text3); }
+
+/* ==================== CHAMBER ==================== */
+.chamber-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
+
+.chamber-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 12px; }
+
+.chamber-left { flex: 1; }
+.chamber-title-sm { font-size: 0.65rem; color: var(--text3); letter-spacing: 0.2em; margin-bottom: 6px; }
+
+/* Bullet ratio display */
+.bullet-ratio {
+  display: flex; align-items: center; gap: 8px;
+}
+.ratio-count {
+  font-family: var(--font-title); font-size: 1.5rem; letter-spacing: 0.05em;
+  color: var(--red2);
+  text-shadow: 0 0 16px rgba(231,76,60,0.4);
+  line-height: 1;
+}
+.ratio-sep { color: var(--text3); font-family: var(--font-mono); font-size: 0.9rem; }
+.ratio-total { font-family: var(--font-title); font-size: 1.5rem; color: var(--text3); line-height: 1; }
+.ratio-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.1em; }
+
+/* Probability bar */
+.prob-bar-wrap { margin-top: 8px; }
+.prob-bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.prob-bar-label span { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); }
+.prob-bar-label .prob-val { color: var(--gold); }
+.prob-bar-track { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+.prob-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, var(--red), var(--red2)); }
+
+.chamber-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.chamber-counter { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); white-space: nowrap; }
+.chamber-counter span { color: var(--gold); }
+
+.chamber-slots { display: flex; gap: 6px; justify-content: center; align-items: center; }
+
+.slot { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; font-family: var(--font-mono); }
+.slot-connector { width: 6px; height: 2px; background: var(--border); flex-shrink: 0; }
+
+.slot-fired   { background: var(--bg); border: 1.5px solid var(--border); color: var(--text3); font-size: 0.75rem; }
+.slot-current { background: radial-gradient(circle, #2a0a08, #1a0505); border: 2px solid var(--red); color: var(--red2); box-shadow: 0 0 20px rgba(192,57,43,0.4), inset 0 0 15px rgba(192,57,43,0.1); animation: chamberPulse 1.8s ease-in-out infinite; font-size: 1.1rem; }
+.slot-unknown { background: var(--bg3); border: 1.5px dashed var(--border2); color: var(--text3); font-size: 0.85rem; }
+@keyframes chamberPulse { 0%, 100% { box-shadow: 0 0 12px rgba(192,57,43,0.3); } 50% { box-shadow: 0 0 28px rgba(192,57,43,0.6); } }
+
+/* ==================== SHOOT BUTTONS ==================== */
+.shoot-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+.btn-shoot {
+  padding: 14px 12px; font-size: 0.95rem; font-weight: 600; border-radius: 8px;
+  letter-spacing: 0.06em; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.btn-shoot::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%); pointer-events: none; }
+
+.btn-shoot-self  { background: linear-gradient(135deg, #5a3a00, #3a2600); border: 1px solid #6b4500; color: #d4a843; }
+.btn-shoot-self:hover:not(:disabled)  { background: linear-gradient(135deg, #7a5000, #5a3600); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,168,67,0.2); }
+
+.btn-shoot-enemy { background: linear-gradient(135deg, #4a0a08, #2a0505); border: 1px solid #6a1010; color: #e74c3c; }
+.btn-shoot-enemy:hover:not(:disabled) { background: linear-gradient(135deg, #6a1010, #4a0808); border-color: var(--red2); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.3); }
+
+.btn-shoot .shoot-icon  { font-size: 1.4rem; }
+.btn-shoot .shoot-label { font-size: 0.72rem; letter-spacing: 0.1em; }
+
+/* ==================== BOTTOM PANELS (LOG + CHAT) ==================== */
+.bottom-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+@media (max-width: 580px) { .bottom-panels { grid-template-columns: 1fr; } }
+
+.panel-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.panel-header { padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 0.62rem; color: var(--text3); letter-spacing: 0.2em; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+
+/* Log */
+.log-body { flex: 1; height: 130px; overflow-y: auto; padding: 7px 10px; }
+.log-entry { font-family: var(--font-mono); font-size: 0.72rem; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.025); line-height: 1.5; color: var(--text2); opacity: 0; animation: fadeInLog 0.4s forwards; }
+.log-entry:last-child { border-bottom: none; }
+@keyframes fadeInLog { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+
+/* Chat */
+.chat-body { flex: 1; height: 130px; overflow-y: auto; padding: 7px 10px; }
+
+.chat-msg {
+  display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px;
+  animation: fadeInLog 0.3s forwards; opacity: 0;
+}
+.chat-msg-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--bg4); border: 1px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; margin-top: 1px; }
+.chat-msg-body   { flex: 1; min-width: 0; }
+.chat-msg-name   { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-bottom: 2px; letter-spacing: 0.05em; }
+.chat-msg-name.mine { color: var(--blue); }
+.chat-msg-name.theirs { color: var(--gold); }
+.chat-msg-text   { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text); background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; word-break: break-word; line-height: 1.4; display: inline-block; max-width: 100%; }
+.chat-msg.mine .chat-msg-text { background: rgba(41,128,185,0.12); border-color: rgba(41,128,185,0.25); color: #b8d8ef; }
+.chat-system-msg { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); text-align: center; padding: 3px 0; letter-spacing: 0.08em; font-style: italic; }
+
+.chat-input-row { display: flex; gap: 6px; padding: 7px 10px; border-top: 1px solid var(--border); flex-shrink: 0; }
+.chat-input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 5px; color: var(--text); padding: 6px 10px;
+  font-family: var(--font-mono); font-size: 0.78rem; outline: none;
+  transition: border-color 0.2s; margin: 0;
+  min-width: 0;
+}
+.chat-input:focus { border-color: var(--blue); }
+.chat-input::placeholder { color: var(--text3); }
+.btn-send {
+  background: rgba(41,128,185,0.2); border: 1px solid rgba(41,128,185,0.35);
+  color: #5ba4d0; padding: 6px 10px; font-size: 0.8rem; border-radius: 5px;
+  cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+  font-family: var(--font-mono); letter-spacing: 0;
+}
+.btn-send:hover:not(:disabled) { background: rgba(41,128,185,0.3); border-color: var(--blue); }
+.btn-send:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* Scrollbars */
+.log-body::-webkit-scrollbar, .chat-body::-webkit-scrollbar { width: 3px; }
+.log-body::-webkit-scrollbar-track, .chat-body::-webkit-scrollbar-track { background: transparent; }
+.log-body::-webkit-scrollbar-thumb, .chat-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ==================== TOAST ==================== */
+#toast {
+  position: fixed; top: 20px; left: 50%;
+  transform: translateX(-50%) translateY(-120px);
+  background: var(--bg3); border: 1.5px solid var(--red);
+  border-radius: 10px; padding: 13px 22px;
+  font-family: var(--font-mono); font-size: 0.95rem;
+  z-index: 9999; transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.45s;
+  text-align: center; pointer-events: none; min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0;
+}
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+#toast.toast-gold  { border-color: var(--gold); }
+#toast.toast-blank { border-color: var(--text3); }
+#toast.toast-green { border-color: var(--green); }
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes gunshotShake {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  10%  { transform: translate(-4px,-3px) rotate(-0.5deg); }
+  25%  { transform: translate(4px,2px) rotate(0.5deg); }
+  40%  { transform: translate(-3px,1px) rotate(0deg); }
+  60%  { transform: translate(3px,-2px) rotate(0.3deg); }
+  80%  { transform: translate(-1px,0) rotate(-0.1deg); }
+  100% { transform: translate(0,0) rotate(0deg); }
+}
+.shake { animation: gunshotShake 0.4s ease; }
+
+#flash-overlay { position: fixed; inset: 0; background: rgba(200,30,10,0.14); pointer-events: none; z-index: 998; opacity: 0; transition: opacity 0.1s; }
+#flash-overlay.flash { opacity: 1; }
+
+/* ==================== FINISHED ==================== */
+.finished-card { text-align: center; padding: 36px 20px; }
+.winner-trophy { font-size: 5rem; margin-bottom: 14px; }
+.winner-title { font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 6px; }
+.winner-sub { color: var(--text3); font-family: var(--font-mono); font-size: 0.82rem; }
+.stats-row { display: flex; justify-content: center; gap: 28px; margin: 18px 0; padding: 14px; background: var(--bg2); border-radius: 8px; border: 1px solid var(--border); }
+.stat-item { text-align: center; }
+.stat-label { font-size: 0.62rem; color: var(--text3); letter-spacing: 0.15em; margin-bottom: 3px; }
+.stat-value { font-family: var(--font-mono); font-size: 1.15rem; color: var(--gold); }
+
+/* ==================== MISC ==================== */
+.text-center { text-align: center; }
+.error-text { color: var(--red2); font-family: var(--font-mono); font-size: 0.78rem; margin-top: 5px; }
+
+/* ==================== TOOLTIP ==================== */
+#item-tooltip {
+  position: fixed; display: none; z-index: 9998;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 8px 12px;
+  font-family: var(--font-mono); font-size: 0.73rem;
+  color: var(--text2); pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  max-width: 180px; line-height: 1.5;
+}
+
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 520px) {
-  h1 { font-size: 2.5rem; }
-  .players-grid { grid-template-columns: 1fr; gap: 8px; }
-  .slot { width: 42px; height: 42px; }
-  .slot-connector { width: 4px; }
+  h1 { font-size: 2.3rem; }
+  .players-grid { grid-template-columns: 1fr; }
+  .ready-players-grid { grid-template-columns: 1fr; }
   .shoot-panel { grid-template-columns: 1fr; }
-  .btn-shoot { flex-direction: row; padding: 12px 16px; }
-  .btn-shoot .shoot-icon { font-size: 1.2rem; }
+  .slot { width: 40px; height: 40px; }
+  .slot-connector { width: 4px; }
   .screen { padding: 10px; }
+  .btn-shoot { flex-direction: row; padding: 11px 14px; }
+  .btn-shoot .shoot-icon { font-size: 1.1rem; }
 }
 </style>
 </head>
 <body>
-
-<!-- Flash overlay for gunshot -->
 <div id="flash-overlay"></div>
 
-<!-- ========== SITE HEADER ========== -->
+<!-- ========== HEADER ========== -->
 <div class="site-header">
   <h1>RUSSIAN ROULETTE</h1>
   <p>MULTIPLAYER • REALTIME • TURN-BASED</p>
 </div>
 
-<!-- ========== LOBBY SCREEN ========== -->
+<!-- ========== SCREEN: LOBBY ========== -->
 <div id="screen-lobby" class="screen">
   <div class="card">
-    <h2 style="margin-bottom:18px; color: var(--red2);">— Masuk ke Arena —</h2>
-
-    <label style="font-size:0.75rem;color:var(--text3);letter-spacing:0.15em;">NAMA PEMAIN</label>
+    <h2 style="margin-bottom:16px;color:var(--red2)">— Masuk ke Arena —</h2>
+    <label style="font-size:0.72rem;color:var(--text3);letter-spacing:0.15em">NAMA PEMAIN</label>
     <input type="text" id="input-name" placeholder="Masukkan namamu..." maxlength="16" autocomplete="off">
-
     <div id="lobby-error" class="error-text hidden"></div>
-
     <div class="btn-row mt-12">
       <button class="btn-red btn-full" onclick="createRoom()">➕ BUAT ROOM BARU</button>
     </div>
-
     <div class="lobby-divider">ATAU BERGABUNG</div>
-
-    <label style="font-size:0.75rem;color:var(--text3);letter-spacing:0.15em;">KODE ROOM</label>
+    <label style="font-size:0.72rem;color:var(--text3);letter-spacing:0.15em">KODE ROOM</label>
     <input type="text" id="input-code" class="code-input" placeholder="XXXX" maxlength="4" autocomplete="off">
     <button class="btn-ghost btn-full mt-8" onclick="joinRoom()">🚪 JOIN ROOM</button>
   </div>
-
-  <!-- Instructions -->
-  <div class="card card-dimmed mt-8" style="font-size:0.8rem; color:var(--text3); line-height:1.8;">
-    <h3 style="color:var(--text2);margin-bottom:10px">🎯 Cara Main</h3>
-    <div>• Setiap pemain punya <span style="color:var(--text)">5 HP</span></div>
-    <div>• Gunakan <span style="color:var(--text)">item</span> sebelum menembak</div>
-    <div>• Pilih tembak <span style="color:var(--gold)">diri sendiri</span> atau <span style="color:var(--red2)">musuh</span></div>
-    <div>• Tembak diri dengan blank = <span style="color:var(--green)">giliran bertahan</span></div>
-    <div>• HP ≤ 0 = <span style="color:var(--red2)">MATI</span></div>
+  <div class="card card-dimmed" style="font-size:0.78rem;color:var(--text3);line-height:1.9;margin-top:8px">
+    <h3 style="color:var(--text2);margin-bottom:8px">🎯 CARA MAIN</h3>
+    <div>• HP awal: <span style="color:var(--text)">5</span> | Gunakan <span style="color:var(--text)">item</span> sebelum menembak</div>
+    <div>• Tembak diri dengan <span style="color:var(--green)">blank</span> → giliran bertahan</div>
+    <div>• Ronde habis → peluru <span style="color:var(--red2)">bertambah</span> & dapat item baru</div>
+    <div>• HP ≤ 0 → <span style="color:var(--red2)">MATI</span></div>
   </div>
 </div>
 
-<!-- ========== WAITING SCREEN ========== -->
+<!-- ========== SCREEN: WAITING (P1 menunggu P2) ========== -->
 <div id="screen-waiting" class="screen hidden">
   <div class="card text-center">
-    <h2 style="color:var(--text2); margin-bottom:6px;">⏳ Menunggu Pemain 2</h2>
-    <p class="text-muted" style="margin-bottom:16px; font-family:var(--font-mono); font-size:0.8rem">Bagikan kode ini kepada temanmu</p>
-
+    <h2 style="color:var(--text2);margin-bottom:6px">⏳ Menunggu Pemain 2</h2>
+    <p style="color:var(--text3);font-family:var(--font-mono);font-size:0.78rem;margin-bottom:14px">Bagikan kode ini kepada temanmu</p>
     <div class="room-code-box">
       <div class="room-code-label">KODE ROOM</div>
       <div class="room-code-value" id="display-room-code"></div>
     </div>
-
-    <div style="margin-top:14px; font-family:var(--font-mono); font-size:0.8rem; color:var(--text3)">
+    <div style="margin-top:12px;font-family:var(--font-mono);font-size:0.78rem;color:var(--text3)">
       <span class="pulse-dot"></span>Menunggu koneksi...
     </div>
   </div>
+</div>
 
-  <div class="card card-dimmed" style="font-size:0.75rem; color:var(--text3); font-family:var(--font-mono); line-height:2;">
-    <div>⚔️  RONDE 1 → 3 peluru dari 6 slot</div>
-    <div>⚔️  RONDE 2 → 4 peluru dari 6 slot</div>
-    <div>⚔️  RONDE 3+ → 5 peluru dari 6 slot</div>
+<!-- ========== SCREEN: READY CHECK ========== -->
+<div id="screen-ready" class="screen hidden">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <h2 style="color:var(--gold)">⚔️ Lobi Pertempuran</h2>
+      <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text3)">ROOM: <span style="color:var(--gold)" id="ready-room-code"></span></div>
+    </div>
+    <p style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text3);margin-bottom:2px">Kedua pemain harus READY untuk memulai</p>
+
+    <div class="ready-players-grid">
+      <!-- P1 card (opponent or self) -->
+      <div id="ready-card-p1" class="ready-player-card">
+        <div class="ready-avatar">🤠</div>
+        <div class="ready-player-name" id="ready-name-p1">—</div>
+        <div><span class="ready-status not-ready" id="ready-status-p1">⬜ Belum Ready</span></div>
+      </div>
+      <!-- P2 card -->
+      <div id="ready-card-p2" class="ready-player-card">
+        <div class="ready-avatar">😈</div>
+        <div class="ready-player-name" id="ready-name-p2">—</div>
+        <div><span class="ready-status waiting-player" id="ready-status-p2">🔌 Menunggu...</span></div>
+      </div>
+    </div>
+
+    <div id="ready-btn-wrapper" class="text-center">
+      <button class="btn-green" id="btn-ready" onclick="setReady()" style="padding:14px 48px;font-size:1rem;margin-bottom:10px">
+        ✅ READY!
+      </button>
+    </div>
+
+    <div class="ready-waiting-bar" id="ready-waiting-msg">
+      <span class="pulse-dot"></span>Menunggu kedua pemain ready...
+    </div>
+  </div>
+
+  <div class="card card-dimmed" style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);line-height:2.1">
+    <div>⚔️ Ronde 1 → <span style="color:var(--red2)">3 peluru</span> dari 6 slot (50%)</div>
+    <div>⚔️ Ronde 2 → <span style="color:var(--red2)">4 peluru</span> dari 6 slot (67%)</div>
+    <div>⚔️ Ronde 3+ → <span style="color:var(--red2)">5 peluru</span> dari 6 slot (83%)</div>
   </div>
 </div>
 
-<!-- ========== GAME SCREEN ========== -->
+<!-- ========== SCREEN: GAME ========== -->
 <div id="screen-game" class="screen hidden">
-  <!-- Header bar -->
   <div class="game-header">
     <div class="game-info-item">ROOM: <span id="game-room-code">—</span></div>
     <div class="round-badge">RONDE <span id="game-round">1</span></div>
     <div class="game-info-item" id="turn-label">—</div>
   </div>
 
-  <!-- Player cards -->
   <div class="players-grid">
-    <!-- Opponent card -->
+    <!-- Opponent -->
     <div id="card-opponent" class="player-card">
       <div class="player-header">
         <div class="player-avatar" id="opp-avatar">👤</div>
@@ -880,12 +535,11 @@ button:disabled {
         <div class="hearts" id="opp-hearts"></div>
         <div class="hp-num" id="opp-hp-num"></div>
       </div>
-      <div class="inventory-label">INVENTORY</div>
+      <div class="inventory-label">INVENTORY MUSUH</div>
       <div class="inventory-row" id="opp-inventory"></div>
       <div class="effects-row" id="opp-effects"></div>
     </div>
-
-    <!-- Self card -->
+    <!-- Self -->
     <div id="card-self" class="player-card is-you">
       <div class="player-header">
         <div class="player-avatar" id="self-avatar">👤</div>
@@ -896,17 +550,37 @@ button:disabled {
         <div class="hearts" id="self-hearts"></div>
         <div class="hp-num" id="self-hp-num"></div>
       </div>
-      <div class="inventory-label">INVENTORY <span style="color:var(--text3);font-size:0.6rem">(KLIK UNTUK PAKAI)</span></div>
+      <div class="inventory-label">INVENTORY <span style="color:var(--text3);font-size:0.55rem">(KLIK PAKAI)</span></div>
       <div class="inventory-row" id="self-inventory"></div>
       <div class="effects-row" id="self-effects"></div>
     </div>
   </div>
 
-  <!-- Chamber -->
+  <!-- Chamber with bullet ratio -->
   <div class="chamber-panel">
-    <div class="chamber-header">
-      <div class="chamber-title">🔲 CHAMBER</div>
-      <div class="chamber-counter">SLOT <span id="chamber-idx">1</span>/6</div>
+    <div class="chamber-top-row">
+      <div class="chamber-left">
+        <div class="chamber-title-sm">🔲 CHAMBER</div>
+        <div class="bullet-ratio">
+          <span class="ratio-count" id="ratio-bullets">?</span>
+          <span class="ratio-sep">/</span>
+          <span class="ratio-total">6</span>
+          <span class="ratio-label">PELURU<br>TERSISA</span>
+        </div>
+        <div class="prob-bar-wrap">
+          <div class="prob-bar-label">
+            <span>KEMUNGKINAN PELURU</span>
+            <span class="prob-val" id="prob-val">?%</span>
+          </div>
+          <div class="prob-bar-track">
+            <div class="prob-bar-fill" id="prob-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="chamber-right">
+        <div class="chamber-counter">SLOT <span id="chamber-idx">1</span>/6</div>
+        <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--text3)" id="round-ammo-label"></div>
+      </div>
     </div>
     <div class="chamber-slots" id="chamber-slots"></div>
   </div>
@@ -923,53 +597,47 @@ button:disabled {
     </button>
   </div>
 
-  <!-- Action Log -->
-  <div class="log-panel">
-    <div class="log-header">
-      <span>📋</span> LOG AKSI
+  <!-- Log + Chat side by side -->
+  <div class="bottom-panels">
+    <!-- Action Log -->
+    <div class="panel-box">
+      <div class="panel-header">📋 LOG AKSI</div>
+      <div class="log-body" id="action-log"></div>
     </div>
-    <div class="log-body" id="action-log"></div>
+    <!-- Chat -->
+    <div class="panel-box">
+      <div class="panel-header">💬 CHAT <span style="color:var(--blue);margin-left:4px" id="chat-notif"></span></div>
+      <div class="chat-body" id="chat-body"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" class="chat-input" placeholder="Kirim pesan..." maxlength="80" autocomplete="off">
+        <button class="btn-send" id="btn-send" onclick="sendChat()">➤</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ========== FINISHED SCREEN ========== -->
+<!-- ========== SCREEN: FINISHED ========== -->
 <div id="screen-finished" class="screen hidden">
   <div class="card finished-card">
     <div class="winner-trophy" id="finish-trophy">🏆</div>
-    <div class="winner-title" id="finish-title" style="color:var(--gold)"></div>
+    <div class="winner-title" id="finish-title"></div>
     <div class="winner-sub" id="finish-sub"></div>
-
     <div class="stats-row" id="finish-stats"></div>
-
-    <button class="btn-red" style="margin-top:8px; padding:14px 40px;" onclick="location.reload()">
-      🔄 MAIN LAGI
-    </button>
+    <button class="btn-red" style="padding:14px 40px;margin-top:8px" onclick="location.reload()">🔄 MAIN LAGI</button>
   </div>
 </div>
 
-<!-- Toast -->
+<!-- Toast & Tooltip -->
 <div id="toast"></div>
-
-<!-- ========== ITEM TOOLTIP ========== -->
-<div id="item-tooltip" style="
-  position:fixed; display:none; z-index:9998;
-  background:var(--bg3); border:1px solid var(--border2);
-  border-radius:6px; padding:8px 12px;
-  font-family:var(--font-mono); font-size:0.75rem;
-  color:var(--text2); pointer-events:none;
-  box-shadow:0 4px 16px rgba(0,0,0,0.4);
-  max-width:180px; line-height:1.5;
-"></div>
+<div id="item-tooltip"></div>
 
 <script>
-// ================================================================
-//  ⚠️  GANTI DENGAN KONFIGURASI FIREBASE KAMU  ⚠️
-//  Buka: https://console.firebase.google.com
-//  1. Buat project baru
-//  2. Tambah Web App
-//  3. Copy firebaseConfig ke bawah ini
-//  4. Aktifkan Realtime Database dengan mode "test"
-// ================================================================
+/* ============================================================
+   ⚠️ GANTI DENGAN FIREBASE CONFIG KAMU
+   1. Buka console.firebase.google.com
+   2. Buat/pilih project → Web App → Copy config
+   3. Aktifkan Realtime Database (Test Mode)
+============================================================ */
 const firebaseConfig = {
     apiKey: "AIzaSyAOqzh4tOPig70DwX2pWSPLU7kIL1yJ0cQ",
     authDomain: "rusianrouletegame.firebaseapp.com",
@@ -980,33 +648,33 @@ const firebaseConfig = {
     appId: "1:435877009050:web:181f2c492bde4e386bf123",
     measurementId: "G-3RBHLY54ZP"
   };
-// ================================================================
+/* ============================================================ */
 
-try {
-  firebase.initializeApp(firebaseConfig);
-} catch(e) {
-  console.error('Firebase init error:', e);
-}
+try { firebase.initializeApp(firebaseConfig); }
+catch(e) { console.error('Firebase init error:', e); }
+
 const db = firebase.database();
 
-// ================================================================
+// ============================================================
 // STATE
-// ================================================================
-let myPlayerId = null;  // 'player1' | 'player2'
-let roomId = null;
-let myName = '';
+// ============================================================
+let myPlayerId  = null;  // 'player1' | 'player2'
+let roomId      = null;
+let myName      = '';
 let roomListener = null;
+let chatListener = null;
 let lastRoomData = null;
-let isProcessing = false; // prevent double-clicks
-let logEntryCount = 0;    // for animation staggering
+let isProcessing = false;
+let chatMsgCount = 0;
+let chatVisible  = true;  // track if user scrolled up
 
-// ================================================================
+// ============================================================
 // HELPERS
-// ================================================================
+// ============================================================
 function toArr(val) {
   if (!val) return [];
   if (Array.isArray(val)) return [...val];
-  const keys = Object.keys(val).map(Number).filter(k => !isNaN(k)).sort((a,b)=>a-b);
+  const keys = Object.keys(val).map(Number).filter(k => !isNaN(k)).sort((a,b) => a-b);
   return keys.map(k => val[k]);
 }
 
@@ -1021,55 +689,54 @@ function shuffleArray(arr) {
 
 function generateChamber(round) {
   const bullets = round === 1 ? 3 : round === 2 ? 4 : 5;
-  const chamber = Array(6).fill(0);
-  for (let i = 0; i < bullets; i++) chamber[i] = 1;
-  return shuffleArray(chamber);
+  const arr     = Array(6).fill(0);
+  for (let i = 0; i < bullets; i++) arr[i] = 1;
+  return shuffleArray(arr);
 }
 
 function giveRandomItems(inventory, amount) {
-  const items = ['magnifier', 'rokok', 'silet', 'beer', 'handcuff'];
-  const inv = [...inventory];
-  for (let i = 0; i < amount; i++) {
-    inv.push(items[Math.floor(Math.random() * items.length)]);
-  }
+  const pool = ['magnifier','rokok','silet','beer','handcuff'];
+  const inv  = [...inventory];
+  for (let i = 0; i < amount; i++)
+    inv.push(pool[Math.floor(Math.random() * pool.length)]);
   return inv;
 }
 
 const ITEM_INFO = {
-  magnifier: { emoji: '🔍', name: 'Kaca Pembesar', desc: 'Lihat isi chamber berikutnya (privat)' },
-  rokok:     { emoji: '🚬', name: 'Rokok',         desc: '+1 HP (maks 5)' },
-  silet:     { emoji: '🔪', name: 'Silet',         desc: 'Damage berikutnya x2' },
-  beer:      { emoji: '🍺', name: 'Bir',           desc: 'Kocok ulang chamber, reset index' },
-  handcuff:  { emoji: '⛓️', name: 'Borgol',        desc: 'Musuh skip giliran berikutnya' },
+  magnifier: { emoji: '🔍', name: 'Kaca Pembesar', desc: 'Lihat isi chamber aktif (privat)' },
+  rokok:     { emoji: '🚬', name: 'Rokok',         desc: '+1 HP (maksimal 5)' },
+  silet:     { emoji: '🔪', name: 'Silet',         desc: 'Tembakan berikutnya ×2 damage' },
+  beer:      { emoji: '🍺', name: 'Bir',           desc: 'Kocok ulang chamber + reset index' },
+  handcuff:  { emoji: '⛓️', name: 'Borgol',        desc: 'Musuh skip 1 giliran berikutnya' },
 };
 
-function itemEmoji(item)  { return ITEM_INFO[item]?.emoji  || '❓'; }
-function itemLabel(item)  { return ITEM_INFO[item]?.name   || item; }
-function itemDesc(item)   { return ITEM_INFO[item]?.desc   || ''; }
+function itemEmoji(i) { return ITEM_INFO[i]?.emoji || '❓'; }
+function itemName(i)  { return ITEM_INFO[i]?.name  || i; }
+function itemDesc(i)  { return ITEM_INFO[i]?.desc  || ''; }
 
 function genRoomId() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({length:4}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:4}, () => c[Math.floor(Math.random() * c.length)]).join('');
 }
 
 function showError(msg) {
   const el = document.getElementById('lobby-error');
   el.textContent = msg;
   el.classList.remove('hidden');
-  setTimeout(() => el.classList.add('hidden'), 3000);
+  setTimeout(() => el.classList.add('hidden'), 3500);
 }
 
-let toastTimer = null;
-function showToast(msg, cls = '', duration = 2800) {
+let _toastTimer = null;
+function showToast(msg, cls='', duration=2800) {
   const t = document.getElementById('toast');
   t.innerHTML = msg;
   t.className = `show ${cls}`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.className = '', duration);
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.className = ''; }, duration);
 }
 
 function showScreen(id) {
-  ['lobby','waiting','game','finished'].forEach(s => {
+  ['lobby','waiting','ready','game','finished'].forEach(s => {
     document.getElementById(`screen-${s}`).classList.toggle('hidden', s !== id);
   });
 }
@@ -1077,68 +744,60 @@ function showScreen(id) {
 function flashScreen() {
   const el = document.getElementById('flash-overlay');
   el.classList.add('flash');
-  setTimeout(() => el.classList.remove('flash'), 150);
+  setTimeout(() => el.classList.remove('flash'), 160);
 }
 
 function shakeScreen() {
-  document.getElementById('screen-game').classList.add('shake');
-  setTimeout(() => document.getElementById('screen-game').classList.remove('shake'), 420);
+  const el = document.getElementById('screen-game');
+  el.classList.add('shake');
+  setTimeout(() => el.classList.remove('shake'), 430);
 }
 
-// ================================================================
+// ============================================================
 // TOOLTIP
-// ================================================================
-const tooltip = document.getElementById('item-tooltip');
+// ============================================================
+const _tooltip = document.getElementById('item-tooltip');
 
 function showItemTooltip(e, item) {
-  tooltip.innerHTML = `<strong style="color:var(--text)">${itemEmoji(item)} ${itemLabel(item)}</strong><br>${itemDesc(item)}`;
-  tooltip.style.display = 'block';
-  positionTooltip(e);
+  _tooltip.innerHTML = `<strong style="color:var(--text)">${itemEmoji(item)} ${itemName(item)}</strong><br>${itemDesc(item)}`;
+  _tooltip.style.display = 'block';
+  _positionTip(e);
 }
-
-function positionTooltip(e) {
-  let x = e.clientX + 12, y = e.clientY - 50;
+function _positionTip(e) {
+  let x = e.clientX + 12, y = e.clientY - 52;
   if (x + 190 > window.innerWidth) x = e.clientX - 202;
-  if (y < 0) y = e.clientY + 12;
-  tooltip.style.left = x + 'px';
-  tooltip.style.top  = y + 'px';
+  if (y < 4) y = e.clientY + 14;
+  _tooltip.style.left = x + 'px'; _tooltip.style.top = y + 'px';
 }
+function hideTooltip() { _tooltip.style.display = 'none'; }
+document.addEventListener('mousemove', e => { if (_tooltip.style.display !== 'none') _positionTip(e); });
 
-function hideTooltip() { tooltip.style.display = 'none'; }
-
-document.addEventListener('mousemove', e => {
-  if (tooltip.style.display !== 'none') positionTooltip(e);
-});
-
-// ================================================================
+// ============================================================
 // ROOM OPERATIONS
-// ================================================================
+// ============================================================
 async function createRoom() {
   const name = document.getElementById('input-name').value.trim();
   if (!name) { showError('⚠️ Masukkan namamu dulu!'); return; }
-  myName = name;
-
-  const code = genRoomId();
-  roomId = code;
+  myName     = name;
+  roomId     = genRoomId();
   myPlayerId = 'player1';
 
   try {
-    await db.ref(`rooms/${code}`).set({
+    await db.ref(`rooms/${roomId}`).set({
       status: 'waiting',
-      round: 1,
-      currentTurn: 'player1',
+      round:  1, currentTurn: 'player1',
       currentIndex: 0,
       chamber: [0,0,0,0,0,0],
-      doubleDamage: false,
-      winner: null,
-      log: ['⏳ Menunggu pemain 2 bergabung...'],
+      doubleDamage: false, blockedPlayer: null, winner: null,
       players: {
-        player1: { name: myName, hp: 5, inventory: [] },
-        player2: { name: '',     hp: 5, inventory: [] }
-      }
+        player1: { name: myName, hp: 5, inventory: [], ready: false },
+        player2: { name: '',     hp: 5, inventory: [], ready: false }
+      },
+      log: [`⏳ ${myName} membuat room. Menunggu pemain 2...`],
+      chat: []
     });
 
-    document.getElementById('display-room-code').textContent = code;
+    document.getElementById('display-room-code').textContent = roomId;
     showScreen('waiting');
     startRoomListener();
   } catch(err) {
@@ -1150,284 +809,413 @@ async function createRoom() {
 async function joinRoom() {
   const name = document.getElementById('input-name').value.trim();
   const code = document.getElementById('input-code').value.trim().toUpperCase();
-
-  if (!name) { showError('⚠️ Masukkan namamu dulu!'); return; }
-  if (code.length !== 4) { showError('⚠️ Kode room harus 4 karakter!'); return; }
+  if (!name)          { showError('⚠️ Masukkan namamu dulu!'); return; }
+  if (code.length !== 4) { showError('⚠️ Kode harus 4 karakter!'); return; }
 
   myName = name;
-
   try {
     const snap = await db.ref(`rooms/${code}`).once('value');
     const data = snap.val();
-
-    if (!data) { showError('❌ Room tidak ditemukan!'); return; }
-    if (data.status !== 'waiting') { showError('❌ Room sudah dimulai atau selesai!'); return; }
+    if (!data)                    { showError('❌ Room tidak ditemukan!'); return; }
+    if (data.status !== 'waiting') { showError('❌ Room tidak tersedia atau sudah berjalan!'); return; }
     if (data.players?.player2?.name) { showError('❌ Room sudah penuh!'); return; }
 
-    roomId   = code;
+    roomId     = code;
     myPlayerId = 'player2';
 
-    const chamber = generateChamber(1);
-    const p1Inv   = giveRandomItems([], 1);
-    const p2Inv   = giveRandomItems([], 1);
-    const p1Name  = data.players.player1.name;
-
     await db.ref(`rooms/${code}`).update({
-      status: 'playing',
-      round: 1,
-      currentTurn: 'player1',
-      currentIndex: 0,
-      chamber: chamber,
-      doubleDamage: false,
-      'players/player1/hp': 5,
-      'players/player1/inventory': p1Inv,
-      'players/player2/name': myName,
-      'players/player2/hp': 5,
-      'players/player2/inventory': p2Inv,
-      log: [
-        `🎮 Game dimulai! ${p1Name} VS ${myName}`,
-        `🔫 Ronde 1 — 3 peluru tersembunyi`,
-        `📦 ${p1Name}: ${p1Inv.map(itemEmoji).join(' ')} | ${myName}: ${p2Inv.map(itemEmoji).join(' ')}`
-      ]
+      status: 'lobby',
+      'players/player2/name':    myName,
+      'players/player2/hp':      5,
+      'players/player2/inventory': [],
+      'players/player2/ready':   false,
     });
 
     document.getElementById('game-room-code').textContent = code;
-    showScreen('game');
+    document.getElementById('ready-room-code').textContent = code;
+    showScreen('ready');
     startRoomListener();
+    startChatListener();
   } catch(err) {
-    showError('❌ Gagal bergabung. Cek koneksi dan Firebase!');
+    showError('❌ Gagal bergabung. Cek Firebase!');
     console.error(err);
   }
 }
 
-// ================================================================
-// REALTIME LISTENER
-// ================================================================
-function startRoomListener() {
-  if (roomListener) { db.ref(`rooms/${roomId}`).off('value', roomListener); }
+// ============================================================
+// READY SYSTEM
+// ============================================================
+async function setReady() {
+  if (!roomId || !myPlayerId) return;
+  const btn = document.getElementById('btn-ready');
+  btn.disabled = true;
+  btn.textContent = '✅ READY!';
 
-  const ref = db.ref(`rooms/${roomId}`);
-  roomListener = ref.on('value', snap => {
+  await db.ref(`rooms/${roomId}/players/${myPlayerId}/ready`).set(true);
+
+  // Check if both ready → start game
+  const snap = await db.ref(`rooms/${roomId}/players`).once('value');
+  const players = snap.val();
+
+  if (players?.player1?.ready && players?.player2?.ready) {
+    await startGame();
+  }
+}
+
+async function startGame() {
+  const snap = await db.ref(`rooms/${roomId}`).once('value');
+  const data = snap.val();
+  if (!data || data.status !== 'lobby') return;
+  if (!data.players?.player1?.ready || !data.players?.player2?.ready) return;
+
+  const round   = 1;
+  const chamber = generateChamber(round);
+  const p1Inv   = giveRandomItems([], 1);
+  const p2Inv   = giveRandomItems([], 1);
+  const p1Name  = data.players.player1.name;
+  const p2Name  = data.players.player2.name;
+
+  await db.ref(`rooms/${roomId}`).update({
+    status: 'playing',
+    round: 1, currentTurn: 'player1',
+    currentIndex: 0, chamber,
+    doubleDamage: false, blockedPlayer: null, winner: null,
+    'players/player1/hp':        5,
+    'players/player1/inventory': p1Inv,
+    'players/player1/ready':     true,
+    'players/player2/hp':        5,
+    'players/player2/inventory': p2Inv,
+    'players/player2/ready':     true,
+    log: [
+      `🎮 Game dimulai! ${p1Name} VS ${p2Name}`,
+      `🔫 Ronde 1 — 3 dari 6 slot berisi peluru`,
+      `📦 ${p1Name}: ${p1Inv.map(itemEmoji).join(' ')}  |  ${p2Name}: ${p2Inv.map(itemEmoji).join(' ')}`,
+      `🎯 ${p1Name} memulai giliran pertama`,
+    ]
+  });
+}
+
+// ============================================================
+// REALTIME LISTENER
+// ============================================================
+function startRoomListener() {
+  if (roomListener) db.ref(`rooms/${roomId}`).off('value', roomListener);
+
+  roomListener = db.ref(`rooms/${roomId}`).on('value', snap => {
     const data = snap.val();
     if (!data) return;
     lastRoomData = data;
 
-    if (data.status === 'playing') {
-      if (!document.getElementById('screen-game').classList.contains('hidden') === false) {
-        document.getElementById('game-room-code').textContent = roomId;
-        showScreen('game');
-      }
+    if (data.status === 'waiting') {
+      showScreen('waiting');
+
+    } else if (data.status === 'lobby') {
+      document.getElementById('ready-room-code').textContent = roomId;
+      showScreen('ready');
+      renderReadyScreen(data);
+      startChatListener(); // start chat when both connected
+
+    } else if (data.status === 'playing') {
+      document.getElementById('game-room-code').textContent = roomId;
+      showScreen('game');
       renderGame(data);
+
     } else if (data.status === 'finished') {
+      document.getElementById('game-room-code').textContent = roomId;
+      showScreen('game');
       renderGame(data);
-      setTimeout(() => renderFinished(data), 1200);
+      setTimeout(() => renderFinished(data), 1400);
     }
   });
 }
 
-// ================================================================
-// RENDER
-// ================================================================
-function renderGame(data) {
-  if (!data || !data.players) return;
+// ============================================================
+// CHAT LISTENER
+// ============================================================
+function startChatListener() {
+  if (chatListener) return; // already started
 
-  const oppId    = myPlayerId === 'player1' ? 'player2' : 'player1';
-  const self     = data.players[myPlayerId];
-  const opp      = data.players[oppId];
+  chatListener = db.ref(`rooms/${roomId}/chat`).on('value', snap => {
+    const rawMsgs = snap.val();
+    if (!rawMsgs) return;
+
+    const msgs = toArr(rawMsgs);
+    renderChat(msgs);
+  });
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text || !roomId || !myPlayerId) return;
+
+  const data  = lastRoomData;
+  const name  = data?.players?.[myPlayerId]?.name || myName || 'Player';
+  input.value = '';
+
+  const newMsg = { pid: myPlayerId, name, text, ts: Date.now() };
+
+  const snap   = await db.ref(`rooms/${roomId}/chat`).once('value');
+  const msgs   = toArr(snap.val() || []);
+  msgs.push(newMsg);
+  if (msgs.length > 60) msgs.splice(0, msgs.length - 60);
+  await db.ref(`rooms/${roomId}/chat`).set(msgs);
+}
+
+function renderChat(msgs) {
+  const el = document.getElementById('chat-body');
+  if (!el) return;
+
+  const wasAtBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
+
+  el.innerHTML = msgs.map(m => {
+    if (m.system) {
+      return `<div class="chat-system-msg">— ${m.text} —</div>`;
+    }
+    const isMine = m.pid === myPlayerId;
+    const avatar = m.pid === 'player1' ? '🤠' : '😈';
+    return `
+      <div class="chat-msg ${isMine ? 'mine' : ''}">
+        <div class="chat-msg-avatar">${avatar}</div>
+        <div class="chat-msg-body">
+          <div class="chat-msg-name ${isMine ? 'mine' : 'theirs'}">${escapeHtml(m.name)}</div>
+          <div class="chat-msg-text">${escapeHtml(m.text)}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  if (wasAtBottom) el.scrollTop = el.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ============================================================
+// RENDER: READY SCREEN
+// ============================================================
+function renderReadyScreen(data) {
+  const p1 = data.players?.player1;
+  const p2 = data.players?.player2;
+
+  // Names
+  document.getElementById('ready-name-p1').innerHTML =
+    `${p1?.name || '—'}${myPlayerId === 'player1' ? '<span class="ready-you-badge">KAMU</span>' : ''}`;
+  document.getElementById('ready-name-p2').innerHTML =
+    `${p2?.name || 'Menunggu...'}${myPlayerId === 'player2' ? '<span class="ready-you-badge">KAMU</span>' : ''}`;
+
+  // Status P1
+  const s1 = document.getElementById('ready-status-p1');
+  const c1 = document.getElementById('ready-card-p1');
+  if (p1?.ready) {
+    s1.textContent = '✅ READY!'; s1.className = 'ready-status is-ready'; c1.classList.add('is-ready');
+  } else {
+    s1.textContent = '⬜ Belum Ready'; s1.className = 'ready-status not-ready'; c1.classList.remove('is-ready');
+  }
+
+  // Status P2
+  const s2 = document.getElementById('ready-status-p2');
+  const c2 = document.getElementById('ready-card-p2');
+  if (!p2?.name) {
+    s2.textContent = '🔌 Menunggu...'; s2.className = 'ready-status waiting-player'; c2.classList.remove('is-ready');
+  } else if (p2?.ready) {
+    s2.textContent = '✅ READY!'; s2.className = 'ready-status is-ready'; c2.classList.add('is-ready');
+  } else {
+    s2.textContent = '⬜ Belum Ready'; s2.className = 'ready-status not-ready'; c2.classList.remove('is-ready');
+  }
+
+  // You card highlight
+  if (myPlayerId === 'player1') c1.classList.add('is-you-card');
+  else c2.classList.add('is-you-card');
+
+  // Ready button
+  const myReady  = data.players?.[myPlayerId]?.ready;
+  const btn      = document.getElementById('btn-ready');
+  btn.disabled   = !!myReady;
+  btn.textContent = myReady ? '✅ SUDAH READY' : '✅ READY!';
+
+  // Waiting msg
+  const both  = p1?.ready && p2?.ready;
+  const waitEl = document.getElementById('ready-waiting-msg');
+  if (both) {
+    waitEl.innerHTML = '<span style="color:var(--green2)">🚀 Memulai game...</span>';
+  } else if (!p2?.name) {
+    waitEl.innerHTML = '<span class="pulse-dot"></span>Menunggu pemain 2 bergabung...';
+  } else {
+    const p1r = p1?.ready ? '<span style="color:var(--green2)">✅</span>' : '<span style="color:var(--text3)">⬜</span>';
+    const p2r = p2?.ready ? '<span style="color:var(--green2)">✅</span>' : '<span style="color:var(--text3)">⬜</span>';
+    waitEl.innerHTML = `${p1r} ${p1?.name || 'P1'} &nbsp;|&nbsp; ${p2r} ${p2?.name || 'P2'}`;
+  }
+
+  // If both ready but still on lobby, trigger start (fallback)
+  if (p1?.ready && p2?.ready && data.status === 'lobby') {
+    startGame();
+  }
+}
+
+// ============================================================
+// RENDER: GAME
+// ============================================================
+function renderGame(data) {
+  if (!data?.players) return;
+
+  const oppId   = myPlayerId === 'player1' ? 'player2' : 'player1';
+  const self    = data.players[myPlayerId];
+  const opp     = data.players[oppId];
+  if (!self || !opp) return;
+
   const isMyTurn = data.currentTurn === myPlayerId;
   const canAct   = isMyTurn && data.status === 'playing';
 
-  if (!self || !opp) return;
-
   // Header
   document.getElementById('game-round').textContent = data.round || 1;
-  document.getElementById('turn-label').innerHTML =
-    isMyTurn
-    ? `<span style="color:var(--red2);font-family:var(--font-mono);font-size:0.75rem">🎯 GILIRAN KAMU</span>`
-    : `<span style="color:var(--text3);font-family:var(--font-mono);font-size:0.75rem">⏳ ${opp.name || '?'}</span>`;
+  document.getElementById('turn-label').innerHTML = isMyTurn
+    ? `<span style="color:var(--red2);font-family:var(--font-mono);font-size:0.72rem">🎯 GILIRAN KAMU</span>`
+    : `<span style="color:var(--text3);font-family:var(--font-mono);font-size:0.72rem">⏳ ${escapeHtml(opp.name || '?')}</span>`;
 
   // Active turn border
   document.getElementById('card-self').classList.toggle('active-turn', isMyTurn);
   document.getElementById('card-opponent').classList.toggle('active-turn', !isMyTurn);
 
-  // Avatars
   document.getElementById('self-avatar').textContent = myPlayerId === 'player1' ? '🤠' : '😈';
   document.getElementById('opp-avatar').textContent  = oppId === 'player1' ? '🤠' : '😈';
+  document.getElementById('self-name').textContent   = self.name || 'Tu';
+  document.getElementById('opp-name').textContent    = opp.name  || 'Musuh';
 
-  // Names
-  document.getElementById('self-name').textContent = self.name || 'Tu';
-  document.getElementById('opp-name').textContent  = opp.name  || 'Musuh';
-
-  // HP
   renderHearts('self-hearts', self.hp);
   renderHearts('opp-hearts',  opp.hp);
   document.getElementById('self-hp-num').textContent = `${self.hp}/5`;
   document.getElementById('opp-hp-num').textContent  = `${opp.hp}/5`;
 
   // Effects
-  const selfEffects = [];
-  const oppEffects  = [];
-  if (data.doubleDamage && isMyTurn)  selfEffects.push(`<span class="effect-tag effect-double">🔪 DMG ×2</span>`);
-  if (data.doubleDamage && !isMyTurn) oppEffects.push(`<span class="effect-tag effect-double">🔪 DMG ×2</span>`);
-  if (data.blockedPlayer === myPlayerId) selfEffects.push(`<span class="effect-tag effect-blocked">⛓️ BORGOL</span>`);
-  if (data.blockedPlayer === oppId)      oppEffects.push(`<span class="effect-tag effect-blocked">⛓️ BORGOL</span>`);
-  document.getElementById('self-effects').innerHTML = selfEffects.join('');
-  document.getElementById('opp-effects').innerHTML  = oppEffects.join('');
+  const selfFx = [], oppFx = [];
+  if (data.doubleDamage)               isMyTurn ? selfFx.push(`<span class="effect-tag effect-double">🔪 DMG ×2</span>`) : oppFx.push(`<span class="effect-tag effect-double">🔪 DMG ×2</span>`);
+  if (data.blockedPlayer === myPlayerId) selfFx.push(`<span class="effect-tag effect-blocked">⛓️ BORGOL</span>`);
+  if (data.blockedPlayer === oppId)      oppFx.push(`<span class="effect-tag effect-blocked">⛓️ BORGOL</span>`);
+  document.getElementById('self-effects').innerHTML = selfFx.join('');
+  document.getElementById('opp-effects').innerHTML  = oppFx.join('');
 
-  // Inventories
-  const selfInv = toArr(self.inventory);
-  const oppInv  = toArr(opp.inventory);
-  document.getElementById('self-inventory').innerHTML = renderInventoryHTML(selfInv, canAct);
-  document.getElementById('opp-inventory').innerHTML  = renderInventoryROHTML(oppInv);
+  // Inventory
+  document.getElementById('self-inventory').innerHTML = renderInvHTML(toArr(self.inventory), canAct);
+  document.getElementById('opp-inventory').innerHTML  = renderOppInvHTML(toArr(opp.inventory));
 
   // Chamber
   const chamber = toArr(data.chamber);
-  renderChamber(chamber, data.currentIndex || 0);
+  const idx     = data.currentIndex || 0;
+  renderChamber(chamber, idx, data.round || 1);
 
-  // Shoot buttons
-  const shootBtns = canAct;
-  document.getElementById('btn-shoot-self').disabled  = !shootBtns;
-  document.getElementById('btn-shoot-enemy').disabled = !shootBtns;
+  // Shoot
+  document.getElementById('btn-shoot-self').disabled  = !canAct;
+  document.getElementById('btn-shoot-enemy').disabled = !canAct;
 
   // Log
   renderLog(toArr(data.log));
 }
 
-function renderHearts(containerId, hp) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = Array.from({length:5}, (_, i) =>
-    `<div class="heart ${i < hp ? 'alive' : 'dead'}"></div>`
-  ).join('');
+function renderHearts(id, hp) {
+  document.getElementById(id).innerHTML =
+    Array.from({length:5}, (_,i) => `<div class="heart ${i < hp ? 'alive' : 'dead'}"></div>`).join('');
 }
 
-function renderInventoryHTML(inv, active) {
+function renderInvHTML(inv, active) {
   if (!inv.length) return `<span class="no-items">— kosong —</span>`;
   return inv.map((item, idx) => {
     const info = ITEM_INFO[item] || {};
     return `
-      <button
-        class="item-btn"
-        onclick="${active ? `useItem('${item}', ${idx})` : ''}"
-        onmouseenter="showItemTooltip(event, '${item}')"
-        onmouseleave="hideTooltip()"
-        ${!active ? 'disabled' : ''}
-      >
+      <button class="item-btn" onclick="${active ? `useItem('${item}',${idx})` : ''}"
+        onmouseenter="showItemTooltip(event,'${item}')" onmouseleave="hideTooltip()"
+        ${!active ? 'disabled' : ''}>
         <span>${info.emoji || '❓'}</span>
-        <span class="item-tag">${(info.name || item).slice(0,5).toUpperCase()}</span>
+        <span class="item-tag">${(info.name||item).slice(0,5).toUpperCase()}</span>
       </button>`;
   }).join('');
 }
 
-function renderInventoryROHTML(inv) {
+function renderOppInvHTML(inv) {
   if (!inv.length) return `<span class="no-items">— kosong —</span>`;
   return inv.map(item => {
     const info = ITEM_INFO[item] || {};
     return `
       <button class="item-btn enemy-item" disabled
-        onmouseenter="showItemTooltip(event, '${item}')"
-        onmouseleave="hideTooltip()">
+        onmouseenter="showItemTooltip(event,'${item}')" onmouseleave="hideTooltip()">
         <span>${info.emoji || '❓'}</span>
-        <span class="item-tag">${(info.name || item).slice(0,5).toUpperCase()}</span>
+        <span class="item-tag">${(info.name||item).slice(0,5).toUpperCase()}</span>
       </button>`;
   }).join('');
 }
 
-function renderChamber(chamber, currentIndex) {
+function renderChamber(chamber, currentIndex, round) {
   const el = document.getElementById('chamber-slots');
   document.getElementById('chamber-idx').textContent = Math.min(currentIndex + 1, 6);
 
-  el.innerHTML = chamber.map((slot, i) => {
+  el.innerHTML = chamber.map((_, i) => {
     let cls, icon;
-    if (i < currentIndex) {
-      cls = 'slot-fired';
-      icon = '×';
-    } else if (i === currentIndex) {
-      cls = 'slot-current';
-      icon = '◆';
-    } else {
-      cls = 'slot-unknown';
-      icon = '?';
-    }
+    if      (i < currentIndex) { cls = 'slot-fired';   icon = '×'; }
+    else if (i === currentIndex) { cls = 'slot-current'; icon = '◆'; }
+    else                         { cls = 'slot-unknown'; icon = '?'; }
     const connector = i < 5 ? `<div class="slot-connector"></div>` : '';
-    return `<div class="slot ${cls}" title="${i < currentIndex ? 'Sudah ditembak' : i === currentIndex ? 'Posisi aktif' : 'Belum diketahui'}">${icon}</div>${connector}`;
+    return `<div class="slot ${cls}">${icon}</div>${connector}`;
   }).join('');
+
+  // Bullet ratio
+  const remainingSlots   = 6 - currentIndex;
+  const totalBullets     = round === 1 ? 3 : round === 2 ? 4 : 5;
+  const firedBullets     = chamber.slice(0, currentIndex).filter(x => x === 1).length;
+  const remainingBullets = totalBullets - firedBullets;
+  const prob             = remainingSlots > 0 ? Math.round((remainingBullets / remainingSlots) * 100) : 0;
+
+  document.getElementById('ratio-bullets').textContent = Math.max(0, remainingBullets);
+  document.getElementById('prob-val').textContent      = `${prob}%`;
+  document.getElementById('prob-bar').style.width      = `${prob}%`;
+  document.getElementById('round-ammo-label').textContent = `RONDE ${round} — ${totalBullets}/6 TOTAL`;
+
+  // Color bar based on prob
+  const bar = document.getElementById('prob-bar');
+  if      (prob >= 75) bar.style.background = 'linear-gradient(90deg, #8e1f1f, var(--red2))';
+  else if (prob >= 50) bar.style.background = 'linear-gradient(90deg, #8e4e00, var(--orange, #e67e22))';
+  else                 bar.style.background = 'linear-gradient(90deg, #1a5e30, var(--green))';
 }
 
 function renderLog(logs) {
   const el = document.getElementById('action-log');
   if (!logs.length) return;
+  const wasBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
   el.innerHTML = logs.map((entry, i) =>
-    `<div class="log-entry" style="animation-delay:${i * 0.03}s">${entry}</div>`
+    `<div class="log-entry" style="animation-delay:${i*0.025}s">${entry}</div>`
   ).join('');
-  el.scrollTop = el.scrollHeight;
+  if (wasBottom) el.scrollTop = el.scrollHeight;
 }
 
-function renderFinished(data) {
-  if (!data || !data.players) return;
-  const winner    = data.winner;
-  const winnerObj = data.players[winner];
-  const loserKey  = winner === 'player1' ? 'player2' : 'player1';
-  const loserObj  = data.players[loserKey];
-  const iWon      = winner === myPlayerId;
-
-  document.getElementById('finish-trophy').textContent = iWon ? '🏆' : '💀';
-  document.getElementById('finish-title').textContent  = iWon
-    ? `${winnerObj?.name || '?'} MENANG!`
-    : `${winnerObj?.name || '?'} MENANG`;
-  document.getElementById('finish-title').style.color = iWon ? 'var(--gold)' : 'var(--text2)';
-  document.getElementById('finish-sub').textContent   = iWon
-    ? 'Selamat! Kamu selamat dari roulette.'
-    : 'Kamu tidak selamat kali ini.';
-
-  document.getElementById('finish-stats').innerHTML = `
-    <div class="stat-item">
-      <div class="stat-label">RONDE</div>
-      <div class="stat-value">${data.round || 1}</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">HP ${winnerObj?.name || '?'}</div>
-      <div class="stat-value" style="color:var(--green)">${winnerObj?.hp || 0}</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-label">HP ${loserObj?.name || '?'}</div>
-      <div class="stat-value" style="color:var(--red2)">0</div>
-    </div>
-  `;
-
-  showScreen('finished');
-}
-
-// ================================================================
-// GAME ACTIONS
-// ================================================================
+// ============================================================
+// ITEM USE
+// ============================================================
 async function useItem(itemParam, itemIndex) {
   if (isProcessing) return;
   const data = lastRoomData;
   if (!data || data.currentTurn !== myPlayerId || data.status !== 'playing') return;
 
-  const inv = toArr(data.players[myPlayerId].inventory);
+  const inv      = toArr(data.players[myPlayerId].inventory);
   if (itemIndex >= inv.length) return;
-
   const item     = inv[itemIndex];
   const oppId    = myPlayerId === 'player1' ? 'player2' : 'player1';
   const selfName = data.players[myPlayerId].name;
   const oppName  = data.players[oppId].name;
 
-  // Remove item
   const newInv = [...inv];
   newInv.splice(itemIndex, 1);
 
-  // Magnifier: local only
+  // Magnifier: local reveal only
   if (item === 'magnifier') {
     const chamber = toArr(data.chamber);
     const slot    = chamber[data.currentIndex];
     await db.ref(`rooms/${roomId}/players/${myPlayerId}/inventory`).set(newInv);
     showToast(
       slot === 1
-        ? '🔴 <strong>PELURU!</strong><br><span style="font-size:0.8rem;color:var(--text3)">Chamber berikutnya berisi peluru</span>'
-        : '⚪ <strong>KOSONG</strong><br><span style="font-size:0.8rem;color:var(--text3)">Chamber berikutnya kosong</span>',
-      slot === 1 ? '' : 'toast-blank',
-      3500
+        ? '🔴 <strong>PELURU!</strong><br><span style="font-size:0.8rem;color:var(--text3)">Slot aktif berisi peluru</span>'
+        : '⚪ <strong>KOSONG</strong><br><span style="font-size:0.8rem;color:var(--text3)">Slot aktif kosong</span>',
+      slot === 1 ? '' : 'toast-blank', 3600
     );
     return;
   }
@@ -1435,30 +1223,29 @@ async function useItem(itemParam, itemIndex) {
   isProcessing = true;
   try {
     const updates = {};
+    const logs    = toArr(data.log);
     updates[`players/${myPlayerId}/inventory`] = newInv;
-    const logs = toArr(data.log);
 
-    switch (item) {
+    switch(item) {
       case 'rokok': {
-        const newHp = Math.min(5, data.players[myPlayerId].hp + 1);
-        updates[`players/${myPlayerId}/hp`] = newHp;
-        logs.push(`🚬 ${selfName} merokok — HP +1 (${newHp}/5)`);
-        showToast('🚬 +1 HP!', 'toast-gold', 2000);
+        const hp = Math.min(5, data.players[myPlayerId].hp + 1);
+        updates[`players/${myPlayerId}/hp`] = hp;
+        logs.push(`🚬 ${selfName} merokok — HP +1 (${hp}/5)`);
+        showToast('🚬 +1 HP!', 'toast-gold', 1800);
         break;
       }
       case 'silet': {
         updates['doubleDamage'] = true;
         logs.push(`🔪 ${selfName} menggunakan silet — damage berikutnya ×2!`);
-        showToast('🔪 Damage ×2 aktif!', '', 2000);
+        showToast('🔪 Damage ×2 aktif!', '', 1800);
         break;
       }
       case 'beer': {
-        const curChamber = toArr(data.chamber);
-        const shuffled   = shuffleArray(curChamber);
+        const shuffled = shuffleArray(toArr(data.chamber));
         updates['chamber']      = shuffled;
         updates['currentIndex'] = 0;
-        logs.push(`🍺 ${selfName} minum bir — chamber dikocok ulang, index reset ke 0!`);
-        showToast('🍺 Chamber dikocok!', '', 2000);
+        logs.push(`🍺 ${selfName} minum bir — chamber dikocok, index reset ke 0`);
+        showToast('🍺 Chamber dikocok ulang!', '', 1800);
         break;
       }
       case 'handcuff': {
@@ -1469,130 +1256,115 @@ async function useItem(itemParam, itemIndex) {
       }
     }
 
-    if (logs.length > 25) logs.splice(0, logs.length - 25);
+    if (logs.length > 30) logs.splice(0, logs.length - 30);
     updates['log'] = logs;
-
     await db.ref(`rooms/${roomId}`).update(updates);
   } finally {
     isProcessing = false;
   }
 }
 
+// ============================================================
+// SHOOT
+// ============================================================
 async function handleShoot(target) {
   if (isProcessing) return;
   const data = lastRoomData;
   if (!data || data.currentTurn !== myPlayerId || data.status !== 'playing') return;
-
-  const oppId   = myPlayerId === 'player1' ? 'player2' : 'player1';
+  const oppId    = myPlayerId === 'player1' ? 'player2' : 'player1';
   const targetId = target === 'self' ? myPlayerId : oppId;
   await pullTrigger(targetId);
 }
 
 async function pullTrigger(targetId) {
   isProcessing = true;
-
   try {
-    // Re-fetch for latest state
     const snap = await db.ref(`rooms/${roomId}`).once('value');
-    const data  = snap.val();
-
+    const data = snap.val();
     if (!data || data.currentTurn !== myPlayerId || data.status !== 'playing') return;
 
-    const chamber   = toArr(data.chamber);
-    const idx       = data.currentIndex || 0;
-    const bullet    = chamber[idx];
-    const doubleDmg = data.doubleDamage || false;
-    const oppId     = myPlayerId === 'player1' ? 'player2' : 'player1';
-    const selfName  = data.players[myPlayerId].name;
+    const chamber    = toArr(data.chamber);
+    const idx        = data.currentIndex || 0;
+    const bullet     = chamber[idx];
+    const doubleDmg  = data.doubleDamage || false;
+    const oppId      = myPlayerId === 'player1' ? 'player2' : 'player1';
+    const selfName   = data.players[myPlayerId].name;
     const targetName = data.players[targetId].name;
-    const logs      = toArr(data.log);
-    const updates   = {};
+    const logs       = toArr(data.log);
+    const updates    = {};
 
-    // === RESOLVE SHOT ===
     if (bullet === 1) {
-      // HIT
-      flashScreen();
-      shakeScreen();
-
-      const damage = doubleDmg ? 2 : 1;
-      const newHp  = Math.max(0, data.players[targetId].hp - damage);
+      flashScreen(); shakeScreen();
+      const dmg    = doubleDmg ? 2 : 1;
+      const newHp  = Math.max(0, data.players[targetId].hp - dmg);
       updates[`players/${targetId}/hp`] = newHp;
-
       const who = targetId === myPlayerId ? 'dirinya sendiri' : targetName;
-      logs.push(`💥 ${selfName} menembak ${who}!${doubleDmg ? ' (×2)' : ''} −${damage} HP → ${newHp} HP`);
-
-      if (doubleDmg) showToast(`💥 BOOM! ×2 Damage!`, '', 2000);
-      else           showToast(`💥 TERKENA!`, '', 1800);
+      logs.push(`💥 ${selfName} menembak ${who}!${doubleDmg ? ' (×2)' : ''} −${dmg} HP → ${newHp} HP`);
+      if (doubleDmg) showToast('💥 BOOM! ×2 Damage!','', 2000);
+      else           showToast('💥 TERKENA!','', 1800);
 
       if (newHp <= 0) {
-        updates['status'] = 'finished';
-        updates['winner'] = myPlayerId;
-        logs.push(`💀 ${targetName} tewas! ${selfName} menang!`);
+        updates['status']        = 'finished';
+        updates['winner']        = myPlayerId;
         updates['doubleDamage']  = false;
-        updates['currentIndex'] = idx + 1;
-        if (logs.length > 25) logs.splice(0, logs.length - 25);
+        updates['currentIndex']  = idx + 1;
+        logs.push(`💀 ${targetName} tewas! 🏆 ${selfName} menang!`);
+        if (logs.length > 30) logs.splice(0, logs.length - 30);
         updates['log'] = logs;
         await db.ref(`rooms/${roomId}`).update(updates);
         return;
       }
     } else {
-      // BLANK
       const who = targetId === myPlayerId ? 'dirinya sendiri' : targetName;
       logs.push(`💨 Klik... ${selfName} menembak ${who} — kosong!`);
-      showToast('💨 Klik! Kosong.', 'toast-blank', 2000);
+      showToast('💨 Klik! Kosong.', 'toast-blank', 1800);
     }
 
     updates['doubleDamage'] = false;
     const newIndex = idx + 1;
 
-    // === NEXT ROUND CHECK ===
     if (newIndex >= 6) {
-      const newRound  = (data.round || 1) + 1;
+      // New round
+      const newRound   = (data.round || 1) + 1;
       const newChamber = generateChamber(newRound);
-      const itemAmt   = newRound >= 2 ? 2 : 1;
-
+      const itemAmt    = newRound >= 2 ? 2 : 1;
       const p1Inv = giveRandomItems(toArr(data.players.player1.inventory), itemAmt);
       const p2Inv = giveRandomItems(toArr(data.players.player2.inventory), itemAmt);
+      const bc    = newRound === 1 ? 3 : newRound === 2 ? 4 : 5;
 
-      updates['round']      = newRound;
+      updates['round']        = newRound;
       updates['currentIndex'] = 0;
-      updates['chamber']    = newChamber;
+      updates['chamber']      = newChamber;
       updates['blockedPlayer'] = null;
       updates['players/player1/inventory'] = p1Inv;
       updates['players/player2/inventory'] = p2Inv;
+      updates['currentTurn']  = oppId;
 
-      const bulletCount = newRound === 1 ? 3 : newRound === 2 ? 4 : 5;
       logs.push(`━━━━━━━━━━━━━━━━━━━━━━`);
-      logs.push(`🔄 Ronde ${newRound} dimulai! ${bulletCount} peluru dari 6 slot`);
-      logs.push(`📦 Item baru: P1 +${itemAmt} | P2 +${itemAmt}`);
-
-      // Switch turn for new round
-      updates['currentTurn'] = oppId;
+      logs.push(`🔄 Ronde ${newRound} dimulai! ${bc} dari 6 slot berisi peluru`);
+      logs.push(`📦 Item baru dibagikan (+${itemAmt} masing-masing)`);
 
     } else {
       updates['currentIndex'] = newIndex;
 
-      // === TURN LOGIC ===
       if (bullet === 0 && targetId === myPlayerId) {
-        // Self-shoot blank → keep turn
+        // Self blank → keep turn
         updates['currentTurn'] = myPlayerId;
-        logs.push(`↩️ Tembak diri sendiri (kosong) — ${selfName} dapat giliran lagi!`);
+        logs.push(`↩️ ${selfName} tembak diri (kosong) — dapat giliran lagi!`);
       } else {
         if (data.blockedPlayer === oppId) {
           updates['blockedPlayer'] = null;
           updates['currentTurn']  = myPlayerId;
-          logs.push(`⛓️ ${data.players[oppId].name} melewati giliran karena borgol!`);
+          logs.push(`⛓️ ${data.players[oppId].name} skip giliran (borgol)!`);
         } else {
           updates['currentTurn'] = oppId;
         }
       }
     }
 
-    if (logs.length > 25) logs.splice(0, logs.length - 25);
+    if (logs.length > 30) logs.splice(0, logs.length - 30);
     updates['log'] = logs;
-
     await db.ref(`rooms/${roomId}`).update(updates);
-
   } catch(err) {
     console.error('pullTrigger error:', err);
   } finally {
@@ -1600,26 +1372,43 @@ async function pullTrigger(targetId) {
   }
 }
 
-// ================================================================
-// INIT
-// ================================================================
+// ============================================================
+// FINISHED
+// ============================================================
+function renderFinished(data) {
+  if (!data?.players) return;
+  const winner    = data.winner;
+  const winnerObj = data.players[winner];
+  const loserKey  = winner === 'player1' ? 'player2' : 'player1';
+  const loserObj  = data.players[loserKey];
+  const iWon      = winner === myPlayerId;
+
+  document.getElementById('finish-trophy').textContent  = iWon ? '🏆' : '💀';
+  document.getElementById('finish-title').textContent   = iWon ? `${winnerObj?.name || '?'} MENANG!` : `${winnerObj?.name || '?'} MENANG`;
+  document.getElementById('finish-title').style.color   = iWon ? 'var(--gold)' : 'var(--text2)';
+  document.getElementById('finish-sub').textContent     = iWon ? 'Selamat! Kamu selamat dari roulette.' : 'Kamu tidak selamat kali ini...';
+  document.getElementById('finish-stats').innerHTML = `
+    <div class="stat-item"><div class="stat-label">RONDE</div><div class="stat-value">${data.round||1}</div></div>
+    <div class="stat-item"><div class="stat-label">HP ${winnerObj?.name||'?'}</div><div class="stat-value" style="color:var(--green)">${winnerObj?.hp||0}</div></div>
+    <div class="stat-item"><div class="stat-label">HP ${loserObj?.name||'?'}</div><div class="stat-value" style="color:var(--red2)">0</div></div>`;
+
+  showScreen('finished');
+}
+
+// ============================================================
+// INPUT HANDLERS
+// ============================================================
 document.getElementById('input-name').focus();
 
-// Allow Enter key to submit
 document.getElementById('input-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     const code = document.getElementById('input-code').value.trim();
     code ? joinRoom() : createRoom();
   }
 });
-document.getElementById('input-code').addEventListener('keydown', e => {
-  if (e.key === 'Enter') joinRoom();
-});
-
-// Uppercase code input
-document.getElementById('input-code').addEventListener('input', e => {
-  e.target.value = e.target.value.toUpperCase();
-});
+document.getElementById('input-code').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoom(); });
+document.getElementById('input-code').addEventListener('input',  e => { e.target.value = e.target.value.toUpperCase(); });
+document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
 </script>
 </body>
 </html>
