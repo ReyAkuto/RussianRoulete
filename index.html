@@ -687,7 +687,7 @@ async function startGame(data) {
   };
   pids.forEach(pid=>{
     const inv=giveItems([],1);
-    upd['players/'+pid+'/hp']=5;
+    upd['players/'+pid+'/hp']=10;
     upd['players/'+pid+'/inventory']=inv;
     data.players[pid]._inv=inv;
   });
